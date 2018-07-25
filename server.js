@@ -1,11 +1,19 @@
 const express = require('express')
-var bodyParser = require('body-parser')
+const bodyParser = require('body-parser')
 
-const carService = require('./services/car-service')
+const eventService = require('./routes/services/eventService')
 const app = express()
-app.use(express.static('dist'));
+app.use(express.static('frontend/dist'));
 
 
+app.get('/', (req, res) => res.send('Hello World!'))
+app.get('/baba', (req, res) => res.send('Hello Baba!'))
+
+const eventRoute = require('./routes/eventRoute')
+eventRoute(app)
+
+const userRoute = require('./routes/userRoute')
+userRoute(app)
 
 
 const port = process.env.PORT || 3000;
