@@ -1,6 +1,7 @@
 import eventService from '@/services/eventService'
 export const LOAD_EVENTS = 'event/load'
 export const LOAD_EVENT = 'event/loadById'
+export const REMOVE_EVENT = 'event/remove'
 // export const REMOVE_USER = 'user/removeUser'
 
 // Getters
@@ -17,7 +18,7 @@ export default {
             state.events = events;
             return events;
         },
-        [REMOVE_EVENT](state, {eventId}) {
+        [REMOVE_EVENT](state, { eventId }) {
             state.events = state.events.filter(event => event._id !== eventId);
         },
     },
@@ -38,11 +39,11 @@ export default {
                     type: REMOVE_EVENT, eventId
                 }))
         }
+
+    },
+    getters: {
+
+
+
     }
-},
-getters: {
-
-
-
-}
 }
