@@ -1,0 +1,7 @@
+http://www.filltext.com/?rows=15&
+fname={firstName}~{lastName}&
+email={email}&
+psw={randomString|8}&
+age={randomNumber|120}&
+@friends={{rows=1*name={firstName}}{rows=1*name={lastName}}
+&pretty=true
