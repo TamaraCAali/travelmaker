@@ -11,7 +11,7 @@
 import { LOAD_CURR_LOC } from '../store.js';
 import { SEARCHED_LOC } from '../store.js';
 
-import geoService from '../services/geocodingService.js';
+import locService from '../services/locationService.js';
 
 export default {
   name: 'CurrLoc',

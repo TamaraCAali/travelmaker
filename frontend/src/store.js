@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import eventService from '@/services/eventService.js';
-import geoService from '@/services/geocodingService.js';
+import locService from '@/services/locationService.js';
 
 Vue.use(Vuex);
 
@@ -35,14 +35,14 @@ export default new Vuex.Store({
   actions: {
     [LOAD_CURR_LOC](context) {
       var currLoc;
-      geoService
+      locService
         .getPosition()
         .then(res => {
           currLoc = {
             lat: res.coords.latitude,
             lng: res.coords.longitude
           };
-          return geoService.getAddressFromLoc(currLoc);
+          return locService.getAddressFromLoc(currLoc);
         })
         .then(name => {
           currLoc.name = name;
@@ -53,7 +53,7 @@ export default new Vuex.Store({
         });
     },
     [SEARCHED_LOC](context, { searchInput }) {
-      geoService.getPositionByName(searchInput).then(pos => {
+      locService.getPositionByName(searchInput).then(pos => {
         context.commit({
           type: SEARCHED_LOC,
           pos

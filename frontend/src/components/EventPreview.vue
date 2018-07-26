@@ -1,106 +1,36 @@
 <template>
-  <div class="event-preview">
+  <section class="event-preview">
       <div class="event" @click="openEventDetails">
-          <div class="event-img">
-              <p>**Chasing waterfalls!** 4.8</p>
+          <div class="event-img" :style="'background-image: url('+event.img+')'">
+            <p>{{event.name}}  {{date}} </p>
           </div>
           <div class="event-pre-details">
-            <p>At: Hazuri stream, 800m away</p>
-            <p><i class="fas fa-user-friends"></i> 26 people are attending</p>
+            <p>{{event.loc.title}}, {{dist}} away</p>
+            <p><i class="fas fa-user-friends"></i> {{event.attends.length}} people are attending</p>
           </div>
       </div>
-      <div class="event">
-          <div class="event-img">
-            <p>Shuk hangout 6.8</p>
-          </div>
-          <div class="event-pre-details">
-            <p>At: Katzrin market, 320m away</p>
-            <p><i class="fas fa-user-friends"></i> 8 people are attending</p>
-          </div>
-      </div>
-      <div class="event">
-          <div class="event-img">
-              <p>**Chasing waterfalls!** 4.8</p>
-          </div>
-          <div class="event-pre-details">
-            <p>At: Hazuri stream, 800m away</p>
-            <p><i class="fas fa-user-friends"></i> 26 people are attending</p>
-          </div>
-      </div>
-      <div class="event">
-          <div class="event-img">
-            <p>Shuk hangout 6.8</p>
-          </div>
-          <div class="event-pre-details">
-            <p>At: Katzrin market, 320m away</p>
-            <p><i class="fas fa-user-friends"></i> 8 people are attending</p>
-          </div>
-      </div><div class="event">
-          <div class="event-img">
-              <p>**Chasing waterfalls!** 4.8</p>
-          </div>
-          <div class="event-pre-details">
-            <p>At: Hazuri stream, 800m away</p>
-            <p><i class="fas fa-user-friends"></i> 26 people are attending</p>
-          </div>
-      </div>
-      <div class="event">
-          <div class="event-img">
-            <p>Shuk hangout 6.8</p>
-          </div>
-          <div class="event-pre-details">
-            <p>At: Katzrin market, 320m away</p>
-            <p><i class="fas fa-user-friends"></i> 8 people are attending</p>
-          </div>
-      </div><div class="event">
-          <div class="event-img">
-              <p>**Chasing waterfalls!** 4.8</p>
-          </div>
-          <div class="event-pre-details">
-            <p>At: Hazuri stream, 800m away</p>
-            <p><i class="fas fa-user-friends"></i> 26 people are attending</p>
-          </div>
-      </div>
-      <div class="event">
-          <div class="event-img">
-            <p>Shuk hangout 6.8</p>
-          </div>
-          <div class="event-pre-details">
-            <p>At: Katzrin market, 320m away</p>
-            <p><i class="fas fa-user-friends"></i> 8 people are attending</p>
-          </div>
-      </div><div class="event">
-          <div class="event-img">
-              <p>**Chasing waterfalls!** 4.8</p>
-          </div>
-          <div class="event-pre-details">
-            <p>At: Hazuri stream, 800m away</p>
-            <p><i class="fas fa-user-friends"></i> 26 people are attending</p>
-          </div>
-      </div>
-      <div class="event">
-          <div class="event-img">
-            <p>Shuk hangout 6.8</p>
-          </div>
-          <div class="event-pre-details">
-            <p>At: Katzrin market, 320m away</p>
-            <p><i class="fas fa-user-friends"></i> 8 people are attending</p>
-          </div>
-      </div>
-<!-- <div class="event">
-      <div>name:{{event.name}}</div>
-      <div>date:{{event.date}}</div>
-      <div>loc:{{event.loc}}</div>
-      <div><i class="fas fa-user-friends"></i> {{event.attends}} people are attending</div>
-    </div> -->
-  </div>
+  </section>
 </template>
-
 <script>
+import moment from 'moment';
+import locService from '@/services/locationService.js';
+
 export default {
   name: 'EventPreview',
   props: {
     event: Object
+  },
+  computed: {
+    date: function() {
+      return moment(this.event.date).format('MMM Do YY');
+    },
+    dist: function() {
+      const userLoc = this.$store.getters.getCurrLoc;
+      const dist = locService.getDistance(userLoc, this.event.loc).toFixed();
+      if (dist < 1) return dist + ' m';
+      else return dist + ' km';
+      return dist;
+    }
   },
   methods: {
     openEventDetails() {
@@ -115,8 +45,10 @@ export default {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
+  width: 250px;
 }
 .event {
+  width: 100%;
   background-color: beige;
   box-shadow: 0 0 5px #00000063;
   margin: 5px;
@@ -128,7 +60,7 @@ export default {
   flex-direction: column;
   justify-content: flex-end;
   height: 150px;
-  background-image: url('../assets/img/maxresdefault.jpg');
+  // background-image: url('../assets/img/maxresdefault.jpg');
   background: linear-gradient(rgba(0, 0, 0, 0.21), rgba(0, 0, 0, 0.35)),
     url(/img/maxresdefault.28e174ef.jpg);
   background-repeat: no-repeat;
@@ -152,19 +84,19 @@ export default {
 }
 
 @media only screen and (max-width: 920px) {
-  .event {
+  .event-preview {
     width: 32%;
   }
 }
 
 @media only screen and (max-width: 760px) {
-  .event {
+  .event-preview {
     width: 45%;
   }
 }
 
 @media only screen and (max-width: 500px) {
-  .event {
+  .event-preview {
     width: 96%;
   }
 }

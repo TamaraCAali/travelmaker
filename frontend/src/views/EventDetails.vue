@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import geocodingService from '../services/geocodingService';
+import locService from '../services/locationService';
 import eventService from '../services/eventService';
 
 export default {
@@ -61,8 +61,7 @@ export default {
         estTime: 180,
         desc:
           'Let’s take this beutiful friday noon to explore the magics of Hazuri stream',
-        imgUrl:
-          'https://i.ytimg.com/vi/xC5n8f0fTeE/maxresdefault.jpg',
+        imgUrl: 'https://i.ytimg.com/vi/xC5n8f0fTeE/maxresdefault.jpg',
         attends: [],
         comments: [],
         lvl: 0
@@ -71,13 +70,12 @@ export default {
     };
   },
   created() {
-    let idFromParams = this.$route.params.eventId
+    let idFromParams = this.$route.params.eventId;
     console.log('event id sent:', idFromParams);
-    eventService.getById(idFromParams)
-    .then(res => {
-      console.log('got res:', res);      
-      return this.event = JSON.parse(JSON.stringify(res))
-    })
+    eventService.getById(idFromParams).then(res => {
+      console.log('got res:', res);
+      return (this.event = JSON.parse(JSON.stringify(res)));
+    });
     // .then()
     // geocodingService.getAddressFromLoc(this.event.loc)
     // .then(address => {
@@ -140,7 +138,6 @@ export default {
     formatHour(val) {
       return moment().format('HH:mm');
     }
-
   }
 };
 </script>

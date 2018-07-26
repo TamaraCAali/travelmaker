@@ -1,9 +1,7 @@
 <template>
   <div class="event">
     <LocationInput></LocationInput>
-    <EventList  :events="events" v-on:selected="openSelectedEvent"></EventList>
-
-    events: {{events}}
+    <EventList :events="events" v-on:selected="openSelectedEvent"></EventList>
   </div>
 </template>
 
@@ -40,11 +38,8 @@ export default {
           console.log('err in load events');
         });
     },
-    // openSelectedEvent(event) {
-    //   this.$router.push(`event/${event._id}`);
-    // }
     openSelectedEvent(event) {
-      this.$router.push(`event/111`);
+      this.$router.push(`event/${event._id}`);
     }
   }
 };
