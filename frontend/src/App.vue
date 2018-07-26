@@ -1,29 +1,58 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
+    <nav>
+      <div>
+      <router-link class="router-link" to="/"><i class="fas fa-calendar-alt"></i> <span> events</span></router-link> |
+      <router-link class="router-link" to="/traveler"><i class="fas fa-user-friends"></i> <span> travelers</span></router-link>
+      </div>
+      <div>TRAVEL <i class="fas fa-search"></i> MAKER</div>
+    </nav>
+    
+    
     <router-view/>
   </div>
 </template>
 
 <style lang="scss">
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+nav {
+  display: flex;
+  justify-content: space-around;
+  color: #41b883;
 }
-#nav {
-  padding: 30px;
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-    &.router-link-exact-active {
-      color: #42b983;
-    }
+.router-link i {
+  color: #35495e;
+}
+
+.fa-search:before {
+  color: #35495e;
+}
+
+.fa-search:hover {
+  font-size: 1.5em;
+}
+
+.router-link {
+  font-size: 1.2em;
+  transition: all 0.3s;
+}
+
+.router-link:hover {
+  font-size: 1.5em;
+  color: #41b883;
+}
+.router-link:active {
+  font-weight: bold;
+  font-size: 1.5em;
+  color: #41b883;
+}
+
+.router-link:visited {
+  color: #35495e;
+}
+
+@media only screen and (max-width: 420px) {
+  span {
+    display: none;
   }
 }
 </style>
