@@ -1,25 +1,33 @@
 <template>
   <div class="event-details">
-    <img class="img-container" :src="event.imgUrl"/>
-    <h2>{{event.name}}</h2>
+    <img class="event-img" :src="event.imgUrl"/>
+    <div class="event-header">
+      <h2>{{event.name}}</h2>
+      <div class="btns-container">
+        <div>
+          <i class="far fa-check-square fa-2x" @click="attendEvent()"></i><br/>
+          Join
+        </div>
+        <div>
+          <i class="fas fa-share-square fa-2x" @click="shareEvent()"></i><br/>
+          Share 
+        </div>
+      </div>
+    </div>
     At: {{eventAddress}}
     <div class="attends-container">
       <img class="people-icon" src="../img/people-icon.png"/>
       {{event.attends.length}} people attending
     </div>
-    <div class="btns-container">
-      <i class="far fa-check-square" @click="attendEvent()"></i>
-      <i class="fas fa-share-square" @click="shareEvent()"></i>
-    </div>
     <p>
     {{event.desc}}
     </p>
     <div class="est-time-container">
-      <i class="far fa-clock"></i>  
+      <i class="fas fa-walking"></i>
       {{eventLvl}}
     </div>
     <div class="difficulty-lvl-container">
-      <i class="fas fa-walking"></i>
+      <i class="far fa-clock"></i>  
       Takes About: {{ event.estTime | stringifyTime }}
     </div>
     <div class="map" ref="map"></div>
@@ -43,7 +51,7 @@ export default {
         _id: '0323254',
         creatorId: '0323569',
         name: '**Chasing waterfalls!**',
-        loc: { lng: 32.993007, lat: 35.696192 },
+        loc: { lng: 32.327004, lat: 34.858712 },
         estTime: 180,
         desc:
           'Let’s take this beutiful friday noon to explore the magics of Hazuri stream',
@@ -52,8 +60,16 @@ export default {
         attends: [],
         comments: [],
         lvl: 0
-      }
+      },
+      eventAddress: ''
     };
+  },
+  created() {
+    geocodingService.getAddressFromLoc(this.event.loc)
+    .then(address => {
+      // console.log('address:', address);
+      this.eventAddress = address;
+    });
   },
   mounted() {
     this.initMap();
@@ -77,13 +93,6 @@ export default {
     }
   },
   computed: {
-    eventAddress() {
-      console.log('sent loc:', this.event.loc)
-      geocodingService.getAddressFromLoc(this.event.loc).then(address => {
-        console.log('address:', address);
-        return address;
-      });
-    },
     eventLvl() {
       if (this.event.lvl === 0) {
         return 'Easy walk';
@@ -102,12 +111,12 @@ export default {
         return val + ' minutes';
       }
       if (+val > 1440) {
-        let daysCount = +val / 1440;
-        daysCount = daysCount.toFixed();
+        let daysCount = +val / 720;
+        daysCount = daysCount.toFixed() / 2; //Support .5 days
         return `About ${daysCount} days`;
       } else {
-        let hoursCount = +val / 60;
-        hoursCount = hoursCount.toFixed();
+        let hoursCount = +val / 30;
+        hoursCount = hoursCount.toFixed() / 2; //Support .5 hours
         return `About ${hoursCount} hours`;
       }
     }
@@ -131,10 +140,25 @@ export default {
   transition: all 0.3s;
 }
 
-.img-container {
+.event-img {
   width: 100%;
   height: 250px;
   object-fit: cover;
+}
+
+.event-header {
+  margin: 0 auto;
+  display: flex;
+}
+
+.btns-container {
+  display: flex;
+  align-items: center;
+  margin: 0 1em;
+}
+
+.btns-container div {
+  margin: 10px;
 }
 
 .map {
