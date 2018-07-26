@@ -20,6 +20,7 @@ eventRoute(app);
 
 const userRoute = require('./routes/userRoute');
 userRoute(app);
+
 // const chatRoute = require('./routes/chatRoute')
 // chatRoute(app)
 
