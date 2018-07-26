@@ -2,4 +2,8 @@ export:
 mongodump -h ds245661.mlab.com:45661 -d travel_db -u travel2 -p travel2018 
 import:
 mongorestore -h ds245661.mlab.com:45661 -d travel_db -u <user> -p <password> <input db directory>
+mongorestore -h ds245661.mlab.com:45661 -d travel_db -u  travel2 -p travel2018 <input db directory>
 mongorestore -h localhost:27017 -d travel_db -u travel2 -p travel2018 travel_db
+
+
+mongorestore -h ds245661.mlab.com:45661 -d travel_db -u  travel2 -p travel2018  ./travel_db
