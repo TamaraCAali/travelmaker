@@ -14,8 +14,48 @@ export const SEARCHED_LOC = 'getSearchesLoc';
 export default new Vuex.Store({
   state: {
     user: {
-      name: 'puki',
-      currLoc: {}
+      _id: '5b58aa7616f42101ded3362b',
+      isActive: true,
+      img: 'http://beragaminfo.com/wp-content/uploads/2017/09/These-Are-the-Photos-Your-Dating-Profile-Absolutely-Must-Have-According-to-Matchmakers.jpg',
+      age: 24,
+      name: {
+        first: 'Bauer',
+        last: 'Carroll'
+      },
+      email: 'bauer.carroll@gmail.com',
+      about: {
+        interests: [
+          'sint',
+          'id',
+          'incididunt',
+          'mollit',
+          'duis'
+        ],
+        nextDest: 'pariatur',
+        langs: [
+          'EN',
+          'HE',
+          'IT'
+        ],
+        desc: 'Esse Lorem dolor sit id sunt. Tempor est qui veniam ex eiusmod veniam sint dolor nostrud ea veniam nostrud. Magna velit aute sit culpa. Magna laboris est elit do adipisicing ipsum minim.'
+      },
+      loc: {
+        lat: '7.129296',
+        lng: '-19.995148'
+      },
+      activity: {
+        events: [
+          '5b58ab1d16f42101ded33632',
+          '5b58ab1d16f42101ded3362f'
+        ],
+        chatRooms: [
+          '5b58a9df475b233765846fa6',
+          '5b58a9dfbe451bc62271d784',
+          '5b58a9dff3eeaea39dbab3e6',
+          '5b58a9df90f9856e4675510e',
+          '5b58a9df0a28256dda4df6a2'
+        ]
+      }
     },
     searchedLoc: {}
   },
@@ -30,6 +70,9 @@ export default new Vuex.Store({
   getters: {
     getCurrLoc(state) {
       return state.user.currLoc;
+    },
+    getUser(state) {
+      return state.user
     }
   },
   actions: {

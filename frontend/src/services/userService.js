@@ -36,7 +36,6 @@ function update(user) {
 }
 
 function getById(userId) {
-  // console.log('userID', userId);
   return axios.get(`${USER_URL}/${userId}`).then(res => res.data);
 }
 
