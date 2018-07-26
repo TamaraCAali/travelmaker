@@ -3,7 +3,7 @@
     <LocationInput></LocationInput>
     <EventList  :events="events" v-on:selected="openSelectedEvent"></EventList>
 
-    <!-- events: {{events}} -->
+    events: {{events}}
   </div>
 </template>
 
