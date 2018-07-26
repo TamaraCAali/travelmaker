@@ -5,9 +5,9 @@ function connectToMongo() {
     if (dbConn)return Promise.resolve(dbConn);
     const MongoClient = require('mongodb').MongoClient;
     
-    const url = (process.env.PORT)? 
-                        'mongodb://travel:travel?2018maker@ds245661.mlab.com:45661/travel_db' : '?'
-    //TODO: Ask Chen about this short if.
+    const url = 'mongodb://travel2:travel2018@ds245661.mlab.com:45661/travel_db'
+    // const url = (process.env.PORT)? 
+    //                     'mongodb://travel2:travel2018@ds245661.mlab.com:45661/travel_db' : '?'
 
 
     return MongoClient.connect(url)

@@ -1,8 +1,9 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 
-const eventService = require('./routes/services/eventService')
+// const eventService = require('./routes/services/eventService')
 const app = express()
+app.use(bodyParser.json())
 app.use(express.static('frontend/dist'));
 
 

@@ -34,6 +34,7 @@ function add(user) {
                     user._id = result.insertedId;
                     return user;
                 })
+                .catch((err) => console.log('caught error', err))
         })
 }
 
@@ -43,7 +44,8 @@ function update(user) {
 
         .then(db => {
             const collection = db.collection('user');
-            return collection.updateOne({ _id: user._id }, { $set: user })
+            
+            return collection.findOneAndUpdate({ _id: user._id }, {$set: user})
                 .then(result => {
                     return user;
                 })
