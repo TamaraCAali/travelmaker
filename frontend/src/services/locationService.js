@@ -9,6 +9,7 @@ export default {
 };
 
 function getAddressFromLoc(loc) {
+  // console.log('service got loc:', loc);
   return axios
     .get(
       `https://maps.googleapis.com/maps/api/geocode/json?latlng=${loc.lat},${
@@ -18,7 +19,10 @@ function getAddressFromLoc(loc) {
         withCredentials: false
       }
     )
-    .then(res => res.data.results[0].formatted_address);
+    .then(res => {
+      // console.log('service got res:', res);
+      return res.data.results[0].formatted_address;
+    });
 }
 
 function getPosition() {

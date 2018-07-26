@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import EventDetails from './views/EventDetails.vue';
+import EventEditAdd from './views/EventEditAdd.vue'
 import Event from './views/Event.vue';
 import Traveler from './views/Traveler.vue';
 
@@ -19,9 +20,14 @@ export default new Router({
       component: Traveler
     },
     {
-      path: '/event/:id',
+      path: '/event/:eventId',
       name: 'event-details',
       component: EventDetails
+    },
+    {
+      path: '/event/edit/:eventId',
+      name: 'event-edit',
+      component: EventEditAdd
     }
   ]
 });

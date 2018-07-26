@@ -38,11 +38,8 @@ export default {
           console.log('err in load events');
         });
     },
-    // openSelectedEvent(event) {
-    //   this.$router.push(`event/${event._id}`);
-    // }
     openSelectedEvent(event) {
-      this.$router.push(`event/111`);
+      this.$router.push(`event/${event._id}`);
     }
   }
 };

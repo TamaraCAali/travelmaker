@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import locService from '../services/locationService';
+// import geocodingService from '../services/geocodingService';
 import eventService from '../services/eventService';
 
 export default {

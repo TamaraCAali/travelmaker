@@ -36,7 +36,7 @@ function update(event) {
 }
 
 function getById(eventId) {
-  console.log('eventID', eventId);
+  // console.log('eventID', eventId);
   return axios.get(`${EVENT_URL}/${eventId}`).then(res => res.data);
 }
 
