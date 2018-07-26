@@ -2,16 +2,29 @@
   <div id="app">
     <nav>
       <div>
-      <router-link class="router-link" to="/"><i class="fas fa-calendar-alt"></i> <span> events</span></router-link> |
-      <router-link class="router-link" to="/traveler"><i class="fas fa-user-friends"></i> <span> travelers</span></router-link>
+        <router-link class="router-link" to="/"><i class="fas fa-calendar-alt"></i> <span> events</span></router-link> |
+        <router-link class="router-link" to="/traveler"><i class="fas fa-user-friends"></i> <span> travelers</span></router-link>
       </div>
       <div>TRAVEL <i class="fas fa-search"></i> MAKER</div>
     </nav>
     
     
     <router-view/>
+    <ChatWindow/>
   </div>
 </template>
+
+<script>
+import ChatWindow from '@/components/ChatWindow.vue'
+
+export default {
+  components:{
+    ChatWindow
+  }
+}
+</script>
+
+
 
 <style lang="scss">
 nav {
