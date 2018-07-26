@@ -18,42 +18,6 @@ export default {
       state.events = events;
       return events;
     },
-<<<<<<< HEAD
-    mutations: {
-        [LOAD_EVENTS](state, { events }) {
-            state.events = events;
-            return events;
-        },
-        [REMOVE_EVENT](state, { eventId }) {
-            state.events = state.events.filter(event => event._id !== eventId);
-        },
-    },
-    actions: {
-        [LOAD_EVENTS](context) {
-            return eventService.query()
-                .then(events => context.commit({
-                    type: LOAD_EVENTS,
-                    events
-                }))
-        },
-        [LOAD_EVENT](context, { eventId }) {
-            return eventService.getById(eventId)
-        },
-        [REMOVE_EVENT](context, { eventId }) {
-            return eventService.remove(eventId)
-                .then(_ => context.commit({
-                    type: REMOVE_EVENT, eventId
-                }))
-        }
-
-    },
-    getters: {
-
-
-
-    }
-}
-=======
     [REMOVE_EVENT](state, { eventId }) {
       state.events = state.events.filter(event => event._id !== eventId);
     }
@@ -88,4 +52,3 @@ export default {
     }
   }
 };
->>>>>>> master
