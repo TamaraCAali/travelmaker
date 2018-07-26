@@ -1,9 +1,10 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import EventDetails from './views/EventDetails.vue';
-import EventEditAdd from './views/EventEditAdd.vue'
+import EventEditAdd from './views/EventEditAdd.vue';
 import Event from './views/Event.vue';
-import Traveler from './views/Traveler.vue';
+import Travelers from './views/Travelers.vue';
+import TravelerDetails from './views/TravelerDetails.vue';
 
 Vue.use(Router);
 
@@ -15,9 +16,9 @@ export default new Router({
       component: Event
     },
     {
-      path: '/traveler',
-      name: 'traveler',
-      component: Traveler
+      path: '/travelers',
+      name: 'travelers',
+      component: Travelers
     },
     {
       path: '/event/:eventId',
@@ -28,6 +29,11 @@ export default new Router({
       path: '/event/edit/:eventId',
       name: 'event-edit',
       component: EventEditAdd
+    },
+    {
+      path: '/user/:userId',
+      name: 'user-details',
+      component: TravelerDetails
     }
   ]
 });

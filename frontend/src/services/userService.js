@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const USER_URL =
   process.env.NODE_ENV !== 'development'
-    ? '/data/event'
+    ? '/data/user'
     : 'http://localhost:3000/data/user';
 
 export default {
@@ -39,7 +39,7 @@ function getById(userId) {
   return axios.get(`${USER_URL}/${userId}`).then(res => res.data);
 }
 
-// function getEmptyEvent() {
+// function getEmptyuser() {
 //     return {
 //         txt: '',
 //         isDone: false
