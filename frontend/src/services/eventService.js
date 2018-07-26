@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const EVENT_URL =
   process.env.NODE_ENV !== 'development'
-    ? '/toys'
+    ? '/data/event'
     : 'http://localhost:3000/data/event';
 
 export default {
