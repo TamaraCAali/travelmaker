@@ -1,99 +1,121 @@
 <template>
   <div class="event-details">
-    <img class="event-img" :src="event.img"/>
-    <div class="event-header">
-      <h2>{{event.name}}</h2>
-      <p class="event-time">
-        {{event.date}}
-        <!-- {{event.date | formatDate}},
-        {{event.date | formatHour}} -->
+    <div v-if="!event" class="loader">
+      Loading Event...
+    </div>
+    <template v-else>
+      <img class="event-img" :src="event.img"/>
+      <div class="event-header">
+        <i v-if="userIsAdmin"
+           @click="goEditEvent" 
+           class="edit-btn far fa-edit fa-2x"></i>
+        <h2>{{event.name}}</h2>
+        <p class="event-time">
+          {{event.date | formatDate}} <br/>
+          {{event.date | formatHour}}
+        </p>
+      </div>
+      <div class="details-container">
+        At: {{event.loc.title}}
+        <div class="attends-container">
+          <img class="people-icon" src="../img/people-icon.png"/>
+          {{event.attends.length}} people attending
+        </div>
+      </div>
+      <div class="btns-container">
+        <div @click="toggleEventAttendence()">
+          <template v-if="!userIsAttending">
+            <i class="far fa-check-circle fa-2x"></i><br/>
+            Join
+          </template>
+          <template v-else>
+            <i class="far fa-times-circle fa-2x"></i><br/>
+            Leave
+          </template>
+        </div>
+        <div @click="shareEvent()">
+          <i class="fas fa-share-alt fa-2x"></i><br/>
+          Share 
+        </div>
+      </div>
+      <p>
+      {{event.desc}}
       </p>
-    </div>
-    At: {{event.loc.title}}
-    <div class="attends-container">
-      <img class="people-icon" src="../img/people-icon.png"/>
-      {{event.attends.length}} people attending
-    </div>
-    <div class="btns-container">
-      <div>
-        <i class="far fa-check-circle fa-2x" @click="attendEvent()"></i><br/>
-        Join
+      <div class="est-time-container">
+        <i class="fas fa-walking"></i>
+        {{eventLvl}}
       </div>
-      <div>
-        <i class="fas fa-share-alt fa-2x" @click="shareEvent()"></i><br/>
-        Share 
+      <div class="difficulty-lvl-container">
+        <i class="far fa-clock"></i>  
+        Takes About: {{ event.estTime | stringifyEstTime }}
       </div>
-    </div>
-    <p>
-    {{event.desc}}
-    </p>
-    <div class="est-time-container">
-      <i class="fas fa-walking"></i>
-      {{eventLvl}}
-    </div>
-    <div class="difficulty-lvl-container">
-      <i class="far fa-clock"></i>  
-      Takes About: {{ event.estTime | stringifyEstTime }}
-    </div>
-    <div class="map" ref="map"></div>
-    <h3>Comments:</h3>
-    <ul>
-      <li v-for="comment in event.comments">
-        
-      </li>
-    </ul>
+      <div v-if="event" class="map" ref="map"></div>
+      <h3>Comments:</h3>
+      <ul>
+        <li v-for="comment in event.comments">
+          
+        </li>
+      </ul>
+    </template>
   </div>
 </template>
 
 <script>
+import moment from 'moment';
 import locService from '../services/locationService';
 import eventService from '../services/eventService';
+import userService from '../services/userService';
 
 export default {
   name: 'home',
   data() {
     return {
       event: {
-        _id: '0323254',
-        creatorId: '0323569',
-        name: '**Chasing waterfalls!**',
-        loc: { lng: 32.327004, lat: 34.858712 },
-        estTime: 180,
-        desc:
-          'Let’s take this beutiful friday noon to explore the magics of Hazuri stream',
-        imgUrl: 'https://i.ytimg.com/vi/xC5n8f0fTeE/maxresdefault.jpg',
         attends: [],
-        comments: [],
-        lvl: 0
+        loc: {lat: 33, lng: 35}
       },
+      user: null,
       eventAddress: ''
     };
   },
   created() {
     let idFromParams = this.$route.params.eventId;
-    console.log('event id sent:', idFromParams);
-    eventService.getById(idFromParams).then(res => {
-      console.log('got res:', res);
+    // console.log('event id sent:', idFromParams);
+    eventService.getById(idFromParams)
+    .then(res => {
+      console.log('got event:', res);
       return (this.event = JSON.parse(JSON.stringify(res)));
     });
-    // .then()
-    // geocodingService.getAddressFromLoc(this.event.loc)
-    // .then(address => {
-    //   // console.log('address:', address);
-    //   this.eventAddress = address;
-    // });
+    this.user = this.$store.getters.getUser;
+    console.log('user:', this.user);
+    
   },
   mounted() {
     this.initMap();
   },
   methods: {
-    attendEvent() {
-      console.log('attending the event');
+    toggleEventAttendence() {
+      if (this.userIsAttending) {
+        console.log('leaving')       
+        let userIdx = this.event.attends.findIndex(id => id === this.user._id)
+        this.event.attends.splice(userIdx, 1)
+        eventService.update(this.event)
+        let eventIdx = this.user.activity.events.findIndex(id => id === this.event._id)
+        this.user.activity.events.splice(eventIdx, 1)
+        userService.update(this.user)
+      } else {
+        console.log('attending');
+        this.event.attends.push(this.user._id)
+        eventService.update(this.event)
+        this.user.activity.events.push(this.event._id)
+        userService.update(this.user)
+      }
     },
     shareEvent() {
       console.log('sharing the event');
     },
     initMap() {
+      // if (!this.event || !this.event.loc) return
       var map = new google.maps.Map(this.$refs.map, {
         zoom: 4,
         center: this.event.loc
@@ -102,6 +124,9 @@ export default {
         position: this.event.loc,
         map: map
       });
+    },
+    goEditEvent() {
+      this.$router.push(`edit/${this.event._id}`);
     }
   },
   computed: {
@@ -111,12 +136,29 @@ export default {
       }
       if (this.event.lvl === 1) {
         return 'Moderate walk';
-      } else if (this.event.lvl === 2) {
+      } 
+      else if (this.event.lvl === 2) {
         return 'Demanding walk';
       }
+    },
+    userIsAttending() {
+      if (this.user && this.user._id) return this.event.attends.includes(this.user._id)
+      else return false
+    },
+    userIsAdmin() {
+      return true
+      // return this.event.creatorId === this.user._id
+    }
+    // event() {
+    //   this.initMap()
+    // }
+  },
+  watch: {
+    event() {
+      this.initMap()
+      // console.log('is user attending?', this.userIsAttending);
     }
   },
-  components: {},
   filters: {
     stringifyEstTime(val) {
       if (+val < 60) {
@@ -143,51 +185,61 @@ export default {
 </script>
 
 <style>
-.people-icon {
-  width: 14px;
-}
+  .people-icon {
+    width: 14px;
+  }
 
-.event-details {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: beige;
-  box-shadow: 0 0 5px #00000063;
-  margin: 10px;
-  padding: 10px;
-  transition: all 0.3s;
-}
+  .event-details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: beige;
+    box-shadow: 0 0 5px #00000063;
+    margin: 10px;
+    padding: 10px;
+    transition: all 0.3s;
+  }
 
-.event-img {
-  width: 100%;
-  height: 250px;
-  object-fit: cover;
-}
+  .event-img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+  }
 
-.event-header {
-  margin: 0 auto;
-  display: flex;
-}
+  .event-header {
+    margin: 0 auto;
+    display: flex;
+  }
 
-.event-time {
-  margin: auto 1em;
-  width: 11em;
-  text-align: center;
-}
+  .edit-btn {
+    margin: auto 1em;
+    cursor: pointer;
+  }
 
-.btns-container {
-  display: flex;
-  align-items: center;
-  margin: 0 1em;
-}
+  .event-time {
+    width: 4em;
+    text-align: center;
+  }
 
-.btns-container div {
-  margin: 10px;
-  text-align: center;
-}
+  .details-container {
+    align-self: flex-start;
+    padding: 0 10px;
+  }
+  .btns-container {
+    display: flex;
+    align-items: center;
+    margin: 0 1em;
+  }
 
-.map {
-  width: 100%;
-  height: 250px;
-}
+  .btns-container div {
+    margin: 10px;
+    text-align: center;
+    cursor: pointer;
+  }
+
+  .map {
+    width: 100%;
+    height: 250px;
+    margin: 10px;
+  }
 </style>
