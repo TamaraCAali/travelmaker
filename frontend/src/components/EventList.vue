@@ -1,8 +1,7 @@
 <template>
   <div class="event-list">
-    <p>event list</p>
-    <!-- <EventPreview v-for="event in events" :key="event._id" :event="event"></EventPreview> -->
-    <EventPreview></EventPreview>
+    <!-- <EventPreview v-for="event in events" :key="event._id" :event="event" v-on:selected="openSelectedEvent"></EventPreview> -->
+    <EventPreview v-on:selected="openSelectedEvent"></EventPreview>
    
   </div>
 </template>
@@ -17,6 +16,11 @@ export default {
   },
   props: {
     events: Array
+  },
+  methods: {
+    openSelectedEvent(event) {
+      this.$emit('selected', event);
+    }
   }
 };
 </script>

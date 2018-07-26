@@ -2,7 +2,6 @@ import eventService from '@/services/eventService';
 export const LOAD_EVENTS = 'event/load';
 export const LOAD_EVENT = 'event/loadById';
 export const REMOVE_EVENT = 'event/remove';
-
 // export const REMOVE_USER = 'user/removeUser'
 
 // Getters
@@ -25,8 +24,6 @@ export default {
   },
   getters: {
     eventForDisplay(state) {
-      console.log('eventForDisplay');
-
       return state.events;
       // return state.events.filter(event =>
       //   event.name.toLowerCase().includes(state.filterBy.txt.toLowerCase())
@@ -35,7 +32,6 @@ export default {
   },
   actions: {
     [LOAD_EVENTS](context) {
-      console.log('LOAD_EVENTS actions');
       return eventService.query().then(events =>
         context.commit({
           type: LOAD_EVENTS,

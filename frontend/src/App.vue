@@ -37,7 +37,7 @@ nav {
 }
 
 .router-link:hover {
-  font-size: 2em;
+  font-size: 1.5em;
   color: #41b883;
 }
 .router-link:active {

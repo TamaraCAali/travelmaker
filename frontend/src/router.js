@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
+import EventDetails from './views/EventDetails.vue';
 import Event from './views/Event.vue';
 import Traveler from './views/Traveler.vue';
 
@@ -16,6 +17,11 @@ export default new Router({
       path: '/traveler',
       name: 'traveler',
       component: Traveler
+    },
+    {
+      path: '/event/:id',
+      name: 'event-details',
+      component: EventDetails
     }
   ]
 });
