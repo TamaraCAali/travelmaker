@@ -20,12 +20,12 @@ export default {
   computed: {},
   methods: {
     loadUsers() {
-      this.$store
-        .dispatch(LOAD_USERS)
-        .then()
-        .catch(err => {
-          console.log('err in load events');
-        });
+      // this.$store
+      //   .dispatch(LOAD_USERS)
+      //   .then()
+      //   .catch(err => {
+      //     console.log('err in load events');
+      //   });
     }
   }
 };
