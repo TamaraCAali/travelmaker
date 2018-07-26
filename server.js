@@ -1,9 +1,12 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-var cors = require('cors');
+const cors = require('cors');
+const app = express();
+var http = require('http').Server(app);
+const io = require('socket.io')(http);
+
 
 // const eventService = require('./routes/services/eventService')
-const app = express();
 app.use(bodyParser.json());
 app.use(express.static('frontend/dist'));
 app.use(
@@ -21,10 +24,17 @@ eventRoute(app);
 const userRoute = require('./routes/userRoute');
 userRoute(app);
 
-// const chatRoute = require('./routes/chatRoute')
-// chatRoute(app)
+const chatRoute = require('./routes/chatRoute')
+chatRoute(app)
 
 const port = process.env.PORT || 3000;
-app.listen(port, () => {
+http.listen(port, () => {
   console.log(`App listening on port ${port} !`);
 });
+
+const socketConnect = require('./routes/services/socketService')
+socketConnect(io)
+// io.on('connection', socket => {
+//   console.log('Someone connected!!!!!@!!!!!')
+//   socket.on('chatRequested', connected)
+// })
