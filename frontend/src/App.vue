@@ -3,7 +3,7 @@
     <nav>
       <div>
         <router-link class="router-link" to="/"><i class="fas fa-calendar-alt"></i> <span> events</span></router-link> |
-        <router-link class="router-link" to="/traveler"><i class="fas fa-user-friends"></i> <span> travelers</span></router-link>
+        <router-link class="router-link" to="/travelers"><i class="fas fa-user-friends"></i> <span> travelers</span></router-link>
       </div>
       <div>TRAVEL <i class="fas fa-search"></i> MAKER</div>
     </nav>
@@ -15,13 +15,13 @@
 </template>
 
 <script>
-import ChatWindow from '@/components/ChatWindow.vue'
+import ChatWindow from '@/components/ChatWindow.vue';
 
 export default {
-  components:{
+  components: {
     ChatWindow
   }
-}
+};
 </script>
 
 

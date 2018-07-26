@@ -1,12 +1,13 @@
 <template>
-  <section class="event-preview">
-      <div class="event" @click="openEventDetails">
-          <div class="event-img" :style="'background-image: url('+event.img+')'">
-            <p>{{event.name}}  {{date}} </p>
+  <section class="user-preview">
+      <div class="user" @click="openUserDetails">
+          <div class="user-img" :style="'background-image: url('+user.img+')'">
           </div>
-          <div class="event-pre-details">
-            <p>{{event.loc.title}}, {{dist}} away</p>
-            <p><i class="fas fa-user-friends"></i> {{event.attends.length}} people are attending</p>
+          <div class="user-pre-details">
+            <h4>{{user.name.first}}, <span> {{user.age}} </span><span class="dist"> {{dist}} away</span></h4>
+            <div class="langs">
+            <langs v-for="langs in user.about.langs" :key="langs" :langs="langs"></langs>
+            </div>
           </div>
       </div>
   </section>
@@ -14,40 +15,43 @@
 <script>
 import moment from 'moment';
 import locService from '@/services/locationService.js';
+import langs from '@/components/travelers/langs.vue';
 
 export default {
-  name: 'EventPreview',
+  name: 'UserPreview',
   props: {
-    event: Object
+    user: Object
+  },
+  components: {
+    langs
   },
   computed: {
-    date: function() {
-      return moment(this.event.date).format('MMM Do YY');
-    },
     dist: function() {
       const userLoc = this.$store.getters.getCurrLoc;
-      const dist = locService.getDistance(userLoc, this.event.loc).toFixed();
+      console.log('dist', userLoc, this.user.loc);
+
+      const dist = locService.getDistance(userLoc, this.user.loc).toFixed();
       if (dist < 1) return dist + ' m';
       else return dist + ' km';
       return dist;
     }
   },
   methods: {
-    openEventDetails() {
-      this.$emit('selected', this.event);
+    openUserDetails() {
+      this.$emit('selected', this.user);
     }
   }
 };
 </script>
 
 <style scoped lang="scss">
-.event-preview {
+.user-preview {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
   width: 250px;
 }
-.event {
+.user {
   width: 100%;
   background-color: beige;
   box-shadow: 0 0 5px #00000063;
@@ -55,7 +59,7 @@ export default {
   transition: all 0.3s;
   cursor: pointer;
 }
-.event-img {
+.user-img {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -70,34 +74,41 @@ export default {
   opacity: 0.8;
   background-position: center;
 }
-.event-img:hover {
+.user-img:hover {
   opacity: 1;
   transition: 1s ease;
 }
-.event-pre-details {
+
+.user-pre-details {
   padding: 5px 10px;
+  margin: 5px 0;
 }
-.event p {
-  margin: 0;
-}
-.event-img p {
+
+.user-img p {
   color: whitesmoke;
+}
+h4 {
+  padding: 2px;
+  margin: 2px;
+}
+.dist {
+  float: right;
 }
 
 @media only screen and (max-width: 920px) {
-  .event-preview {
+  .user-preview {
     width: 32%;
   }
 }
 
 @media only screen and (max-width: 760px) {
-  .event-preview {
+  .user-preview {
     width: 45%;
   }
 }
 
 @media only screen and (max-width: 500px) {
-  .event-preview {
+  .user-preview {
     width: 96%;
   }
 }
