@@ -1,9 +1,7 @@
 <template>
   <div class="event">
     <LocationInput></LocationInput>
-    <EventList  :events="events" v-on:selected="openSelectedEvent"></EventList>
-
-    events: {{events}}
+    <EventList :events="events" v-on:selected="openSelectedEvent"></EventList>
   </div>
 </template>
 

@@ -1,8 +1,6 @@
 <template>
   <div class="event-list">
-    <!-- <EventPreview v-for="event in events" :key="event._id" :event="event" v-on:selected="openSelectedEvent"></EventPreview> -->
-    <EventPreview v-on:selected="openSelectedEvent"></EventPreview>
-   
+    <EventPreview v-for="event in events" :key="event._id" :event="event" v-on:selected="openSelectedEvent"></EventPreview>
   </div>
 </template>
 
@@ -26,4 +24,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.event-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+}
 </style>

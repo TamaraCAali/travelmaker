@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import geocodingService from '../services/geocodingService';
+import locService from '../services/locationService';
 
 export default {
   name: 'home',
@@ -79,7 +79,7 @@ export default {
   computed: {
     eventAddress() {
       // console.log('sent loc:', this.event.loc)
-      geocodingService.getAddressFromLoc(this.event.loc).then(address => {
+      locService.getAddressFromLoc(this.event.loc).then(address => {
         // console.log('address:', address);
         return address;
       });

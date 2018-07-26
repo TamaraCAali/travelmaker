@@ -1,5 +1,6 @@
-import axios from 'axios'
-axios.defaults.withCredentials = true
+import axios from 'axios';
+axios.defaults.withCredentials = true;
+
 import './assets/scss/main.scss';
 import Vue from 'vue';
 import App from './App.vue';
