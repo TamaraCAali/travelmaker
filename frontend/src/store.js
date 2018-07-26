@@ -69,7 +69,7 @@ export default new Vuex.Store({
   },
   getters: {
     getCurrLoc(state) {
-      return state.user.currLoc;
+      return state.user.loc;
     },
     getUser(state) {
       return state.user
