@@ -4,13 +4,13 @@
 
 @font-face {
   font-family: 'Maven Pro';
-  src: url('./fonts/MavenPro-Regular.ttf') format('eot');
+  src: url('./fonts/MavenPro-Regular.ttf') format('truetype');
 }
 
 html,
 body {
   margin: 0;
-  padding: 0;
+  padding: 5px;
   font-family: Maven Pro, cursive;
   color: #35495e;
   background-color: white;

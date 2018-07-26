@@ -2,7 +2,7 @@
   <div class="event-preview">
       <div class="event" @click="openEventDetails">
           <div class="event-img">
-              <p>**Chasing waterfalls!** 4.8</p>
+            <p>**Chasing waterfalls!** 4.8</p>
           </div>
           <div class="event-pre-details">
             <p>At: Hazuri stream, 800m away</p>
