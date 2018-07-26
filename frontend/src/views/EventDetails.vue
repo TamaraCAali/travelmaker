@@ -1,6 +1,6 @@
 <template>
   <div class="event-details">
-    <img :src="event.imgUrl"/>
+    <img class="img-container" :src="event.imgUrl"/>
     <h2>{{event.name}}</h2>
     At: {{eventAddress}}
     <div class="attends-container">
@@ -48,7 +48,7 @@ export default {
         desc:
           'Let’s take this beutiful friday noon to explore the magics of Hazuri stream',
         imgUrl:
-          'http://www.nelech.co.il/Info/Images/4_5fca1ab7-0371-4fe9-aedf-92816adf201c.jpg',
+          'https://i.ytimg.com/vi/xC5n8f0fTeE/maxresdefault.jpg',
         attends: [],
         comments: [],
         lvl: 0
@@ -78,9 +78,9 @@ export default {
   },
   computed: {
     eventAddress() {
-      // console.log('sent loc:', this.event.loc)
+      console.log('sent loc:', this.event.loc)
       geocodingService.getAddressFromLoc(this.event.loc).then(address => {
-        // console.log('address:', address);
+        console.log('address:', address);
         return address;
       });
     },
@@ -129,6 +129,12 @@ export default {
   margin: 10px;
   padding: 10px;
   transition: all 0.3s;
+}
+
+.img-container {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
 }
 
 .map {
