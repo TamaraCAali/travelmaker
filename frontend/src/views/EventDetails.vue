@@ -64,7 +64,7 @@ export default {
       console.log('sharing the event');
     },
     initMap() {
-      var map = new google.maps.Map(this.$refs.map, {zoom: 4, center: this.event.loc});
+      var map = new google.maps.Map(this.$refs.map, {zoom: 7, center: this.event.loc});
       var marker = new google.maps.Marker({position: this.event.loc, map: map});
 }
   },
@@ -124,6 +124,6 @@ export default {
 
 .map {
   width: 100%;
-  height: 400px;
+  height: 250px;
 }
 </style>
