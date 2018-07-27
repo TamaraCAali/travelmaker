@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
+import Login from './views/Login.vue';
 import EventDetails from './views/EventDetails.vue';
 import EventEditAdd from './views/EventEditAdd.vue';
 import Event from './views/Event.vue';
@@ -10,6 +11,11 @@ Vue.use(Router);
 
 export default new Router({
   routes: [
+    {
+      path: '/login',
+      name: 'login',
+      component: Login
+    },
     {
       path: '/',
       name: 'event',

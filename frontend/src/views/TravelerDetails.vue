@@ -5,16 +5,17 @@
             <img class="user-img" :src=" `${user.img}`" alt="">
           </div>
           <div class="user-pre-details">
-            <h4>{{user.name.first}} {{user.name.last}}, <span>age: {{user.age}}</span><span class="chat-icon"> <i class="far fa-comments"></i></span></h4>
-            <div><span class="about">About me </span> {{user.about.desc}}</div>
-            <div><span class="about">Interests </span> <span v-for="interest in user.about.interests" :key="interest"> {{interest}}, </span></div>
-            <div><span class="about">Going to the next events </span> </div>
+            <div class="name"><span class="bold">{{user.name.first}} {{user.name.last}}, age: {{user.age}}</span><span class="chat-icon" @click="openChat"> <i class="far fa-comments"></i></span></div>
+            <div><span class="bold">About me </span> {{user.about.desc}}</div>
+            <div><span class="bold">Interests </span> <span v-for="interest in user.about.interests" :key="interest"> {{interest}}, </span></div>
+             <div class="langs">
+              <langs v-for="langs in user.about.langs" :key="langs" :langs="langs"></langs>
+            </div>
+            <div><span class="bold">Going to the next events </span> </div>
             <div class="user-events">
               <EventPreview v-for="event in userEvents" :key="event._id" :event="event" v-on:selected="openSelectedEvent(event)"></EventPreview>
             </div>
-            <div class="langs">
-              <langs v-for="langs in user.about.langs" :key="langs" :langs="langs"></langs>
-            </div>
+           
           </div>
       </div>
   </div>
@@ -49,6 +50,11 @@ export default {
   methods: {
     openSelectedEvent(event) {
       this.$router.push(`/event/${event._id}`);
+    },
+    openChat() {
+      console.log(this.user);
+
+      // this.$router.push(`/chat/${this.user}`);
     }
   },
   watch: {
@@ -87,14 +93,25 @@ export default {
 .user-pre-details div {
   margin: 10px 0;
 }
+.name {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
 .chat-icon {
   float: right;
+  cursor: pointer;
 }
 .fa-comments:before {
   content: '\f086';
   font-size: 2em;
 }
-.about {
+.bold {
   font-weight: bold;
+}
+.user-events {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
 }
 </style>

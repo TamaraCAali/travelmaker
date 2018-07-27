@@ -2,7 +2,7 @@
   <section class="event-preview">
       <div class="event" @click="openEventDetails">
           <div class="event-img" :style="'background-image: url('+event.img+')'">
-            <p>{{event.name}}  {{date}} </p>
+            <p>{{event.name}} <span class="date">{{date}}</span> </p>
           </div>
           <div class="event-pre-details">
             <p>{{event.loc.title}}, {{dist}} away</p>
@@ -60,9 +60,6 @@ export default {
   flex-direction: column;
   justify-content: flex-end;
   height: 150px;
-  // background-image: url('../assets/img/maxresdefault.jpg');
-  background: linear-gradient(rgba(0, 0, 0, 0.21), rgba(0, 0, 0, 0.35)),
-    url(/img/maxresdefault.28e174ef.jpg);
   background-repeat: no-repeat;
   background-size: cover;
   padding: 10px;
@@ -81,7 +78,14 @@ export default {
   margin: 0;
 }
 .event-img p {
+  box-shadow: 0 0 5px whitesmoke;
   color: whitesmoke;
+  padding: 3px;
+  font-weight: bold;
+  background-color: #607d8b5e;
+}
+.date {
+  float: right;
 }
 
 @media only screen and (max-width: 920px) {
