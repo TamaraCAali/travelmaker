@@ -459,7 +459,7 @@ emoji.funny {
   background-image: url(https://i.imgur.com/qKia58V.png);
 }
 
-@-webikt-keyframes pulse {
+-webikt-keyframes pulse {
   from {
     opacity: 0;
   }
