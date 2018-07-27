@@ -15,7 +15,7 @@
             </li>
         </ul>
         <form action="">
-          <input type="text" v-model="newMsg"/>
+          <input type="text" v-model="newMsgTxt"/>
           <button @click.prevent="addNewMsg">Send</button>
         </form>
     </section>
@@ -31,41 +31,65 @@ export default {
     return {
       chat: {
         _id: 'chat-room-mongo_id',
-        room: 'activeUser_id + desireduser_id',
-        usernames: ['Moshe', 'Omer'],
+        room: '5b58aa7616f42101ded3362c5b58aa7616f42101ded3362d',
+        usernames: ['Beatrice', 'Short'],
         msgs: [
-          { creator: 1, msg: 'Lochets', at: 1532595342052 },
-          { creator: 0, msg: 'Whattt', at: 1532595423061 },
-          { creator: 1, msg: 'Yes', at: 1532595787693 }
+          {
+            creator: 1,
+            txt: 'Lochets',
+            at: 1532595342052,
+            room: '5b58aa7616f42101ded3362c5b58aa7616f42101ded3362d'
+          },
+          {
+            creator: 0,
+            txt: 'Whattt',
+            at: 1532595423061,
+            room: '5b58aa7616f42101ded3362c5b58aa7616f42101ded3362d'
+          },
+          {
+            creator: 1,
+            txt: 'Yes',
+            at: 1532595787693,
+            room: '5b58aa7616f42101ded3362c5b58aa7616f42101ded3362d'
+          }
         ]
       },
-      newMsg : '',
-      currUserId:''
+      newMsgTxt: '',
+      currUserId: ''
     };
   },
   computed: {},
   created() {
     console.log(Date.now());
 
-    this.loadChat()
+    this.loadChat();
   },
   methods: {
     loadChat(room = '5b58aa7616f42101ded3362c5b58aa7616f42101ded3362d') {
-     return chatService.getByRoom(room)
-             .then(chat => this.chat = chat)
+      chatService.getByRoom(room).then(chat => (this.chat = chat));
     },
-    addNewMsg(){
-      console.log('this.newMsg',this.newMsg)
-      // this.$socket.emit('updateMsg', )
+    saveToDB(){
+      // TODO: save chat to chat collection at DB
+    },
+    addNewMsg() {
+      console.log('this.newMsg', this.newMsgTxt);
+      this.$socket.emit('assignMsg', {
+        txt: this.newMsgTxt,
+        at: Date.now(),
+        room: this.chat.room,
+        author: 'Moshe',
+        creator: 0
+      });
     }
   },
   sockets: {
-    dodo(data) {
-      console.log('data', data);
+    renderMsg(msg) {
+      console.log('msg from socket', msg);
+      this.chat.msgs.push(msg);
+      this.saveToDB()
     }
   },
-  components: {
-  }
+  components: {}
 };
 </script>
     
