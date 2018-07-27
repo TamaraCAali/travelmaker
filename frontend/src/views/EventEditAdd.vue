@@ -62,7 +62,7 @@ export default {
       imageUrl: '',
       event: {
         attends: [],
-        loc: {lat: 33, lng: 35}
+        loc: { lat: 33, lng: 35 }
       },
       user: null,
       eventAddress: '',
@@ -72,42 +72,40 @@ export default {
   created() {
     let idFromParams = this.$route.params.eventId;
     // console.log('event id sent:', idFromParams);
-    eventService.getById(idFromParams)
-    .then(res => {
+    eventService.getById(idFromParams).then(res => {
       console.log('got event:', res);
       return (this.event = JSON.parse(JSON.stringify(res)));
     });
     this.user = this.$store.getters.getUser;
     console.log('user:', this.user);
-    
   },
   mounted() {
     this.initMap();
   },
   methods: {
     mouseOnImg() {
-      this.showUploadIcon = true
+      this.showUploadIcon = true;
     },
     mouseOffImg() {
-      console.log('mouse off');
-      
-      this.showUploadIcon = false
+      this.showUploadIcon = false;
     },
     toggleEventAttendence() {
       if (this.userIsAttending) {
-        console.log('leaving')       
-        let userIdx = this.event.attends.findIndex(id => id === this.user._id)
-        this.event.attends.splice(userIdx, 1)
-        eventService.update(this.event)
-        let eventIdx = this.user.activity.events.findIndex(id => id === this.event._id)
-        this.user.activity.events.splice(eventIdx, 1)
-        userService.update(this.user)
+        console.log('leaving');
+        let userIdx = this.event.attends.findIndex(id => id === this.user._id);
+        this.event.attends.splice(userIdx, 1);
+        eventService.update(this.event);
+        let eventIdx = this.user.activity.events.findIndex(
+          id => id === this.event._id
+        );
+        this.user.activity.events.splice(eventIdx, 1);
+        userService.update(this.user);
       } else {
         console.log('attending');
-        this.event.attends.push(this.user._id)
-        eventService.update(this.event)
-        this.user.activity.events.push(this.event._id)
-        userService.update(this.user)
+        this.event.attends.push(this.user._id);
+        eventService.update(this.event);
+        this.user.activity.events.push(this.event._id);
+        userService.update(this.user);
       }
     },
     shareEvent() {
@@ -147,17 +145,17 @@ export default {
       }
       if (this.event.lvl === 1) {
         return 'Moderate walk';
-      } 
-      else if (this.event.lvl === 2) {
+      } else if (this.event.lvl === 2) {
         return 'Demanding walk';
       }
     },
     userIsAttending() {
-      if (this.user && this.user._id) return this.event.attends.includes(this.user._id)
-      else return false
+      if (this.user && this.user._id)
+        return this.event.attends.includes(this.user._id);
+      else return false;
     },
     userIsAdmin() {
-      return true
+      return true;
       // return this.event.creatorId === this.user._id
     }
     // event() {
@@ -166,7 +164,7 @@ export default {
   },
   watch: {
     event() {
-      this.initMap()
+      this.initMap();
       // console.log('is user attending?', this.userIsAttending);
     }
   },
@@ -196,20 +194,20 @@ export default {
 </script>
 
 <style>
-  .people-icon {
-    width: 14px;
-  }
+.people-icon {
+  width: 14px;
+}
 
-  .event-details {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: beige;
-    box-shadow: 0 0 5px #00000063;
-    margin: 10px;
-    padding: 10px;
-    transition: all 0.3s;
-  }
+.event-details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: beige;
+  box-shadow: 0 0 5px #00000063;
+  margin: 10px;
+  padding: 10px;
+  transition: all 0.3s;
+}
 
   .img-container {
     position: relative;
@@ -268,10 +266,10 @@ export default {
     display: flex;
   }
 
-  .edit-btn {
-    margin: auto 1em;
-    cursor: pointer;
-  }
+.edit-btn {
+  margin: auto 1em;
+  cursor: pointer;
+}
 
   .vdatetime input {
     background-color: #fff;
@@ -300,9 +298,9 @@ export default {
     width: 90%
   }
 
-  .map {
-    width: 100%;
-    height: 250px;
-    margin: 10px;
-  }
+.map {
+  width: 100%;
+  height: 250px;
+  margin: 10px;
+}
 </style>

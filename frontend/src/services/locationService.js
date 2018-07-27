@@ -33,7 +33,10 @@ function getPosition() {
 
 function getPositionByName(cityName) {
   var prm = axios.get(
-    `https://maps.googleapis.com/maps/api/geocode/json?address=${cityName}&key=AIzaSyArwZLwu8qpwO8J1vkedj-qYnK7mdLmhYE`
+    `https://maps.googleapis.com/maps/api/geocode/json?address=${cityName}&key=AIzaSyArwZLwu8qpwO8J1vkedj-qYnK7mdLmhYE`,
+    {
+      withCredentials: false
+    }
   );
   return prm.then(res => {
     var loc = res.data.results[0].geometry.location;

@@ -4,9 +4,10 @@
           <div class="user-img" :style="'background-image: url('+user.img+')'">
           </div>
           <div class="user-pre-details">
-            <h4>{{user.name.first}}, <span> {{user.age}} </span><span class="dist"> {{dist}} away</span></h4>
+            <div class="bold">{{user.name.first}},  {{user.age}} <span class="dist"> {{dist}} away</span></div>
             <div class="langs">
             <langs v-for="langs in user.about.langs" :key="langs" :langs="langs"></langs>
+            <span class="chat-icon" @click.stop="openChat"> <i class="far fa-comments"></i></span>
             </div>
           </div>
       </div>
@@ -39,6 +40,11 @@ export default {
   methods: {
     openUserDetails() {
       this.$emit('selected', this.user);
+    },
+    openChat() {
+      console.log(this.user);
+
+      // this.$router.push(`/chat/${this.user}`);
     }
   }
 };
@@ -93,6 +99,17 @@ h4 {
 }
 .dist {
   float: right;
+}
+.chat-icon {
+  text-align: center;
+  cursor: pointer;
+  float: right;
+}
+.fa-comments:before {
+  font-size: 2em;
+}
+.bold {
+  font-weight: bold;
 }
 
 @media only screen and (max-width: 920px) {
