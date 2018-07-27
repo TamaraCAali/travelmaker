@@ -4,45 +4,37 @@
       Loading Event...
     </div>
     <template v-else>
-      <img class="event-img" :src="event.img" @mouseover="mouseOnImg" @mouseleave="mouseOffImg"/>
-      <div v-if="showUploadIcon" class="upload-img-hover">
-        <i class=" fas fa-upload fa-5x"></i>
+      <div class="img-container" @mouseover="mouseOnImg" @mouseleave.self="mouseOffImg">
+        <img class="event-img" :src="event.img"/>
+        <div v-if="showUploadIcon" class="upload-img-hover">
+          <el-upload
+            class="event-img-uploader"
+            action="https://jsonplaceholder.typicode.com/posts/"
+            :on-success="handleAvatarSuccess"
+            :before-upload="beforeAvatarUpload">
+            <img v-if="imageUrl" :src="imageUrl" class="avatar">
+            <i v-else class="el-icon-upload2 avatar-uploader-icon"></i>
+          </el-upload>
+        </div>
       </div>
       <div class="event-header">
-        <i v-if="userIsAdmin"
-           @click="goEditEvent" 
-           class="edit-btn far fa-edit fa-2x"></i>
-        <h2>{{event.name}}</h2>
-        <p class="event-time">
-          {{event.date | formatDate}} <br/>
-          {{event.date | formatHour}}
-        </p>
+        <h2>
+          <el-input placeholder="Please input" v-model="event.name"></el-input>
+        </h2>
+        <h2 class="event-time">
+          <datetime type="datetime" v-model="event.date"></datetime>
+        </h2>
       </div>
       <div class="details-container">
         At: {{event.loc.title}}
-        <div class="attends-container">
-          <img class="people-icon" src="../img/people-icon.png"/>
-          {{event.attends.length}} people attending
-        </div>
       </div>
-      <div class="btns-container">
-        <div @click="toggleEventAttendence()">
-          <template v-if="!userIsAttending">
-            <i class="far fa-check-circle fa-2x"></i><br/>
-            Join
-          </template>
-          <template v-else>
-            <i class="far fa-times-circle fa-2x"></i><br/>
-            Leave
-          </template>
-        </div>
-        <div @click="shareEvent()">
-          <i class="fas fa-share-alt fa-2x"></i><br/>
-          Share 
-        </div>
-      </div>
-      <p>
-      {{event.desc}}
+      <p class="event-description">
+        <el-input
+          type="textarea"
+          autosize
+          placeholder="Enter event description"
+          v-model="event.desc">
+        </el-input>
       </p>
       <div class="est-time-container">
         <i class="fas fa-walking"></i>
@@ -53,12 +45,6 @@
         Takes About: {{ event.estTime | stringifyEstTime }}
       </div>
       <div v-if="event" class="map" ref="map"></div>
-      <h3>Comments:</h3>
-      <ul>
-        <li v-for="comment in event.comments">
-          
-        </li>
-      </ul>
     </template>
   </div>
 </template>
@@ -73,9 +59,10 @@ export default {
   name: 'home',
   data() {
     return {
+      imageUrl: '',
       event: {
         attends: [],
-        loc: {lat: 33, lng: 35}
+        loc: { lat: 33, lng: 35 }
       },
       user: null,
       eventAddress: '',
@@ -85,40 +72,40 @@ export default {
   created() {
     let idFromParams = this.$route.params.eventId;
     // console.log('event id sent:', idFromParams);
-    eventService.getById(idFromParams)
-    .then(res => {
+    eventService.getById(idFromParams).then(res => {
       console.log('got event:', res);
       return (this.event = JSON.parse(JSON.stringify(res)));
     });
     this.user = this.$store.getters.getUser;
     console.log('user:', this.user);
-    
   },
   mounted() {
     this.initMap();
   },
   methods: {
     mouseOnImg() {
-      this.showUploadIcon = true
+      this.showUploadIcon = true;
     },
     mouseOffImg() {
-      this.showUploadIcon = false
+      this.showUploadIcon = false;
     },
     toggleEventAttendence() {
       if (this.userIsAttending) {
-        console.log('leaving')       
-        let userIdx = this.event.attends.findIndex(id => id === this.user._id)
-        this.event.attends.splice(userIdx, 1)
-        eventService.update(this.event)
-        let eventIdx = this.user.activity.events.findIndex(id => id === this.event._id)
-        this.user.activity.events.splice(eventIdx, 1)
-        userService.update(this.user)
+        console.log('leaving');
+        let userIdx = this.event.attends.findIndex(id => id === this.user._id);
+        this.event.attends.splice(userIdx, 1);
+        eventService.update(this.event);
+        let eventIdx = this.user.activity.events.findIndex(
+          id => id === this.event._id
+        );
+        this.user.activity.events.splice(eventIdx, 1);
+        userService.update(this.user);
       } else {
         console.log('attending');
-        this.event.attends.push(this.user._id)
-        eventService.update(this.event)
-        this.user.activity.events.push(this.event._id)
-        userService.update(this.user)
+        this.event.attends.push(this.user._id);
+        eventService.update(this.event);
+        this.user.activity.events.push(this.event._id);
+        userService.update(this.user);
       }
     },
     shareEvent() {
@@ -135,8 +122,20 @@ export default {
         map: map
       });
     },
-    goEditEvent() {
-      this.$router.push(`edit/${this.event._id}`);
+    handleAvatarSuccess(res, file) {
+        this.imageUrl = URL.createObjectURL(file.raw);
+      },
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === 'image/jpeg';
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isJPG) {
+        this.$message.error('Avatar picture must be JPG format!');
+      }
+      if (!isLt2M) {
+        this.$message.error('Avatar picture size can not exceed 2MB!');
+      }
+      return isJPG && isLt2M;
     }
   },
   computed: {
@@ -146,17 +145,17 @@ export default {
       }
       if (this.event.lvl === 1) {
         return 'Moderate walk';
-      } 
-      else if (this.event.lvl === 2) {
+      } else if (this.event.lvl === 2) {
         return 'Demanding walk';
       }
     },
     userIsAttending() {
-      if (this.user && this.user._id) return this.event.attends.includes(this.user._id)
-      else return false
+      if (this.user && this.user._id)
+        return this.event.attends.includes(this.user._id);
+      else return false;
     },
     userIsAdmin() {
-      return true
+      return true;
       // return this.event.creatorId === this.user._id
     }
     // event() {
@@ -165,7 +164,7 @@ export default {
   },
   watch: {
     event() {
-      this.initMap()
+      this.initMap();
       // console.log('is user attending?', this.userIsAttending);
     }
   },
@@ -195,19 +194,23 @@ export default {
 </script>
 
 <style>
-  .people-icon {
-    width: 14px;
-  }
+.people-icon {
+  width: 14px;
+}
 
-  .event-details {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: beige;
-    box-shadow: 0 0 5px #00000063;
-    margin: 10px;
-    padding: 10px;
-    transition: all 0.3s;
+.event-details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: beige;
+  box-shadow: 0 0 5px #00000063;
+  margin: 10px;
+  padding: 10px;
+  transition: all 0.3s;
+}
+
+  .img-container {
+    position: relative;
   }
 
   .event-img {
@@ -217,51 +220,87 @@ export default {
   }
 
   .upload-img-hover {
+    cursor: pointer;
     position: absolute;
-    bottom: 359px;;
+    bottom: 3px;
     width: 100%;
     height: 250px;
     text-align: center;
     vertical-align: middle;
     line-height: 250px;   
-    background-color: white;
-    opacity: 0.5;
+    background-color: rgba(255, 255, 255, 0.3);
+    opacity: 0.8;
   }
 
+  .event-img-uploader {
+    width: 100%;
+  }
+
+  .event-img-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    width: 100%;
+    height: 250px;
+    overflow: hidden;
+  }
+  .event-img-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 3em;
+    color:  rgba(0, 0, 0, 0.8);
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+  }
   .event-header {
     margin: 0 auto;
     display: flex;
   }
 
-  .edit-btn {
-    margin: auto 1em;
-    cursor: pointer;
-  }
+.edit-btn {
+  margin: auto 1em;
+  cursor: pointer;
+}
 
+  .vdatetime input {
+    background-color: #fff;
+    border-radius: 4px;
+    border: 1px solid #dcdfe6;
+    color: #606266;
+    display: inline-block;
+    font-size: inherit;
+    height: 40px;
+    line-height: 40px;
+    outline: 0;
+    padding: 0 15px;
+    width: 100%;
+  }
   .event-time {
-    width: 4em;
-    text-align: center;
+    /* width: 4em;
+    text-align: center; */
   }
 
   .details-container {
     align-self: flex-start;
     padding: 0 10px;
   }
-  .btns-container {
-    display: flex;
-    align-items: center;
-    margin: 0 1em;
+
+  .event-description {
+    width: 90%
   }
 
-  .btns-container div {
-    margin: 10px;
-    text-align: center;
-    cursor: pointer;
-  }
-
-  .map {
-    width: 100%;
-    height: 250px;
-    margin: 10px;
-  }
+.map {
+  width: 100%;
+  height: 250px;
+  margin: 10px;
+}
 </style>

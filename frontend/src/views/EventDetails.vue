@@ -18,7 +18,7 @@
       <div class="details-container">
         At: {{event.loc.title}}
         <div class="attends-container">
-          <img class="people-icon" src="../img/people-icon.png"/>
+          <i class="fas fa-user-friends"></i>
           {{event.attends.length}} people attending
         </div>
       </div>
@@ -72,7 +72,7 @@ export default {
     return {
       event: {
         attends: [],
-        loc: {lat: 33, lng: 35}
+        loc: { lat: 33, lng: 35 }
       },
       user: null,
       eventAddress: ''
@@ -81,14 +81,12 @@ export default {
   created() {
     let idFromParams = this.$route.params.eventId;
     // console.log('event id sent:', idFromParams);
-    eventService.getById(idFromParams)
-    .then(res => {
+    eventService.getById(idFromParams).then(res => {
       console.log('got event:', res);
       return (this.event = JSON.parse(JSON.stringify(res)));
     });
     this.user = this.$store.getters.getUser;
     console.log('user:', this.user);
-    
   },
   mounted() {
     this.initMap();
@@ -96,19 +94,21 @@ export default {
   methods: {
     toggleEventAttendence() {
       if (this.userIsAttending) {
-        console.log('leaving')       
-        let userIdx = this.event.attends.findIndex(id => id === this.user._id)
-        this.event.attends.splice(userIdx, 1)
-        eventService.update(this.event)
-        let eventIdx = this.user.activity.events.findIndex(id => id === this.event._id)
-        this.user.activity.events.splice(eventIdx, 1)
-        userService.update(this.user)
+        console.log('leaving');
+        let userIdx = this.event.attends.findIndex(id => id === this.user._id);
+        this.event.attends.splice(userIdx, 1);
+        eventService.update(this.event);
+        let eventIdx = this.user.activity.events.findIndex(
+          id => id === this.event._id
+        );
+        this.user.activity.events.splice(eventIdx, 1);
+        userService.update(this.user);
       } else {
         console.log('attending');
-        this.event.attends.push(this.user._id)
-        eventService.update(this.event)
-        this.user.activity.events.push(this.event._id)
-        userService.update(this.user)
+        this.event.attends.push(this.user._id);
+        eventService.update(this.event);
+        this.user.activity.events.push(this.event._id);
+        userService.update(this.user);
       }
     },
     shareEvent() {
@@ -136,17 +136,17 @@ export default {
       }
       if (this.event.lvl === 1) {
         return 'Moderate walk';
-      } 
-      else if (this.event.lvl === 2) {
+      } else if (this.event.lvl === 2) {
         return 'Demanding walk';
       }
     },
     userIsAttending() {
-      if (this.user && this.user._id) return this.event.attends.includes(this.user._id)
-      else return false
+      if (this.user && this.user._id)
+        return this.event.attends.includes(this.user._id);
+      else return false;
     },
     userIsAdmin() {
-      return true
+      return true;
       // return this.event.creatorId === this.user._id
     }
     // event() {
@@ -155,7 +155,7 @@ export default {
   },
   watch: {
     event() {
-      this.initMap()
+      this.initMap();
       // console.log('is user attending?', this.userIsAttending);
     }
   },
@@ -185,61 +185,61 @@ export default {
 </script>
 
 <style>
-  .people-icon {
-    width: 14px;
-  }
+.people-icon {
+  width: 14px;
+}
 
-  .event-details {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: beige;
-    box-shadow: 0 0 5px #00000063;
-    margin: 10px;
-    padding: 10px;
-    transition: all 0.3s;
-  }
+.event-details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: beige;
+  box-shadow: 0 0 5px #00000063;
+  margin: 10px;
+  padding: 10px;
+  transition: all 0.3s;
+}
 
-  .event-img {
-    width: 100%;
-    height: 250px;
-    object-fit: cover;
-  }
+.event-img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+}
 
-  .event-header {
-    margin: 0 auto;
-    display: flex;
-  }
+.event-header {
+  margin: 0 auto;
+  display: flex;
+}
 
-  .edit-btn {
-    margin: auto 1em;
-    cursor: pointer;
-  }
+.edit-btn {
+  margin: auto 1em;
+  cursor: pointer;
+}
 
-  .event-time {
-    width: 4em;
-    text-align: center;
-  }
+.event-time {
+  width: 4em;
+  text-align: center;
+}
 
-  .details-container {
-    align-self: flex-start;
-    padding: 0 10px;
-  }
-  .btns-container {
-    display: flex;
-    align-items: center;
-    margin: 0 1em;
-  }
+.details-container {
+  align-self: flex-start;
+  padding: 0 10px;
+}
+.btns-container {
+  display: flex;
+  align-items: center;
+  margin: 0 1em;
+}
 
-  .btns-container div {
-    margin: 10px;
-    text-align: center;
-    cursor: pointer;
-  }
+.btns-container div {
+  margin: 10px;
+  text-align: center;
+  cursor: pointer;
+}
 
-  .map {
-    width: 100%;
-    height: 250px;
-    margin: 10px;
-  }
+.map {
+  width: 100%;
+  height: 250px;
+  margin: 10px;
+}
 </style>

@@ -33,7 +33,6 @@ module.exports = (app) => {
 
     app.put(CHAT_URL + '/:room', (req, res) => {
         const chat = req.body;
-        console.log('isnie put')
         chatService.update(chat)
             .then(chat => {
                 res.json(chat)

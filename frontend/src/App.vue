@@ -2,8 +2,9 @@
   <div id="app">
     <nav>
       <div>
-        <router-link class="router-link" to="/"><i class="fas fa-calendar-alt"></i> <span> events</span></router-link> |
-        <router-link class="router-link" to="/travelers"><i class="fas fa-user-friends"></i> <span> travelers</span></router-link>
+        <router-link class="router-link" to="/login"><i class="fas fa-sign-in-alt"></i> <span class="span-icon"> login</span></router-link> |
+        <router-link class="router-link" to="/"><i class="fas fa-calendar-alt"></i> <span class="span-icon"> events</span></router-link> |
+        <router-link class="router-link" to="/travelers"><i class="fas fa-user-friends"></i> <span class="span-icon"> travelers</span></router-link>
       </div>
       <div class="logo">
         <i class="fas fa-walking"></i>
@@ -14,7 +15,8 @@
     
     
     <router-view/>
-    <ChatWindow/>
+
+    <ChatWindow v-show="!!!!false"/>
   </div>
 </template>
 
@@ -30,7 +32,7 @@ export default {
 
 
 
-<style lang="scss">
+<style  lang="scss">
 nav {
   display: flex;
   justify-content: space-around;
@@ -91,7 +93,7 @@ nav {
 }
 
 @media only screen and (max-width: 420px) {
-  span {
+  .span-icon {
     display: none;
   }
 }
