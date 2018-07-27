@@ -34,7 +34,6 @@ module.exports = (app) => {
 
     app.put(USER_URL + '/:userId', (req, res) => {
         const user = req.body;
-        console.log('isnie put')
         userService.update(user)
             .then(user => {
                 res.json(user)
