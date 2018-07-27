@@ -1,6 +1,7 @@
 const USER_URL = '/data/user';
 const userService = require('./services/userService');
 
+
 module.exports = app => {
   app.get(USER_URL, (req, res) => {
     userService.query().then(users => res.json(users));
@@ -47,3 +48,4 @@ module.exports = app => {
       });
   });
 };
+
