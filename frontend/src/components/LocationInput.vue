@@ -10,6 +10,7 @@
 <script>
 import { LOAD_CURR_LOC } from '../store.js';
 import { SEARCHED_LOC } from '../store.js';
+import { UPDATE_USER } from '../store.js';
 
 import locService from '../services/locationService.js';
 
@@ -32,7 +33,11 @@ export default {
     loadLoc() {
       this.$store
         .dispatch(LOAD_CURR_LOC)
-        .then()
+        .then(res => {
+          var user = this.$store.getters.loggedinUser;
+          console.log('user', user);
+          this.$store.dispatch(UPDATE_USER, { user });
+        })
         .catch(err => {
           console.log('err in load loc');
         });

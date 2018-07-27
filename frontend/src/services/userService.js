@@ -1,3 +1,7 @@
+import StorageService from '@/services/StorageService.js';
+const STORAGE_KEY = 'loggedinUser';
+var loggedinUser = StorageService.loadFromStorage(STORAGE_KEY) || null;
+
 import axios from 'axios';
 
 const USER_URL =
@@ -10,7 +14,10 @@ export default {
   add,
   remove,
   update,
-  getById
+  getById,
+  login,
+  logout,
+  getLoggedInUser
 };
 
 function query() {
@@ -26,6 +33,7 @@ function remove(userId) {
 }
 
 function update(user) {
+  console.log('serve', user);
   return axios
     .put(`${USER_URL}/${user._id}`, user)
     .then(res => res.data)
@@ -37,6 +45,26 @@ function update(user) {
 
 function getById(userId) {
   return axios.get(`${USER_URL}/${userId}`).then(res => res.data);
+}
+
+function login(user) {
+  return axios.post(USER_URL + '/setUser', user).then(res => {
+    _setLoggedinUser(res.data);
+    return res.data;
+  });
+}
+
+function logout() {
+  StorageService.clearStorage(STORAGE_KEY);
+}
+
+function getLoggedInUser() {
+  return loggedinUser;
+}
+
+function _setLoggedinUser(user) {
+  loggedinUser = user;
+  StorageService.saveToStorage(STORAGE_KEY, loggedinUser);
 }
 
 // function getEmptyuser() {
