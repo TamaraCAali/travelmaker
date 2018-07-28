@@ -1,42 +1,68 @@
 <template>
-  <div class="traveler-details">
-          <div class="user" v-if="user">
-          <div >
+  <section class="traveler-details">
+    <div class="user-details" v-if="user" v-show="!isChatMode">
+        <div>
             <img class="user-img" :src=" `${user.img}`" alt="">
-          </div>
-          <div class="user-pre-details">
-            <div class="name"><span class="bold">{{user.name.first}} {{user.name.last}}, age: {{user.age}}</span><span class="chat-icon" @click="openChat"> <i class="far fa-comments"></i></span></div>
-            <div><span class="bold">About me </span> {{user.about.desc}}</div>
-            <div><span class="bold">Interests </span> <span v-for="interest in user.about.interests" :key="interest"> {{interest}}, </span></div>
-             <div class="langs">
-              <langs v-for="langs in user.about.langs" :key="langs" :langs="langs"></langs>
+        </div>
+        <div class="user-pre-details">
+            <div class="name">
+                <h2>{{user.name.first}} {{user.name.last}}, {{user.age}}
+                </h2>
+
+                <button class="chat-icon" @click="toggleChat">
+                    <i class="far fa-comments"></i>
+                </button>
             </div>
-            <div><span class="bold">Going to the next events </span> </div>
+            <div>
+                <strong>About me: </strong> 
+                <p>
+                  {{user.about.desc}}
+                </p>
+            </div>
+            <div>
+                <strong>Interests: </strong>
+                <span v-for="interest in user.about.interests" :key="interest"> {{interest}}, </span>
+            </div>
+            <div class="langs">
+                <langs v-for="langs in user.about.langs" :key="langs" :langs="langs"></langs>
+            </div>
+            <div>
+                <h3>Events I'm going to:</h3>
+            </div>
             <div class="user-events">
-              <EventPreview v-for="event in userEvents" :key="event._id" :event="event" v-on:selected="openSelectedEvent(event)"></EventPreview>
+                <EventPreview 
+                v-for="event in userEvents"
+                :key="event._id"
+                :event="event" 
+                v-on:selected="openSelectedEvent(event)"></EventPreview>
             </div>
-           
-          </div>
-      </div>
-  </div>
+
+        </div>
+    </div>
+    <ChatWindow :otherUser="user" v-if="isChatMode"/> 
+    <!-- Possible: Apply the chat room before the user click the button by v-show -->
+</section>
 </template>
 
 <script>
 import userService from '../services/userService';
 import eventService from '../services/eventService';
 import EventPreview from '@/components/EventPreview.vue';
+import ChatWindow from '@/components/ChatWindow.vue'
 import langs from '@/components/travelers/langs.vue';
 
 export default {
   name: 'TravelerDetails',
   components: {
     langs,
-    EventPreview
+    EventPreview,
+    ChatWindow
   },
   data() {
     return {
       user: null,
-      userEvents: null
+      userEvents: null,
+      isChatMode: false
     };
   },
   computed: {},
@@ -51,9 +77,9 @@ export default {
     openSelectedEvent(event) {
       this.$router.push(`/event/${event._id}`);
     },
-    openChat() {
+    toggleChat() {
       console.log(this.user);
-
+      this.isChatMode = true;
       // this.$router.push(`/chat/${this.user}`);
     }
   },
@@ -75,7 +101,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.traveler-details {
+h3 {
+  text-align: center;
+}
+
+.user-details {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -85,6 +115,7 @@ export default {
   padding: 10px;
   transition: all 0.3s;
 }
+
 .user-img {
   width: 100%;
   height: 250px;
@@ -96,10 +127,10 @@ export default {
 .name {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
+  // align-items: flex-end;
 }
 .chat-icon {
-  float: right;
+  // float: right;
   cursor: pointer;
 }
 .fa-comments:before {

@@ -27,9 +27,7 @@ module.exports = app => {
   });
 
   app.put(USER_URL + '/:userId', (req, res) => {
-    console.log('inside update back', req.body);
     const user = req.body;
-    console.log('isnie put');
     userService.update(user).then(user => {
       res.json(user);
     });
