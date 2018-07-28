@@ -16,7 +16,7 @@
     
     <router-view/>
 
-    <ChatWindow v-show="!!!!false"/>
+    <!-- <ChatWindow/> -->
   </div>
 </template>
 

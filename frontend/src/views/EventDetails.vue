@@ -53,6 +53,7 @@
       <h3>Comments:</h3>
       <ul>
         <li v-for="comment in event.comments">
+        <!-- TODO: add key -->
           
         </li>
       </ul>

@@ -22,8 +22,11 @@
           <el-input placeholder="Please input" v-model="event.name"></el-input>
         </h2>
         <h2 class="event-time">
-          <datetime type="datetime" v-model="event.date"></datetime>
+          <input type="date" v-model="event.date">
         </h2>
+        <!-- <h2 class="event-time">
+          <datetime type="datetime" v-model="event.date"></datetime>
+        </h2> -->
       </div>
       <div class="details-container">
         At: {{event.loc.title}}
@@ -71,14 +74,13 @@ export default {
   },
   created() {
     let idFromParams = this.$route.params.eventId;
-    // console.log('event id sent:', idFromParams);
     eventService.getById(idFromParams).then(res => {
       console.log('got event:', res);
+      res.date = moment(res.date).format()
       return (this.event = JSON.parse(JSON.stringify(res)));
     });
     this.user = this.$store.getters.getUser;
-    console.log('user:', this.user);
-  },
+},
   mounted() {
     this.initMap();
   },
@@ -209,94 +211,94 @@ export default {
   transition: all 0.3s;
 }
 
-  .img-container {
-    position: relative;
-  }
+.img-container {
+  position: relative;
+}
 
-  .event-img {
-    width: 100%;
-    height: 250px;
-    object-fit: cover;
-  }
+.event-img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+}
 
-  .upload-img-hover {
-    cursor: pointer;
-    position: absolute;
-    bottom: 3px;
-    width: 100%;
-    height: 250px;
-    text-align: center;
-    vertical-align: middle;
-    line-height: 250px;   
-    background-color: rgba(255, 255, 255, 0.3);
-    opacity: 0.8;
-  }
+.upload-img-hover {
+  cursor: pointer;
+  position: absolute;
+  bottom: 3px;
+  width: 100%;
+  height: 250px;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 250px;   
+  background-color: rgba(255, 255, 255, 0.3);
+  opacity: 0.8;
+}
 
-  .event-img-uploader {
-    width: 100%;
-  }
+.event-img-uploader {
+  width: 100%;
+}
 
-  .event-img-uploader .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    width: 100%;
-    height: 250px;
-    overflow: hidden;
-  }
-  .event-img-uploader .el-upload:hover {
-    border-color: #409EFF;
-  }
-  .avatar-uploader-icon {
-    font-size: 3em;
-    color:  rgba(0, 0, 0, 0.8);
-    width: 178px;
-    height: 178px;
-    line-height: 178px;
-    text-align: center;
-  }
-  .avatar {
-    width: 100%;
-    height: 250px;
-    object-fit: cover;
-  }
-  .event-header {
-    margin: 0 auto;
-    display: flex;
-  }
+.event-img-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  width: 100%;
+  height: 250px;
+  overflow: hidden;
+}
+.event-img-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+.avatar-uploader-icon {
+  font-size: 3em;
+  color:  rgba(0, 0, 0, 0.8);
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+}
+.event-header {
+  margin: 0 auto;
+  display: flex;
+}
 
 .edit-btn {
   margin: auto 1em;
   cursor: pointer;
 }
 
-  .vdatetime input {
-    background-color: #fff;
-    border-radius: 4px;
-    border: 1px solid #dcdfe6;
-    color: #606266;
-    display: inline-block;
-    font-size: inherit;
-    height: 40px;
-    line-height: 40px;
-    outline: 0;
-    padding: 0 15px;
-    width: 100%;
-  }
-  .event-time {
-    /* width: 4em;
-    text-align: center; */
-  }
+.vdatetime input {
+  background-color: #fff;
+  border-radius: 4px;
+  border: 1px solid #dcdfe6;
+  color: #606266;
+  display: inline-block;
+  font-size: inherit;
+  height: 40px;
+  line-height: 40px;
+  outline: 0;
+  padding: 0 15px;
+  width: 100%;
+}
+.event-time {
+  width: 4em;
+  text-align: center;
+}
 
-  .details-container {
-    align-self: flex-start;
-    padding: 0 10px;
-  }
+.details-container {
+  align-self: flex-start;
+  padding: 0 10px;
+}
 
-  .event-description {
-    width: 90%
-  }
+.event-description {
+  width: 90%
+}
 
 .map {
   width: 100%;
