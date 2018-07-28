@@ -21,15 +21,20 @@
         <h2>
           <el-input placeholder="Please input" v-model="event.name"></el-input>
         </h2>
-        <h2 class="event-time">
-          <input type="date" v-model="event.date">
-        </h2>
+        <p class="event-time">
+          <div>
+            Date: <input type="date" v-model="eventDate"></input>
+          </div>
+          <div>
+            Time: <input type="time" v-model="eventTime"></input>
+          </div>
+        </p>
         <!-- <h2 class="event-time">
           <datetime type="datetime" v-model="event.date"></datetime>
         </h2> -->
       </div>
-      <div class="details-container">
-        At: {{event.loc.title}}
+      <div class="event-loc">
+        At: <el-input v-model="eventAddress"></el-input>
       </div>
       <p class="event-description">
         <el-input
@@ -40,14 +45,31 @@
         </el-input>
       </p>
       <div class="est-time-container">
+        <i v-if="showLvlInput" class="el-icon-remove-outline" @click="toggleEventLvl"></i>
+        <i v-else class="el-icon-circle-plus-outline" @click="toggleEventLvl"></i>
         <i class="fas fa-walking"></i>
-        {{eventLvl}}
+        <select v-show="showLvlInput" id="lvl-select" v-model="event.level">
+          <option value="0">Easy</option>
+          <option value="1">Light walking</option>
+          <option value="2">Moderate trek</option>
+          <option value="3">Advanced trek</option>
+          <option value="4">Difficult trek</option>
+        </select>
       </div>
       <div class="difficulty-lvl-container">
-        <i class="far fa-clock"></i>  
-        Takes About: {{ event.estTime | stringifyEstTime }}
+        <i class="far fa-clock"></i> 
+        <p>
+          Takes About: 
+        </p> 
+        <input type="number" v-model="eventEstTime"></input> 
+        <select id="est-time-unit">
+          <option value="m">minutes</option>
+          <option value="h">hours</option>
+          <option value="d">days</option>
+        </select>
       </div>
       <div v-if="event" class="map" ref="map"></div>
+      <el-button @click="saveEvent">Save event</el-button>
     </template>
   </div>
 </template>
@@ -69,7 +91,10 @@ export default {
       },
       user: null,
       eventAddress: '',
-      showUploadIcon: false
+      showUploadIcon: false,
+      showLvlInput: true,
+      eventDate: '',
+      eventTime: '',
     };
   },
   created() {
@@ -80,7 +105,9 @@ export default {
       return (this.event = JSON.parse(JSON.stringify(res)));
     });
     this.user = this.$store.getters.getUser;
-},
+    console.log('this.showLvlInput:', this.showLvlInput);
+    
+  },
   mounted() {
     this.initMap();
   },
@@ -91,27 +118,8 @@ export default {
     mouseOffImg() {
       this.showUploadIcon = false;
     },
-    toggleEventAttendence() {
-      if (this.userIsAttending) {
-        console.log('leaving');
-        let userIdx = this.event.attends.findIndex(id => id === this.user._id);
-        this.event.attends.splice(userIdx, 1);
-        eventService.update(this.event);
-        let eventIdx = this.user.activity.events.findIndex(
-          id => id === this.event._id
-        );
-        this.user.activity.events.splice(eventIdx, 1);
-        userService.update(this.user);
-      } else {
-        console.log('attending');
-        this.event.attends.push(this.user._id);
-        eventService.update(this.event);
-        this.user.activity.events.push(this.event._id);
-        userService.update(this.user);
-      }
-    },
-    shareEvent() {
-      console.log('sharing the event');
+    toggleEventLvl() {
+      this.showLvlInput = !this.showLvlInput
     },
     initMap() {
       // if (!this.event || !this.event.loc) return
@@ -138,17 +146,51 @@ export default {
         this.$message.error('Avatar picture size can not exceed 2MB!');
       }
       return isJPG && isLt2M;
+    },
+    getLocByName() {
+      return locService.getPositionByName(this.eventAddress)
+        .then(res => {
+          this.eventAddress = res.address
+          this.event.loc = {
+            lat: res.lat,
+            lng: res.lng,
+            title: res.address
+          }
+          this.initMap();
+        })
+    },
+    saveEvent() {
+      this.getLocByName()
+      .then(() => {
+        this.event.date = moment(this.eventDate + ' ' + this.eventTime).format('X');
+        
+        //TODO: rest setup of saving event
+
+        // console.log('saving event:', this.event);
+      })
+      .catch(err => {
+        this.$message.error('Can\'t find the address entered');
+      })
+      
+      
     }
   },
   computed: {
     eventLvl() {
       if (this.event.lvl === 0) {
-        return 'Easy walk';
+        return 'Easy';
       }
       if (this.event.lvl === 1) {
-        return 'Moderate walk';
-      } else if (this.event.lvl === 2) {
-        return 'Demanding walk';
+        return 'Light walking';
+      }
+      if (this.event.lvl === 2) {
+        return 'Moderate trek';
+      }
+      if (this.event.lvl === 3) {
+        return 'Advanced trek';
+      }
+      if (this.event.lvl === 4) {
+        return 'Difficult trek';
       }
     },
     userIsAttending() {
@@ -159,14 +201,20 @@ export default {
     userIsAdmin() {
       return true;
       // return this.event.creatorId === this.user._id
+    },
+    eventEstTime() {
+      return this.event.estTime
     }
-    // event() {
-    //   this.initMap()
-    // }
   },
   watch: {
     event() {
+      console.log('event changed! (watch) :', this.event);
+      
       this.initMap();
+      if (!this.event.level) this.showLvlInput = false
+      this.eventDate = moment(this.event.date).format('YYYY-MM-DD')
+      this.eventTime = moment(this.event.date).format('HH:mm')
+      this.eventAddress = this.event.loc.title
       // console.log('is user attending?', this.userIsAttending);
     }
   },
@@ -264,8 +312,10 @@ export default {
   object-fit: cover;
 }
 .event-header {
+  padding: 1em;
   margin: 0 auto;
   display: flex;
+  flex-direction: column;
 }
 
 .edit-btn {
@@ -291,18 +341,36 @@ export default {
   text-align: center;
 }
 
-.details-container {
+.event-loc {
   align-self: flex-start;
+  display: flex;
+  align-items: center;
   padding: 0 10px;
+  width: 100%
+}
+
+.event-loc .el-input input {
+  width: 100%
 }
 
 .event-description {
-  width: 90%
+  width: 90%;
+  height: 5em;
 }
+
+.difficulty-lvl-container {
+  display: flex;
+  align-items: center;
+}
+
+.difficulty-lvl-container p:first-of-type {
+  width: 6em;
+}
+
 
 .map {
   width: 100%;
-  height: 250px;
+  height: 150px;
   margin: 10px;
 }
 </style>
