@@ -20,7 +20,7 @@
                 </div>
             </li>
 
-                            <!-- <examples> -->
+                            <!-- <examples>
                               
 
                                       <li class="other">
@@ -48,13 +48,13 @@
                                         </div>
                                       </li>
 
-                            <!-- </examples> -->
+                            </examples> -->
         </ol>
 
         
         <form action="">
           <input class="textarea" type="text" v-model="newMsgTxt" placeholder="Type here!"/><div class="emojis"></div>
-          <button @click.prevent="addNewMsg">Send</button>
+          <button @click.prevent="addNewMsg" v-show="false">Send</button>
         </form>
 
 
@@ -113,46 +113,64 @@ export default {
   },
   computed: {},
   created() {
-    console.log(Date.now());
     this.selfUser = this.$store.getters.loggedinUser;
-    // let room = this.selfUser._id + this.otherUser._id
-    this.loadChat();
+    this.chat.room =
+      this.selfUser._id > this.otherUser._id
+        ? this.selfUser._id + this.otherUser._id
+        : this.otherUser._id + this.selfUser._id;
+
+    this.$socket.emit('joinRoom', this.chat.room)
+    //TODO: check if prev. room exists.
+    // if not assign a new one from scratch
+  
+    this.loadChat(this.chat.room);
   },
   methods: {
-    loadChat(room = '5b58aa7616f42101ded3362a5b58aa7616f42101ded3362b') {
-      chatService.getByRoom(room).then(chat => (this.chat = chat));
+    loadChat(room = '5b58aa7616f42101ded3362b5b58aa7616f42101ded3362a') {
+      chatService.getByRoom(room).then(chat => {
+        if (chat) this.chat = chat;
+        else {
+          // TODO:(create new room)? and add it to the collection and save to DB
+          // this.chat = {...this.chat,
+          //   room: room,
+          // }
+        }
+      });
     },
     saveToDB() {
       // TODO: save chat to chat collection at DB
     },
     addNewMsg() {
-      console.log('this.newMsg', this.newMsgTxt);
-      this.$socket.emit('assignMsg', {
+      let objMsg = {
         txt: this.newMsgTxt,
-        at: Date.now(),
         room: this.chat.room,
-        author: 'Moshe',
-        creator: 0
-      });
+        creatorId: this.selfUser._id,
+        at: Date.now()
+      };
+      console.log('this.newMsg in client', objMsg);
+      // this.chat.msgs.push(objMsg);
+      // TODO: Make it work offline(!!?)
+      this.$socket.emit('assignMsg', objMsg);
     },
     backClicked() {
-      console.log('back clicked');
+      this.$parent.isChatMode = false;
+      this.$parent.userToChat = null;
+      // this.saveToDB()
     },
     getImgByCreatorId(userId) {
-      // console.log('userId', userId);
-      // console.log('self', this.selfUser);
-      // console.log('other', this.otherUser);
       return userId === this.selfUser._id
         ? this.selfUser.img
         : this.otherUser.img;
-      // return 'https://i.imgur.com/DY6gND0.png';
     }
   },
   sockets: {
+    connect() {
+      console.log('socket connected')
+    },
     renderMsg(msg) {
       console.log('msg from socket', msg);
       this.chat.msgs.push(msg);
-      this.saveToDB();
+      // this.saveToDB();
     }
   },
   components: {},
