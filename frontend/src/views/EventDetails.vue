@@ -9,7 +9,7 @@
         <i v-if="userIsAdmin"
            @click="goEditEvent" 
            class="edit-btn far fa-edit fa-2x"></i>
-        <h2>{{event.name}}</h2>
+        <h2 class="event-name">{{event.name}}</h2>
         <p class="event-time">
           {{event.date | formatDate}} <br/>
           {{event.date | formatHour}}
@@ -41,11 +41,11 @@
       <p>
       {{event.desc}}
       </p>
-      <div class="est-time-container">
+      <div class="difficulty-lvl-container">
         <i class="fas fa-walking"></i>
         {{eventLvl}}
       </div>
-      <div class="difficulty-lvl-container">
+      <div class="est-time-container">
         <i class="far fa-clock"></i>  
         Takes About: {{ event.estTime | stringifyEstTime }}
       </div>
@@ -83,11 +83,11 @@ export default {
     let idFromParams = this.$route.params.eventId;
     // console.log('event id sent:', idFromParams);
     eventService.getById(idFromParams).then(res => {
-      console.log('got event:', res);
+      // console.log('got event:', res);
       return (this.event = JSON.parse(JSON.stringify(res)));
     });
     this.user = this.$store.getters.getUser;
-    console.log('user:', this.user);
+    // console.log('user:', this.user);
   },
   mounted() {
     this.initMap();
@@ -95,7 +95,7 @@ export default {
   methods: {
     toggleEventAttendence() {
       if (this.userIsAttending) {
-        console.log('leaving');
+        // console.log('leaving');
         let userIdx = this.event.attends.findIndex(id => id === this.user._id);
         this.event.attends.splice(userIdx, 1);
         eventService.update(this.event);
@@ -105,7 +105,7 @@ export default {
         this.user.activity.events.splice(eventIdx, 1);
         userService.update(this.user);
       } else {
-        console.log('attending');
+        // console.log('attending');
         this.event.attends.push(this.user._id);
         eventService.update(this.event);
         this.user.activity.events.push(this.event._id);
@@ -133,12 +133,19 @@ export default {
   computed: {
     eventLvl() {
       if (this.event.lvl === 0) {
-        return 'Easy walk';
+        return 'Easy';
       }
       if (this.event.lvl === 1) {
-        return 'Moderate walk';
-      } else if (this.event.lvl === 2) {
-        return 'Demanding walk';
+        return 'Light walking';
+      }
+      if (this.event.lvl === 2) {
+        return 'Moderate trek';
+      }
+      if (this.event.lvl === 3) {
+        return 'Advanced trek';
+      }
+      if (this.event.lvl === 4) {
+        return 'Difficult trek';
       }
     },
     userIsAttending() {
@@ -168,11 +175,11 @@ export default {
       if (+val > 1440) {
         let daysCount = +val / 720;
         daysCount = daysCount.toFixed() / 2; //Support .5 days
-        return `About ${daysCount} days`;
+        return `${daysCount} days`;
       } else {
         let hoursCount = +val / 30;
         hoursCount = hoursCount.toFixed() / 2; //Support .5 hours
-        return `About ${hoursCount} hours`;
+        return `${hoursCount} hours`;
       }
     },
     formatDate(val) {
@@ -212,13 +219,17 @@ export default {
   display: flex;
 }
 
+.event-name {
+  margin: auto;
+}
 .edit-btn {
   margin: auto 1em;
   cursor: pointer;
 }
 
 .event-time {
-  width: 4em;
+  width: 6em;
+  padding: 0 1em;
   text-align: center;
 }
 

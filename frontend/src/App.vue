@@ -6,7 +6,11 @@
         <router-link class="router-link" to="/"><i class="fas fa-calendar-alt"></i> <span class="span-icon"> events</span></router-link> |
         <router-link class="router-link" to="/travelers"><i class="fas fa-user-friends"></i> <span class="span-icon"> travelers</span></router-link>|
       </div>
-      <div>TRAVEL <i class="fas fa-search"></i> MAKER</div>
+      <div class="logo">
+        <i class="fas fa-walking"></i>
+        <i class="fas fa-search"></i>
+        TravelMaker
+        </div>
         <router-link class="router-link" to="/user/edit/:userId"><i class="fas fa-users-cog"></i><span class="span-icon"></span></router-link>
     </nav>
     
@@ -75,8 +79,31 @@ nav {
   color: #35495e;
 }
 
-.fa-search:hover {
-  font-size: 1.5em;
+.logo {
+  font-family: Pacifico;
+  font-size: 1.4em;
+}
+
+.logo i {
+  color: #35495e;
+}
+
+.logo .fa-walking {
+  font-size: 0.4em;
+  position: relative;
+  bottom: 7px;
+  left: 12px;
+}
+
+.logo .fa-search {
+  // outline: 1px solid blue;
+  // margin: 0 2px;
+  transition: 0.5s ease-in-out
+}
+
+.logo:hover .fa-search {
+  transform-origin: 37% 33%;
+  transform: rotate(-360deg)
 }
 
 .router-link {
