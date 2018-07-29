@@ -95,6 +95,7 @@ export default {
 .user-pre-details {
   padding: 5px 10px;
   margin: 5px 0;
+  font-size: 0.9em;
 }
 
 .user-img p {
@@ -120,6 +121,7 @@ h4 {
 }
 .bold {
   font-weight: bold;
+  padding: 5px 0;
 }
 
 @media only screen and (max-width: 920px) {

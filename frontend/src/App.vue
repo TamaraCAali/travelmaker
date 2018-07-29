@@ -11,8 +11,9 @@
         <i class="fas fa-search"></i>
         TravelMaker
         </div>
-        <router-link class="router-link" to="/user/edit/:userId"><i class="fas fa-users-cog"></i><span class="span-icon"></span></router-link>
-        <img class="login-img" :src="userUrl">
+        <div>
+        <router-link class="router-link" to="/user/edit/:userId"><i class="fas fa-cog"></i><span class="span-icon"></span>
+        <img class="login-img" :src="userUrl"></router-link></div>
     </nav>
     
     <user-msg></user-msg>
@@ -43,8 +44,7 @@ export default {
   data() {
     return {
       login: null,
-      userUrl:
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjvdv8INW6OzjzPL8JyQlDbYOxZjabXx8xcNlhroqSHOMZh4C35g'
+      userUrl: userService.getLoggedInUserUrl()
     };
   },
   created() {
@@ -52,8 +52,8 @@ export default {
       this.loadLogstatus();
     });
     EventBusService.$on(LOGIN, userImg => {
-      console.log('login', userImg);
       this.userUrl = userImg;
+      //get from localstorage of user
     });
     this.loadLogstatus();
   },
@@ -65,6 +65,8 @@ export default {
     },
     logout() {
       this.login = 'login';
+      this.userUrl =
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjvdv8INW6OzjzPL8JyQlDbYOxZjabXx8xcNlhroqSHOMZh4C35g';
       this.$store.dispatch(LOGOUT);
     }
   }
