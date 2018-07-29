@@ -9,7 +9,11 @@
                 <h2>{{user.name.first}} {{user.name.last}}, {{user.age}}
                 </h2>
 
-                <button class="chat-icon" @click="toggleChat">
+                <button 
+                class="chat-icon" 
+                @click="toggleChat"
+                v-if="$store.getters.loggedinUser._id !== $route.params.userId"
+                >
                     <i class="far fa-comments"></i>
                 </button>
             </div>
