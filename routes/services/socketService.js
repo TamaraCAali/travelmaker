@@ -23,7 +23,7 @@ module.exports = io => {
                 socket.leave(socket.room);
                 socket.join(newMsg.room);
             }
-
+            
             console.log('Mi Ze Ba?', newMsg)
             io.sockets.in(newMsg.room).emit('renderMsg', newMsg)
         });

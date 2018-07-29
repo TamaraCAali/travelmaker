@@ -24,8 +24,10 @@
                 </p>
             </div>
             <div>
-                <strong>Interests: </strong>
-                <span v-for="interest in user.about.interests" :key="interest"> {{interest}}, </span>
+                <strong>Interests:  &thinsp;</strong>
+                <span v-for="(interest, idx) in user.about.interests" :key="interest"> {{interest}}
+                 <span v-if="idx < user.about.interests.length-1" >❦</span>
+                </span>
             </div>
             <div class="langs">
                 <langs v-for="langs in user.about.langs" :key="langs" :langs="langs"></langs>
@@ -134,8 +136,7 @@ h3 {
   // align-items: flex-end;
 }
 .chat-icon {
-  // float: right;
-  cursor: pointer;
+  font-size: 1.35rem;
 }
 .fa-comments:before {
   content: '\f086';

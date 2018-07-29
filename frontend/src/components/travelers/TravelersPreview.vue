@@ -105,11 +105,7 @@ h4 {
 .dist {
   float: right;
 }
-.chat-icon {
-  text-align: center;
-  cursor: pointer;
-  float: right;
-}
+
 .fa-comments:before {
   font-size: 2em;
 }
