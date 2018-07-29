@@ -52,7 +52,7 @@
 import userService from '../services/userService';
 import eventService from '../services/eventService';
 import EventPreview from '@/components/EventPreview.vue';
-import ChatWindow from '@/components/ChatWindow.vue'
+import ChatWindow from '@/components/ChatWindow.vue';
 import langs from '@/components/travelers/langs.vue';
 
 export default {

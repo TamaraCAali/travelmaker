@@ -26,10 +26,12 @@ export default {
     },
     dist: function() {
       const userLoc = this.$store.getters.getCurrLoc;
-      const dist = locService.getDistance(userLoc, this.event.loc).toFixed();
-      if (dist < 1) return dist + ' m';
-      else return dist + ' km';
-      return dist;
+      if (userLoc) {
+        const dist = locService.getDistance(userLoc, this.event.loc).toFixed();
+        if (dist < 1) return dist + ' m';
+        else return dist + ' km';
+        return dist;
+      }
     }
   },
   methods: {

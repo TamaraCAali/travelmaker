@@ -52,7 +52,6 @@ function update(user) {
 }
 
 function checkForUser(user) {
-  console.log('checkForUser', user);
   return mongoService.connect().then(db => {
     const collection = db.collection('user');
     return collection.findOne({ userName: user.username });

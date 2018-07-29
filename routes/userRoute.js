@@ -1,7 +1,6 @@
 const USER_URL = '/data/user';
 const userService = require('./services/userService');
 
-
 module.exports = app => {
   app.get(USER_URL, (req, res) => {
     userService.query().then(users => res.json(users));
@@ -34,16 +33,19 @@ module.exports = app => {
   });
 
   app.post('/data/user/setUser', (req, res) => {
-    console.log('inside back', req.body);
     userService
       .checkForUser(req.body)
       .then(user => {
-        req.session.loggedinUser = user;
-        res.json(user);
+        if (user !== null && user.password === req.body.password) {
+          req.session.loggedinUser = user;
+          delete user.password;
+          res.json(user);
+          console.log('after if pass');
+        } else {
+          console.log('wrong username or password');
+          throw 'wrong username or password';
+        }
       })
-      .catch(err => {
-        console.log('wrong username!!');
-      });
+      .catch(err => res.status(401).send('Wrong user/pass'));
   });
 };
-
