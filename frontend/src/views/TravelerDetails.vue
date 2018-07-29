@@ -2,7 +2,7 @@
   <div class="traveler-details">
           <div class="user" v-if="user">
           <div >
-            <img class="user-img" :src=" `${user.img}`" alt="">
+            <img class="user-img" :src=" `${user.img}`">
           </div>
           <div class="user-pre-details">
             <div class="name"><span class="bold">{{user.name.first}} {{user.name.last}}, age: {{user.age}}</span><span class="chat-icon" @click="openChat"> <i class="far fa-comments"></i></span></div>

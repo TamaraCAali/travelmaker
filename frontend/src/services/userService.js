@@ -17,7 +17,8 @@ export default {
   getById,
   login,
   logout,
-  getLoggedInUser
+  getLoggedInUser,
+  setGuestLonin
 };
 
 function query() {
@@ -25,7 +26,10 @@ function query() {
 }
 
 function add(user) {
-  return axios.post(USER_URL, user).then(res => res.data);
+  return axios.post(USER_URL, user).then(res => {
+    _setLoggedinUser(res.data);
+    return res.data;
+  });
 }
 
 function remove(userId) {
@@ -34,6 +38,9 @@ function remove(userId) {
 
 function update(user) {
   console.log('serve', user);
+
+  _setLoggedinUser(user);
+
   return axios
     .put(`${USER_URL}/${user._id}`, user)
     .then(res => res.data)
@@ -48,18 +55,31 @@ function getById(userId) {
 }
 
 function login(user) {
-  return axios.post(USER_URL + '/setUser', user).then(res => {
-    _setLoggedinUser(res.data);
-    return res.data;
-  });
+  return axios
+    .post(USER_URL + '/setUser', user)
+    .then(res => {
+      console.log('inside then', res);
+      var loggedUser = res.data;
+      _setLoggedinUser(loggedUser);
+      return loggedUser;
+    })
+    .catch(err => {
+      console.log('inside err', err);
+      return Promise.reject('wrong username or password');
+    });
 }
 
 function logout() {
   StorageService.clearStorage(STORAGE_KEY);
+  return Promise.resolve();
 }
 
 function getLoggedInUser() {
   return loggedinUser;
+}
+
+function setGuestLonin(user) {
+  _setLoggedinUser(user);
 }
 
 function _setLoggedinUser(user) {

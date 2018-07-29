@@ -1,7 +1,7 @@
 <template>
   <div class="event">
-    <LocationInput></LocationInput>
-    <EventList :events="events" v-on:selected="openSelectedEvent"></EventList>
+    <LocationInput v-if="user.loc"></LocationInput>
+    <EventList v-if="user.loc" :events="events" v-on:selected="openSelectedEvent"></EventList>
   </div>
 </template>
 
@@ -19,10 +19,10 @@ export default {
     EventList
   },
   data() {
-    return {};
+    return { user: null };
   },
   created() {
-    this.loadEvent();
+    this.loadUser();
   },
   computed: {
     events() {
@@ -30,6 +30,11 @@ export default {
     }
   },
   methods: {
+    loadUser() {
+      this.user = this.$store.getters.loggedinUser;
+      console.log('event', this.user);
+      this.loadEvent();
+    },
     loadEvent() {
       this.$store
         .dispatch(LOAD_EVENTS)
