@@ -14,8 +14,12 @@
     
     <router-view/>
 
+<<<<<<< HEAD
     <!-- <ChatWindow /> -->
 
+=======
+    <!-- <ChatWindow/> -->
+>>>>>>> origin
   </div>
 </template>
 

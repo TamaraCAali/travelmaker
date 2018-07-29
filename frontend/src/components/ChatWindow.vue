@@ -1,66 +1,55 @@
 <template>
     <section class="chat-window">
-        <h1>Chatty chat</h1>
-        <!-- <ul class="clean-list">
+      <h1>Chatty chat</h1>
+      <ol class="chat">
             <li 
-            class="chat-msg-area"
-            v-for="msg in chat.msgs"
-            :msg="msg"
-            :key="msg.createdAt" 
-            :class="[{self: msg.creator}]"
+              class="chat-msg-area"
+              v-for="msg in chat.msgs"
+              :msg="msg"
+              :key="msg.at" 
+              :class="[(msg.creatorId === selfUser._id)? 'self' : 'other']"
             >
-            {{chat.usernames[msg.creator]}}
-            {{msg.txt}}
-            </li>
-        </ul> -->
-
- <ol class="chat">
-            <li 
-            class="chat-msg-area"
-            v-for="msg in chat.msgs"
-            :msg="msg"
-            :key="msg.at" 
-            :class="[(!msg.creator)? 'self': 'other']"
-            >
-              <div class="avatar"><img src="https://i.imgur.com/DY6gND0.png" draggable="false"/></div>
-            <div class="msg">
-              <p>
-                 {{msg.txt}}
-              </p>  
-              <time>{{msg.at}}</time>
-            </div>
+                <div class="avatar">
+                  <img :src="getImgByCreatorId(msg.creatorId)" draggable="false"/>
+                </div>
+                <div class="msg">
+                  <p>
+                    {{msg.txt}}
+                  </p>  
+                  <time>{{msg.at}}</time>
+                </div>
             </li>
 
-<!-- <examples> -->
-  
+                            <!-- <examples> -->
+                              
 
-          <li class="other">
-              <div class="avatar"><img src="https://i.imgur.com/DY6gND0.png" draggable="false"/></div>
-            <div class="msg">
-              <p>Hola!</p>
-              <p>Te vienes a cenar al centro? <emoji class="pizza"/></p>
-              <time>20:17</time>
-            </div>
-          </li>
-          <li class="self">
-              <div class="avatar"><img src="https://i.imgur.com/HYcn9xO.png" draggable="false"/></div>
-            <div class="msg">
-              <p>Puff...</p>
-              <p>Aún estoy haciendo el contexto de Góngora... <emoji class="books"/></p>
-              <p>Mejor otro día</p>
-              <time>20:18</time>
-            </div>
-          </li>
-          <li class="other">
-              <div class="avatar"><img src="https://i.imgur.com/DY6gND0.png" draggable="false"/></div>
-            <div class="msg">
-              <p>Qué contexto de Góngora? <emoji class="suffocated"/></p>
-              <time>20:18</time>
-            </div>
-          </li>
+                                      <li class="other">
+                                          <div class="avatar"><img src="https://i.imgur.com/DY6gND0.png" draggable="false"/></div>
+                                        <div class="msg">
+                                          <p>Hola!</p>
+                                          <p>Te vienes a cenar al centro? <emoji class="pizza"/></p>
+                                          <time>20:17</time>
+                                        </div>
+                                      </li>
+                                      <li class="self">
+                                          <div class="avatar"><img src="https://i.imgur.com/HYcn9xO.png" draggable="false"/></div>
+                                        <div class="msg">
+                                          <p>Puff...</p>
+                                          <p>Aún estoy haciendo el contexto de Góngora... <emoji class="books"/></p>
+                                          <p>Mejor otro día</p>
+                                          <time>20:18</time>
+                                        </div>
+                                      </li>
+                                      <li class="other">
+                                          <div class="avatar"><img src="https://i.imgur.com/DY6gND0.png" draggable="false"/></div>
+                                        <div class="msg">
+                                          <p>Qué contexto de Góngora? <emoji class="suffocated"/></p>
+                                          <time>20:18</time>
+                                        </div>
+                                      </li>
 
-<!-- </examples> -->
-    </ol>
+                            <!-- </examples> -->
+        </ol>
 
         
         <form action="">
@@ -70,9 +59,12 @@
 
 
         <div class="menu">
-            <div class="back"><i class="fa fa-chevron-left"></i> <img src="https://i.imgur.com/DY6gND0.png" draggable="false"/></div>
-            <div class="name">Alex</div>
-            <div class="last">18:09</div>
+            <div class="back" @click="backClicked">
+              <i class="fa fa-chevron-left"></i> 
+              <img :src="otherUser.img" draggable="false"/>
+            </div>
+            <div class="name">{{otherUser.name.first}}</div>
+            <div class="last">last seen at 18:09</div>
         </div>
    
     </section>
@@ -83,7 +75,11 @@
 // import { LOAD_CHAT } from '@/storeModules/chatModule.js';
 import chatService from '@/services/chatService';
 
+// Theres no need to keep the chat history on the user but only at chat collection
 export default {
+  props: {
+    otherUser: Object
+  },
   data() {
     return {
       chat: {
@@ -112,17 +108,18 @@ export default {
         ]
       },
       newMsgTxt: '',
-      currUserId: ''
+      selfUser: ''
     };
   },
   computed: {},
   created() {
     console.log(Date.now());
-
+    this.selfUser = this.$store.getters.loggedinUser;
+    // let room = this.selfUser._id + this.otherUser._id
     this.loadChat();
   },
   methods: {
-    loadChat(room = '5b58aa7616f42101ded3362c5b58aa7616f42101ded3362d') {
+    loadChat(room = '5b58aa7616f42101ded3362a5b58aa7616f42101ded3362b') {
       chatService.getByRoom(room).then(chat => (this.chat = chat));
     },
     saveToDB() {
@@ -137,6 +134,18 @@ export default {
         author: 'Moshe',
         creator: 0
       });
+    },
+    backClicked() {
+      console.log('back clicked');
+    },
+    getImgByCreatorId(userId) {
+      // console.log('userId', userId);
+      // console.log('self', this.selfUser);
+      // console.log('other', this.otherUser);
+      return userId === this.selfUser._id
+        ? this.selfUser.img
+        : this.otherUser.img;
+      // return 'https://i.imgur.com/DY6gND0.png';
     }
   },
   sockets: {
@@ -146,12 +155,13 @@ export default {
       this.saveToDB();
     }
   },
-  components: {}
+  components: {},
+  computed: {}
 };
 </script>
     
 <style lang="scss" scoped>
-ul li p{
+ul li p {
   white-space: pre;
 }
 .chat-window {
@@ -354,7 +364,7 @@ a {
   width: 0;
   left: 0;
   height: 0px;
-  border: 5px solid  #dcf8c6;
+  border: 5px solid #dcf8c6;
   border-right-color: transparent;
   border-top-color: transparent;
   box-shadow: 0px 2px 0px #d4d4d4;
@@ -459,7 +469,7 @@ emoji.funny {
   background-image: url(https://i.imgur.com/qKia58V.png);
 }
 
-@-webikt-keyframes pulse {
+-webikt-keyframes pulse {
   from {
     opacity: 0;
   }
