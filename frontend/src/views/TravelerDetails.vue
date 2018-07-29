@@ -27,6 +27,10 @@
                 <strong>Interests: </strong>
                 <span v-for="interest in user.about.interests" :key="interest"> {{interest}}, </span>
             </div>
+            <div>
+                <strong>Next Destinations: </strong>
+                <span v-for="dest in user.about.nextDest" :key="dest"> {{dest}}, </span>
+            </div>
             <div class="langs">
                 <langs v-for="langs in user.about.langs" :key="langs" :langs="langs"></langs>
             </div>

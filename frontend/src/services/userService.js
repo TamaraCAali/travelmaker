@@ -75,7 +75,7 @@ function logout() {
 }
 
 function getLoggedInUser() {
-  return loggedinUser;
+  return StorageService.loadFromStorage(STORAGE_KEY) || null;
 }
 
 function setGuestLonin(user) {
