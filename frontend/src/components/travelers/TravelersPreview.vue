@@ -29,7 +29,6 @@ export default {
   computed: {
     dist: function() {
       const userLoc = this.$store.getters.getCurrLoc;
-      console.log('dist', userLoc, this.user.loc);
 
       const dist = locService.getDistance(userLoc, this.user.loc).toFixed();
       if (dist < 1) return dist + ' m';

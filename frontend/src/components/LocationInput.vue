@@ -36,7 +36,7 @@ export default {
         .then(res => {
           var user = this.$store.getters.loggedinUser;
           console.log('user', user);
-          this.$store.dispatch(UPDATE_USER, { user });
+          if (user._id) this.$store.dispatch(UPDATE_USER, { user });
         })
         .catch(err => {
           console.log('err in load loc');

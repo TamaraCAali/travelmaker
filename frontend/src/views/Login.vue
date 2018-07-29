@@ -2,31 +2,71 @@
       <section >
           <div class="back-login"></div>
           <div class="login">
-            <h1>Sign In</h1>
+            <button class="router-link try-us"><span @click="setGuest">Try Us!</span> </button> 
+            <h1>Sign In</h1>      
           <form  @submit.prevent="login">
             <input class="input-login" type="text" v-model="ChekcIn.username" placeholder="username">
-            <input class="input-login" type="text" v-model="ChekcIn.password" placeholder="password">
+            <input class="input-login" type="password" v-model="ChekcIn.password" placeholder="password">
             <button class="btn-submit" type="submit">Login</button>
           </form>
             <p>Or login with</p>
                 <div class="flex justify-center" >
-					<a href="#" class="login-social-icon">
+					<a href="#"  class="login-social-icon">
 						<i class="fab fa-facebook-f"></i>
 					</a>
 					<a href="#" class="login-social-icon">
 						<img src="../assets/img/icon-google.png">
 					</a>
 				</div>
-                <a href="#" >
-						Open new account
-					</a>
+        <router-link to="/user/edit/:userId"><span >Open new account</span></router-link>
           </div>
           
       </section>
 </template>
 
 <script>
+// ***********LOGIN WITH FACEBOOK START*********************//
+
+// function logInWithFacebook() {
+//   FB.login(function(response) {
+//     if (response.authResponse) {
+//       alert('You are logged in &amp; cookie set!');
+//       // Now you can redirect the user or do an AJAX request to
+//       // a PHP script that grabs the signed request from the cookie.
+//     } else {
+//       alert('User cancelled login or did not fully authorize.');
+//     }
+//   });
+//   return false;
+// }
+// window.fbAsyncInit = function() {
+//   FB.init({
+//     appId: 'your-app-id',
+//     cookie: true, // This is important, it's not enabled by default
+//     version: 'v2.2'
+//   });
+// };
+
+// (function(d, s, id) {
+//   var js,
+//     fjs = d.getElementsByTagName(s)[0];
+//   if (d.getElementById(id)) {
+//     return;
+//   }
+//   js = d.createElement(s);
+//   js.id = id;
+//   js.src = 'https://connect.facebook.net/en_US/sdk.js';
+//   fjs.parentNode.insertBefore(js, fjs);
+// })(document, 'script', 'facebook-jssdk');
+
+// ***********LOGIN WITH FACEBOOK END*********************//
+
 import { LOGIN } from '../store.js';
+import { SET_GUEST } from '../store.js';
+import EventBusService, {
+  SHOW_MSG,
+  LOGIN_USER
+} from '../services/eventBusService.js';
 
 export default {
   name: 'Login',
@@ -38,12 +78,48 @@ export default {
       }
     };
   },
-  mounted() {},
+  created() {},
   computed: {},
   methods: {
     login() {
       let user = { ...this.ChekcIn };
-      this.$store.dispatch(LOGIN, { user }).then(_ => this.$router.push('/'));
+      this.$store
+        .dispatch(LOGIN, { user })
+        .then(_ => {
+          EventBusService.$emit(SHOW_MSG, {
+            txt: `Login successfully as ${user.username}`,
+            type: 'success'
+          });
+          EventBusService.$emit(LOGIN_USER, `logout`);
+          this.$router.push('/');
+        })
+        .catch(err => {
+          console.log('err', err);
+          EventBusService.$emit(SHOW_MSG, {
+            txt: err,
+            type: 'danger'
+          });
+        });
+    },
+    setGuest() {
+      console.log('set setGuest');
+      this.$store
+        .dispatch(SET_GUEST)
+        .then(_ => {
+          console.log('here');
+          EventBusService.$emit(SHOW_MSG, {
+            txt: `Login as guest`,
+            type: 'success'
+          });
+          this.$router.push('/');
+        })
+        .catch(err => {
+          console.log('err', err);
+          EventBusService.$emit(SHOW_MSG, {
+            txt: err,
+            type: 'danger'
+          });
+        });
     }
   }
 };
@@ -58,7 +134,7 @@ body,
   right: 0;
   bottom: 0;
   left: 0;
-  background-image: url(/img/login_Backg.97ba7aa0.jpg);
+  background-image: url('../assets/img/login_Backg.jpg');
   height: 700px;
   background-repeat: no-repeat;
   background-size: cover;
@@ -148,5 +224,14 @@ body,
   -webkit-box-shadow: 0 5px 20px 0px rgba(0, 0, 0, 0.2);
   -o-box-shadow: 0 5px 20px 0px rgba(0, 0, 0, 0.2);
   -ms-box-shadow: 0 5px 20px 0px rgba(0, 0, 0, 0.2);
+}
+.try-us {
+  font-weight: bold;
+  border-bottom: 1px solid;
+  align-self: end;
+  background-color: transparent;
+  border: none;
+  color: #35495e;
+  border-bottom: 1px solid;
 }
 </style>

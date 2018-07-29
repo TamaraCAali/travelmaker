@@ -15,14 +15,12 @@ export const LOGIN = 'user/login';
 export const LOGOUT = 'user/logout';
 export const SET_USER = 'user/setUser';
 export const UPDATE_USER = 'user/updateLocUser';
+export const ADD_USER = 'user/addUser';
+export const SET_GUEST = 'user/setGuest';
 
 export default new Vuex.Store({
   state: {
-    user: userService.getLoggedInUser() || {
-      _id: null,
-      nickname: '',
-      isAdmin: false
-    },
+    user: _loadUser(),
     searchedLoc: {}
   },
   mutations: {
@@ -81,19 +79,50 @@ export default new Vuex.Store({
       });
     },
     [LOGIN](context, { user }) {
-      return userService.login(user).then(user => {
-        return context.commit({ type: SET_USER, user });
-      });
+      return userService
+        .login(user)
+        .then(user => {
+          console.log('after login', user);
+          return context.commit({ type: SET_USER, user });
+        })
+        .catch(err => {
+          return Promise.reject(err);
+        });
     },
     [LOGOUT](context) {
-      return userService.logout();
-      then(() => {
+      return userService.logout().then(() => {
         return context.commit({ type: SET_USER, user: null });
       });
     },
     [UPDATE_USER](context, { user }) {
       console.log('update', user);
       return userService.update(user).then();
+    },
+    [ADD_USER](context, { user }) {
+      console.log(user);
+      return _getAppLoc().then(loc => {
+        user.loc = loc;
+        console.log(user);
+
+        return userService.add(user).then(user => {
+          return context.commit({
+            type: SET_USER,
+            user
+          });
+        });
+      });
+    },
+    [SET_GUEST](context) {
+      var user = _loadUser();
+      return _getAppLoc().then(loc => {
+        user.loc = loc;
+        console.log('SET_GUEST', user);
+        userService.setGuestLonin(user);
+        return context.commit({
+          type: SET_USER,
+          user
+        });
+      });
     }
   },
   modules: {
@@ -102,3 +131,48 @@ export default new Vuex.Store({
     chatModule
   }
 });
+
+function _loadUser() {
+  if (userService.getLoggedInUser()) return userService.getLoggedInUser();
+  else
+    return {
+      password: '',
+      userName: '',
+      isActive: true,
+      img:
+        'https://cdn-images-1.medium.com/max/1600/1*l9eqA179Bw1QoMA8iwBvHw.png',
+      age: null,
+      name: {
+        first: '',
+        last: ''
+      },
+      email: '',
+      about: {
+        interests: [],
+        nextDest: [],
+        langs: [],
+        desc: ''
+      },
+      activity: {
+        events: [],
+        chatRooms: []
+      }
+    };
+}
+
+function _getAppLoc() {
+  var currLoc;
+  return locService
+    .getPosition()
+    .then(res => {
+      currLoc = {
+        lat: res.coords.latitude,
+        lng: res.coords.longitude
+      };
+      return locService.getAddressFromLoc(currLoc);
+    })
+    .then(name => {
+      currLoc.name = name;
+      return currLoc;
+    });
+}

@@ -6,6 +6,7 @@ import EventEditAdd from './views/EventEditAdd.vue';
 import Event from './views/Event.vue';
 import Travelers from './views/Travelers.vue';
 import TravelerDetails from './views/TravelerDetails.vue';
+import TravelerEditAdd from './views/TravelerEditAdd.vue';
 
 Vue.use(Router);
 
@@ -40,6 +41,11 @@ export default new Router({
       path: '/user/:userId',
       name: 'user-details',
       component: TravelerDetails
+    },
+    {
+      path: '/user/edit/:userId',
+      name: 'user-edit',
+      component: TravelerEditAdd
     }
   ]
 });

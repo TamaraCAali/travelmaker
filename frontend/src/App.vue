@@ -2,17 +2,19 @@
   <div id="app">
     <nav>
       <div>
-        <router-link class="router-link" to="/login"><i class="fas fa-sign-in-alt"></i> <span class="span-icon"> login</span></router-link> |
+        <router-link class="router-link" to="/login"><i class="fas fa-sign-in-alt"></i> <span @click="logout" class="span-icon"> {{login}}</span></router-link> |
         <router-link class="router-link" to="/"><i class="fas fa-calendar-alt"></i> <span class="span-icon"> events</span></router-link> |
-        <router-link class="router-link" to="/travelers"><i class="fas fa-user-friends"></i> <span class="span-icon"> travelers</span></router-link>
+        <router-link class="router-link" to="/travelers"><i class="fas fa-user-friends"></i> <span class="span-icon"> travelers</span></router-link>|
       </div>
       <div class="logo">
         <i class="fas fa-walking"></i>
         <i class="fas fa-search"></i>
         TravelMaker
         </div>
+        <router-link class="router-link" to="/user/edit/:userId"><i class="fas fa-users-cog"></i><span class="span-icon"></span></router-link>
     </nav>
     
+    <user-msg></user-msg>
     
     <router-view/>
 
@@ -22,10 +24,41 @@
 
 <script>
 import ChatWindow from '@/components/ChatWindow.vue';
+import UserMsg from '@/components/UserMsg.vue';
+import EventBusService, {
+  LOGIN_USER,
+  LOGOT_USER,
+  SHOW_MSG
+} from './services/eventBusService.js';
+import { LOGOUT } from './store.js';
+
+import userService from '@/services/userService';
 
 export default {
+  name: 'app',
   components: {
-    ChatWindow
+    ChatWindow,
+    UserMsg
+  },
+  data() {
+    return { login: null };
+  },
+  created() {
+    EventBusService.$on(SHOW_MSG, username => {
+      this.loadLogstatus();
+    });
+    this.loadLogstatus();
+  },
+  methods: {
+    loadLogstatus() {
+      userService.getLoggedInUser()
+        ? (this.login = 'logout')
+        : (this.login = 'login');
+    },
+    logout() {
+      this.login = 'login';
+      this.$store.dispatch(LOGOUT);
+    }
   }
 };
 </script>
