@@ -4,61 +4,72 @@
       Loading Event...
     </div>
     <template v-else>
-      <img class="event-img" :src="event.img" @mouseover="mouseOnImg" @mouseleave="mouseOffImg"/>
-      <div v-if="showUploadIcon" class="upload-img-hover">
-        <i class=" fas fa-upload fa-5x"></i>
+      <div class="img-container" @mouseover="mouseOnImg" @mouseleave.self="mouseOffImg">
+        <img class="event-img" :src="event.img"/>
+        <div v-if="showUploadIcon" class="upload-img-hover">
+          <el-upload
+            class="event-img-uploader"
+            action="https://jsonplaceholder.typicode.com/posts/"
+            :on-success="handleAvatarSuccess"
+            :before-upload="beforeAvatarUpload">
+            <img v-if="imageUrl" :src="imageUrl" class="avatar">
+            <i v-else class="el-icon-upload2 avatar-uploader-icon"></i>
+          </el-upload>
+        </div>
       </div>
       <div class="event-header">
-        <i v-if="userIsAdmin"
-           @click="goEditEvent" 
-           class="edit-btn far fa-edit fa-2x"></i>
-        <h2>{{event.name}}</h2>
+        <h2>
+          <el-input placeholder="Please input" v-model="event.name"></el-input>
+        </h2>
         <p class="event-time">
-          {{event.date | formatDate}} <br/>
-          {{event.date | formatHour}}
+          <div>
+            Date: <input type="date" v-model="eventDate"></input>
+          </div>
+          <div>
+            Time: <input type="time" v-model="eventTime"></input>
+          </div>
         </p>
+        <!-- <h2 class="event-time">
+          <datetime type="datetime" v-model="event.date"></datetime>
+        </h2> -->
       </div>
-      <div class="details-container">
-        At: {{event.loc.title}}
-        <div class="attends-container">
-          <i class="fas fa-user-friends"></i>
-          {{event.attends.length}} people attending
-        </div>
+      <div class="event-loc">
+        At: <el-input v-model="eventAddress" @change="eventLocChanged = true"></el-input>
       </div>
-      <div class="btns-container">
-        <div @click="toggleEventAttendence()">
-          <template v-if="!userIsAttending">
-            <i class="far fa-check-circle fa-2x"></i><br/>
-            Join
-          </template>
-          <template v-else>
-            <i class="far fa-times-circle fa-2x"></i><br/>
-            Leave
-          </template>
-        </div>
-        <div @click="shareEvent()">
-          <i class="fas fa-share-alt fa-2x"></i><br/>
-          Share 
-        </div>
-      </div>
-      <p>
-      {{event.desc}}
+      <p class="event-description">
+        <el-input
+          type="textarea"
+          autosize
+          placeholder="Enter event description"
+          v-model="event.desc">
+        </el-input>
       </p>
       <div class="est-time-container">
+        <i v-if="showLvlInput" class="el-icon-remove-outline" @click="toggleEventLvl"></i>
+        <i v-else class="el-icon-circle-plus-outline" @click="toggleEventLvl"></i>
         <i class="fas fa-walking"></i>
-        {{eventLvl}}
+        <select v-show="showLvlInput" id="lvl-select" v-model="event.level">
+          <option value="0">Easy</option>
+          <option value="1">Light walking</option>
+          <option value="2">Moderate trek</option>
+          <option value="3">Advanced trek</option>
+          <option value="4">Difficult trek</option>
+        </select>
       </div>
       <div class="difficulty-lvl-container">
-        <i class="far fa-clock"></i>  
-        Takes About: {{ event.estTime | stringifyEstTime }}
+        <i class="far fa-clock"></i> 
+        <p>
+          Takes About: 
+        </p> 
+        <input type="number" v-model="eventEstTime"></input> 
+        <select id="est-time-unit" v-model="estTimeUnit">
+          <option value="m">minutes</option>
+          <option value="h">hours</option>
+          <option value="d">days</option>
+        </select>
       </div>
       <div v-if="event" class="map" ref="map"></div>
-      <h3>Comments:</h3>
-      <ul>
-        <li v-for="comment in event.comments">
-          
-        </li>
-      </ul>
+      <el-button @click="validateAndSave">Save event</el-button>
     </template>
   </div>
 </template>
@@ -73,24 +84,30 @@ export default {
   name: 'home',
   data() {
     return {
+      imageUrl: '',
       event: {
         attends: [],
         loc: { lat: 33, lng: 35 }
       },
       user: null,
       eventAddress: '',
-      showUploadIcon: false
+      showUploadIcon: false,
+      showLvlInput: true,
+      eventDate: '',
+      eventTime: '',
+      eventLocChanged: false
     };
   },
   created() {
     let idFromParams = this.$route.params.eventId;
-    // console.log('event id sent:', idFromParams);
     eventService.getById(idFromParams).then(res => {
       console.log('got event:', res);
+      res.date = moment(res.date).format()
       return (this.event = JSON.parse(JSON.stringify(res)));
     });
     this.user = this.$store.getters.getUser;
-    console.log('user:', this.user);
+    console.log('this.showLvlInput:', this.showLvlInput);
+    
   },
   mounted() {
     this.initMap();
@@ -102,27 +119,8 @@ export default {
     mouseOffImg() {
       this.showUploadIcon = false;
     },
-    toggleEventAttendence() {
-      if (this.userIsAttending) {
-        console.log('leaving');
-        let userIdx = this.event.attends.findIndex(id => id === this.user._id);
-        this.event.attends.splice(userIdx, 1);
-        eventService.update(this.event);
-        let eventIdx = this.user.activity.events.findIndex(
-          id => id === this.event._id
-        );
-        this.user.activity.events.splice(eventIdx, 1);
-        userService.update(this.user);
-      } else {
-        console.log('attending');
-        this.event.attends.push(this.user._id);
-        eventService.update(this.event);
-        this.user.activity.events.push(this.event._id);
-        userService.update(this.user);
-      }
-    },
-    shareEvent() {
-      console.log('sharing the event');
+    toggleEventLvl() {
+      this.showLvlInput = !this.showLvlInput
     },
     initMap() {
       // if (!this.event || !this.event.loc) return
@@ -135,19 +133,75 @@ export default {
         map: map
       });
     },
-    goEditEvent() {
-      this.$router.push(`edit/${this.event._id}`);
+    handleAvatarSuccess(res, file) {
+        this.imageUrl = URL.createObjectURL(file.raw);
+      },
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === 'image/jpeg';
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isJPG) {
+        this.$message.error('Avatar picture must be JPG format!');
+      }
+      if (!isLt2M) {
+        this.$message.error('Avatar picture size can not exceed 2MB!');
+      }
+      return isJPG && isLt2M;
+    },
+    getLocByName() {
+      return locService.getPositionByName(this.eventAddress)
+        .then(res => {
+          this.eventAddress = res.address
+          this.event.loc = {
+            lat: res.lat,
+            lng: res.lng,
+            title: res.address
+          }
+          
+          this.initMap();
+        })
+    },
+    validateAndSave() {
+      if (this.eventLocChanged) {
+        this.getLocByName()
+        .then(() => {
+          this.saveEvent()
+        })
+        .catch(err => {
+          this.$message.error('Can\'t find the address entered');
+        })
+      }
+      else {
+        console.log('got here!');     
+        this.saveEvent()
+      }
+    },
+    saveEvent() {
+        this.event.date = moment(this.eventDate + ' ' + this.eventTime).format('X');
+        
+
+
+        //TODO: rest setup of saving event
+
+        console.log('saving event:', this.event);
     }
   },
   computed: {
     eventLvl() {
       if (this.event.lvl === 0) {
-        return 'Easy walk';
+        return 'Easy';
       }
       if (this.event.lvl === 1) {
-        return 'Moderate walk';
-      } else if (this.event.lvl === 2) {
-        return 'Demanding walk';
+        return 'Light walking';
+      }
+      if (this.event.lvl === 2) {
+        return 'Moderate trek';
+      }
+      if (this.event.lvl === 3) {
+        return 'Advanced trek';
+      }
+      if (this.event.lvl === 4) {
+        return 'Difficult trek';
       }
     },
     userIsAttending() {
@@ -158,14 +212,20 @@ export default {
     userIsAdmin() {
       return true;
       // return this.event.creatorId === this.user._id
+    },
+    eventEstTime() {
+      return this.event.estTime
     }
-    // event() {
-    //   this.initMap()
-    // }
   },
   watch: {
     event() {
+      console.log('event changed! (watch) :', this.event);
+      
       this.initMap();
+      if (!this.event.level) this.showLvlInput = false
+      this.eventDate = moment(this.event.date).format('YYYY-MM-DD')
+      this.eventTime = moment(this.event.date).format('HH:mm')
+      this.eventAddress = this.event.loc.title
       // console.log('is user attending?', this.userIsAttending);
     }
   },
@@ -194,7 +254,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .people-icon {
   width: 14px;
 }
@@ -210,6 +270,10 @@ export default {
   transition: all 0.3s;
 }
 
+.img-container {
+  position: relative;
+}
+
 .event-img {
   width: 100%;
   height: 250px;
@@ -217,20 +281,52 @@ export default {
 }
 
 .upload-img-hover {
+  cursor: pointer;
   position: absolute;
-  bottom: 359px;
+  bottom: 3px;
   width: 100%;
   height: 250px;
   text-align: center;
   vertical-align: middle;
-  line-height: 250px;
-  background-color: white;
-  opacity: 0.5;
+  line-height: 250px;   
+  background-color: rgba(255, 255, 255, 0.3);
+  opacity: 0.8;
 }
 
+.event-img-uploader {
+  width: 100%;
+}
+
+.event-img-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  width: 100%;
+  height: 250px;
+  overflow: hidden;
+}
+.event-img-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+.avatar-uploader-icon {
+  font-size: 3em;
+  color:  rgba(0, 0, 0, 0.8);
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+}
 .event-header {
+  padding: 1em;
   margin: 0 auto;
   display: flex;
+  flex-direction: column;
 }
 
 .edit-btn {
@@ -238,30 +334,54 @@ export default {
   cursor: pointer;
 }
 
+.vdatetime input {
+  background-color: #fff;
+  border-radius: 4px;
+  border: 1px solid #dcdfe6;
+  color: #606266;
+  display: inline-block;
+  font-size: inherit;
+  height: 40px;
+  line-height: 40px;
+  outline: 0;
+  padding: 0 15px;
+  width: 100%;
+}
 .event-time {
   width: 4em;
   text-align: center;
 }
 
-.details-container {
+.event-loc {
   align-self: flex-start;
-  padding: 0 10px;
-}
-.btns-container {
   display: flex;
   align-items: center;
-  margin: 0 1em;
+  padding: 0 10px;
+  width: 100%
 }
 
-.btns-container div {
-  margin: 10px;
-  text-align: center;
-  cursor: pointer;
+.event-loc .el-input input {
+  width: 100%
 }
+
+.event-description {
+  width: 90%;
+  height: 5em;
+}
+
+.difficulty-lvl-container {
+  display: flex;
+  align-items: center;
+}
+
+.difficulty-lvl-container p:first-of-type {
+  width: 6em;
+}
+
 
 .map {
   width: 100%;
-  height: 250px;
+  height: 150px;
   margin: 10px;
 }
 </style>

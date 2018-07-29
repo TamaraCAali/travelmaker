@@ -68,6 +68,8 @@ export default new Vuex.Store({
         });
     },
     [SEARCHED_LOC](context, { searchInput }) {
+      console.log('store got:', searchInput);
+      
       locService.getPositionByName(searchInput).then(pos => {
         console.log('pos', pos);
         context.commit({
