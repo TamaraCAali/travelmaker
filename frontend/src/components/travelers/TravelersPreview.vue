@@ -1,13 +1,21 @@
 <template>
-  <section class="user-preview">
+  <section class="user-preview"
+  v-if="$store.getters.loggedinUser._id !== user._id"
+  >
       <div class="user" @click="openUserDetails">
           <div class="user-img" :style="'background-image: url('+user.img+')'">
           </div>
           <div class="user-pre-details">
             <div class="bold">{{user.name.first}},  {{user.age}} <span class="dist"> {{dist}} away</span></div>
-            <div class="langs">
-            <langs v-for="langs in user.about.langs" :key="langs" :langs="langs"></langs>
-            <span class="chat-icon" @click.stop="openChat"> <i class="far fa-comments"></i></span>
+              <div class="langs">
+                <langs v-for="langs in user.about.langs" :key="langs" :langs="langs"></langs>
+                <button 
+                  class="chat-icon" 
+                  @click.stop="toggleChat"
+                  v-if="$store.getters.loggedinUser._id !== $route.params.userId"
+                  >
+                    <i class="far fa-comments"></i>
+                </button>
             </div>
           </div>
       </div>
@@ -40,10 +48,8 @@ export default {
     openUserDetails() {
       this.$emit('selected', this.user);
     },
-    openChat() {
-      console.log(this.user);
-
-      // this.$router.push(`/chat/${this.user}`);
+    toggleChat() {
+      this.$parent.userToChat = {...this.user};      
     }
   }
 };
