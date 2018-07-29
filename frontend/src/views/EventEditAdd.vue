@@ -34,7 +34,7 @@
         </h2> -->
       </div>
       <div class="event-loc">
-        At: <el-input v-model="eventAddress"></el-input>
+        At: <el-input v-model="eventAddress" @change="eventLocChanged = true"></el-input>
       </div>
       <p class="event-description">
         <el-input
@@ -62,14 +62,14 @@
           Takes About: 
         </p> 
         <input type="number" v-model="eventEstTime"></input> 
-        <select id="est-time-unit">
+        <select id="est-time-unit" v-model="estTimeUnit">
           <option value="m">minutes</option>
           <option value="h">hours</option>
           <option value="d">days</option>
         </select>
       </div>
       <div v-if="event" class="map" ref="map"></div>
-      <el-button @click="saveEvent">Save event</el-button>
+      <el-button @click="validateAndSave">Save event</el-button>
     </template>
   </div>
 </template>
@@ -95,6 +95,7 @@ export default {
       showLvlInput: true,
       eventDate: '',
       eventTime: '',
+      eventLocChanged: false
     };
   },
   created() {
@@ -156,23 +157,33 @@ export default {
             lng: res.lng,
             title: res.address
           }
+          
           this.initMap();
         })
     },
+    validateAndSave() {
+      if (this.eventLocChanged) {
+        this.getLocByName()
+        .then(() => {
+          this.saveEvent()
+        })
+        .catch(err => {
+          this.$message.error('Can\'t find the address entered');
+        })
+      }
+      else {
+        console.log('got here!');     
+        this.saveEvent()
+      }
+    },
     saveEvent() {
-      this.getLocByName()
-      .then(() => {
         this.event.date = moment(this.eventDate + ' ' + this.eventTime).format('X');
         
+
+
         //TODO: rest setup of saving event
 
-        // console.log('saving event:', this.event);
-      })
-      .catch(err => {
-        this.$message.error('Can\'t find the address entered');
-      })
-      
-      
+        console.log('saving event:', this.event);
     }
   },
   computed: {
@@ -243,7 +254,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .people-icon {
   width: 14px;
 }
