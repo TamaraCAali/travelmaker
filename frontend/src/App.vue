@@ -69,6 +69,7 @@ export default {
 nav {
   display: flex;
   justify-content: space-around;
+  align-items: center;
   color: #41b883;
 }
 .router-link i {
@@ -98,12 +99,12 @@ nav {
 .logo .fa-search {
   // outline: 1px solid blue;
   // margin: 0 2px;
-  transition: 0.5s ease-in-out
+  transition: 0.5s ease-in-out;
 }
 
 .logo:hover .fa-search {
   transform-origin: 37% 33%;
-  transform: rotate(-360deg)
+  transform: rotate(-360deg);
 }
 
 .router-link {
