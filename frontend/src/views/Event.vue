@@ -40,7 +40,7 @@ export default {
         .dispatch(LOAD_EVENTS)
         .then()
         .catch(err => {
-          console.log('err in load events');
+          console.log('err in load events', err);
         });
     },
     openSelectedEvent(event) {
