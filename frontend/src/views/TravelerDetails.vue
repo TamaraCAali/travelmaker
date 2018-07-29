@@ -29,6 +29,10 @@
                  <span v-if="idx < user.about.interests.length-1" >❦</span>
                 </span>
             </div>
+            <div>
+                <strong>Next Destinations: </strong>
+                <span v-for="dest in user.about.nextDest" :key="dest"> {{dest}}, </span>
+            </div>
             <div class="langs">
                 <langs v-for="langs in user.about.langs" :key="langs" :langs="langs"></langs>
             </div>
