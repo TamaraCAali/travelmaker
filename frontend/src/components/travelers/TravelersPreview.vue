@@ -9,11 +9,7 @@
             <div class="bold">{{user.name.first}},  {{user.age}} <span class="dist"> {{dist}} away</span></div>
               <div class="langs">
                 <langs v-for="langs in user.about.langs" :key="langs" :langs="langs"></langs>
-                <button 
-                  class="chat-icon" 
-                  @click.stop="toggleChat"
-                  v-if="$store.getters.loggedinUser._id !== $route.params.userId"
-                  >
+                <button class="chat-icon" @click.stop="toggleChat">
                     <i class="far fa-comments"></i>
                 </button>
             </div>
@@ -49,7 +45,13 @@ export default {
       this.$emit('selected', this.user);
     },
     toggleChat() {
-      this.$parent.userToChat = {...this.user};      
+      const loggedUser = this.$store.getters.getUser;
+      if (loggedUser._id) {
+        this.$parent.userToChat = { ...this.user };
+      } else {
+        this.$message.error('Please login to contact other people');
+        this.$router.push('/login');
+      }
     }
   }
 };
@@ -109,6 +111,9 @@ h4 {
   text-align: center;
   cursor: pointer;
   float: right;
+  border: none;
+  color: #35495e;
+  background-color: transparent;
 }
 .fa-comments:before {
   font-size: 2em;

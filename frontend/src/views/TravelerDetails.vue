@@ -86,9 +86,15 @@ export default {
       this.$router.push(`/event/${event._id}`);
     },
     toggleChat() {
-      console.log(this.user);
-      this.isChatMode = true;
-      // this.$router.push(`/chat/${this.user}`);
+      const loggedUser = this.$store.getters.getUser;
+      if (loggedUser._id) {
+        console.log(this.user);
+        this.isChatMode = true;
+        // this.$router.push(`/chat/${this.user}`);
+      } else {
+        this.$message.error('Please login to contact other people');
+        this.$router.push('/login');
+      }
     }
   },
   watch: {
@@ -138,7 +144,9 @@ h3 {
   // align-items: flex-end;
 }
 .chat-icon {
-  // float: right;
+  border: none;
+  color: #35495e;
+  background-color: transparent;
   cursor: pointer;
 }
 .fa-comments:before {

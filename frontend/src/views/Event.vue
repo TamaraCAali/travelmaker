@@ -9,7 +9,7 @@
 // @ is an alias to /src
 import EventList from '@/components/EventList.vue';
 import LocationInput from '@/components/LocationInput.vue';
-
+import EventBusService, { LOGIN } from '../services/eventBusService.js';
 import { LOAD_EVENTS } from '../storeModules/eventModule.js';
 
 export default {
@@ -33,6 +33,7 @@ export default {
     loadUser() {
       this.user = this.$store.getters.loggedinUser;
       console.log('event', this.user);
+      EventBusService.$emit(LOGIN, this.user.img);
       this.loadEvent();
     },
     loadEvent() {

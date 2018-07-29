@@ -22,7 +22,7 @@ export default {
   },
   computed: {
     date: function() {
-      return moment(this.event.date).format('MMM Do YY');
+      return moment(this.event.startTime).format('MMM Do YY');
     },
     dist: function() {
       const userLoc = this.$store.getters.getCurrLoc;
