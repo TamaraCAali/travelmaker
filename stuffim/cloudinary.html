@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    
+  <style>
+    body {
+      margin: 0px;
+      padding: 0px;
+    }
+
+    .btn {
+      background: #42b263;
+      border: 1px solid #42b263;
+      color: #fff;
+      cursor: pointer;
+      font-family: Helvetica, Arial, sans-serif;
+      margin: 0;
+      user-select: none;
+      white-space: nowrap;
+      padding: 5px 10px;
+      border-radius: 3px;
+      text-decoration: none;
+    }
+
+  </style>
+</head>
+
+<body>
+  
+  <form class="publish-form" action="" method="POST" enctype="multipart/form-data" onsubmit="uploadImg(this, event)">
+    <div>
+      <input type="file" name="img" />
+    </div>
+    <div>
+      <button type="submit" class="btn">Submit</button>
+    </div>
+  </form>
+
+  <script src="js/cloudinary-service.js"></script>
+ 
+</body>
+
+</html>

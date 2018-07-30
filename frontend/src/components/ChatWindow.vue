@@ -1,6 +1,7 @@
 <template>
     <section class="chat-window">
-      <ol class="chat">
+      <h3 v-if="chat.room === 'loading-room'">Loading Chat...</h3>
+      <ol class="chat" v-else>
             <li 
               class="chat-msg-area"
               v-for="msg in chat.msgs"
@@ -49,7 +50,7 @@
 
                             </examples> -->
         <li ref="bottom" style="width:100%; height:50px;"></li>
-        </ol>
+      </ol>
 
         <form action="">
           <input class="textarea" type="text" v-model="newMsgTxt" placeholder="Type here!"/><div class="emojis"></div>
@@ -152,6 +153,9 @@ export default {
         ? this.selfUser.img
         : this.otherUser.img;
     }
+  },
+  destroyed() {
+      this.$parent.$parent.$parent.showNavBar = true;    
   },
   sockets: {
     connect() {
