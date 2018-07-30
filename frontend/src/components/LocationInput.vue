@@ -1,7 +1,7 @@
 <template>
   <div class="curr-loc">
     <div class="search-input"><i class="fas fa-map-marker-alt"></i>
-    <span>What's good in </span>
+    <span>What's good near </span>
     <input  type="text" v-model="searchInput" :placeholder="currLocName" @keydown.enter="changeLoc">
     </div>
   </div>

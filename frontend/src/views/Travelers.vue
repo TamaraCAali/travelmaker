@@ -1,6 +1,5 @@
 <template>
   <div class="travelers">
-    <h3>look who's around you..</h3>
     <TravelersList :users="users" v-on:selected="openSelectedUsers"></TravelersList>
   </div>
 </template>

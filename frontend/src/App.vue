@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <nav>
+    <nav v-show="showNavBar">
       <div>
         <router-link class="router-link" to="/login"><i class="fas fa-sign-in-alt"></i> <span @click="logout" class="span-icon"> {{login}}</span></router-link> |
         <router-link class="router-link" to="/"><i class="fas fa-calendar-alt"></i> <span class="span-icon"> events</span></router-link> |
@@ -40,6 +40,7 @@ export default {
   },
   data() {
     return {
+      showNavBar: true,
       login: null,
       userUrl: userService.getLoggedInUserUrl()
     };
@@ -136,6 +137,9 @@ nav {
 .login-img {
   height: 30px;
   border-radius: 50%;
+}
+.span-icon {
+    text-transform: capitalize;
 }
 
 @media only screen and (max-width: 420px) {

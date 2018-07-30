@@ -17,7 +17,12 @@ import 'vue-datetime/dist/vue-datetime.css'
 Vue.use(Datetime)
 
 import VueSocketio from 'vue-socket.io';
-Vue.use(VueSocketio, '//localhost:3000', store);
+const SOCKET_URL =
+  process.env.NODE_ENV !== 'development'
+    ? '/'
+    : '//localhost:3000';
+console.log('SOCKETURL', SOCKET_URL)
+Vue.use(VueSocketio, SOCKET_URL);
 
 import VueClipboard from 'vue-clipboard2'
 Vue.use(VueClipboard)
