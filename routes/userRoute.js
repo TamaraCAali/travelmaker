@@ -3,6 +3,8 @@ const userService = require('./services/userService');
 
 module.exports = app => {
   app.get(USER_URL, (req, res) => {
+    console.log('inside back user');
+
     userService.query().then(users => res.json(users));
   });
 

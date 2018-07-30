@@ -22,9 +22,11 @@ p {
   margin: 0 5px 0 5px;
   font-size: 0.7em;
   font-weight: bold;
-  background-color: #41b883;
+  background-color: #41b88361;
   display: inline-block;
   width: 30px;
+  height: 26px;
   text-align: center;
+  font-weight: bold;
 }
 </style>

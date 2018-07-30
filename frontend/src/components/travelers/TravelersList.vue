@@ -22,13 +22,13 @@ export default {
     ChatWindow
   },
   props: {
-    users: Array,
+    users: Array
   },
-  data(){
-    return{
+  data() {
+    return {
       userToChat: null,
       isChatMode: false
-    }
+    };
   },
   methods: {
     openSelectedUsers(user) {

@@ -79,7 +79,7 @@ export default {
         userName: '',
         isActive: true,
         img:
-          'https://cdn-images-1.medium.com/max/1600/1*l9eqA179Bw1QoMA8iwBvHw.png',
+          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjvdv8INW6OzjzPL8JyQlDbYOxZjabXx8xcNlhroqSHOMZh4C35g',
         age: null,
         name: {
           first: '',

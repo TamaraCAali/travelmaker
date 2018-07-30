@@ -18,7 +18,8 @@ export default {
   login,
   logout,
   getLoggedInUser,
-  setGuestLonin
+  setGuestLonin,
+  getLoggedInUserUrl
 };
 
 function query() {
@@ -76,6 +77,13 @@ function logout() {
 
 function getLoggedInUser() {
   return StorageService.loadFromStorage(STORAGE_KEY) || null;
+}
+
+function getLoggedInUserUrl() {
+  var loggedUser = StorageService.loadFromStorage(STORAGE_KEY);
+  if (loggedUser) return loggedUser.img;
+  else
+    return 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjvdv8INW6OzjzPL8JyQlDbYOxZjabXx8xcNlhroqSHOMZh4C35g';
 }
 
 function setGuestLonin(user) {
