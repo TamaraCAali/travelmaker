@@ -24,7 +24,7 @@ app.use(
 
 // const eventService = require('./routes/services/eventService')
 app.use(bodyParser.json());
-app.use(express.static('frontend/dist'));
+app.use(express.static('/frontend/dist'));
 app.use(
   cors({
     origin: ['http://localhost:8080'],

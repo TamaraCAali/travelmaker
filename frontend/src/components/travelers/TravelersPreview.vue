@@ -1,13 +1,17 @@
 <template>
-  <section class="user-preview">
+  <section class="user-preview"
+  v-if="$store.getters.loggedinUser._id !== user._id"
+  >
       <div class="user" @click="openUserDetails">
           <div class="user-img" :style="'background-image: url('+user.img+')'">
           </div>
           <div class="user-pre-details">
             <div class="bold">{{user.name.first}},  {{user.age}} <span class="dist"> {{dist}} away</span></div>
-            <div class="langs">
-            <langs v-for="langs in user.about.langs" :key="langs" :langs="langs"></langs>
-            <span class="chat-icon" @click.stop="openChat"> <i class="far fa-comments"></i></span>
+              <div class="langs">
+                <langs v-for="langs in user.about.langs" :key="langs" :langs="langs"></langs>
+                <button class="chat-icon" @click.stop="toggleChat">
+                    <i class="far fa-comments"></i>
+                </button>
             </div>
           </div>
       </div>
@@ -40,10 +44,14 @@ export default {
     openUserDetails() {
       this.$emit('selected', this.user);
     },
-    openChat() {
-      console.log(this.user);
-
-      // this.$router.push(`/chat/${this.user}`);
+    toggleChat() {
+      const loggedUser = this.$store.getters.getUser;
+      if (loggedUser._id) {
+        this.$parent.userToChat = { ...this.user };
+      } else {
+        this.$message.error('Please login to contact other people');
+        this.$router.push('/login');
+      }
     }
   }
 };
@@ -58,7 +66,7 @@ export default {
 }
 .user {
   width: 100%;
-  background-color: beige;
+  background-color: #f5f5dc;
   box-shadow: 0 0 5px #00000063;
   margin: 5px;
   transition: all 0.3s;
@@ -87,6 +95,7 @@ export default {
 .user-pre-details {
   padding: 5px 10px;
   margin: 5px 0;
+  font-size: 0.9em;
 }
 
 .user-img p {
@@ -103,12 +112,17 @@ h4 {
   text-align: center;
   cursor: pointer;
   float: right;
+  border: none;
+  color: #35495e;
+  background-color: transparent;
 }
+
 .fa-comments:before {
   font-size: 2em;
 }
 .bold {
   font-weight: bold;
+  padding: 5px 0;
 }
 
 @media only screen and (max-width: 920px) {

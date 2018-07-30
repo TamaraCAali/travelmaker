@@ -11,24 +11,22 @@
         <i class="fas fa-search"></i>
         TravelMaker
         </div>
-        <router-link class="router-link" to="/user/edit/:userId"><i class="fas fa-users-cog"></i><span class="span-icon"></span></router-link>
+        <div>
+        <router-link class="router-link" to="/user/edit/:userId"><i class="fas fa-cog"></i><span class="span-icon"></span>
+        <img class="login-img" :src="userUrl"></router-link></div>
     </nav>
-    
     <user-msg></user-msg>
-    
     <router-view/>
-
-    <!-- <ChatWindow/> -->
   </div>
 </template>
 
 <script>
+import moment from 'moment';
 import ChatWindow from '@/components/ChatWindow.vue';
 import UserMsg from '@/components/UserMsg.vue';
 import EventBusService, {
-  LOGIN_USER,
-  LOGOT_USER,
-  SHOW_MSG
+  SHOW_MSG,
+  LOGIN
 } from './services/eventBusService.js';
 import { LOGOUT } from './store.js';
 
@@ -41,11 +39,18 @@ export default {
     UserMsg
   },
   data() {
-    return { login: null };
+    return {
+      login: null,
+      userUrl: userService.getLoggedInUserUrl()
+    };
   },
   created() {
     EventBusService.$on(SHOW_MSG, username => {
       this.loadLogstatus();
+    });
+    EventBusService.$on(LOGIN, userImg => {
+      this.userUrl = userImg;
+      //get from localstorage of user
     });
     this.loadLogstatus();
   },
@@ -57,6 +62,8 @@ export default {
     },
     logout() {
       this.login = 'login';
+      this.userUrl =
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjvdv8INW6OzjzPL8JyQlDbYOxZjabXx8xcNlhroqSHOMZh4C35g';
       this.$store.dispatch(LOGOUT);
     }
   }
@@ -69,6 +76,7 @@ export default {
 nav {
   display: flex;
   justify-content: space-around;
+  align-items: center;
   color: #41b883;
 }
 .router-link i {
@@ -98,12 +106,12 @@ nav {
 .logo .fa-search {
   // outline: 1px solid blue;
   // margin: 0 2px;
-  transition: 0.5s ease-in-out
+  transition: 0.5s ease-in-out;
 }
 
 .logo:hover .fa-search {
   transform-origin: 37% 33%;
-  transform: rotate(-360deg)
+  transform: rotate(-360deg);
 }
 
 .router-link {
@@ -123,6 +131,11 @@ nav {
 
 .router-link:visited {
   color: #35495e;
+}
+
+.login-img {
+  height: 30px;
+  border-radius: 50%;
 }
 
 @media only screen and (max-width: 420px) {

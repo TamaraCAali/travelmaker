@@ -63,10 +63,7 @@
 
 import { LOGIN } from '../store.js';
 import { SET_GUEST } from '../store.js';
-import EventBusService, {
-  SHOW_MSG,
-  LOGIN_USER
-} from '../services/eventBusService.js';
+import EventBusService, { SHOW_MSG } from '../services/eventBusService.js';
 
 export default {
   name: 'Login',
@@ -90,7 +87,7 @@ export default {
             txt: `Login successfully as ${user.username}`,
             type: 'success'
           });
-          EventBusService.$emit(LOGIN_USER, `logout`);
+
           this.$router.push('/');
         })
         .catch(err => {

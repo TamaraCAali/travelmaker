@@ -2,21 +2,33 @@ module.exports = io => {
 
     // handle incoming connections from clients
     io.on('connection', (socket) => {
+
+        socket.on('joinRoom', room => {
+            console.log('joined room', room);
+            
+            socket.join(room)
+        })
         // once a client has connected, we expect to get a ping from them saying what room they want to join
         socket.on('assignMsg', (newMsg = {
-            author: 'Moshe',
-            creator: 0,
-            txt: 'Puki?',
-            room: 'abc123',
+            room: 'roomExample',
+            creatorId: 0,
+            txt: 'Pukiiii?',
             at: 1532595342052
         }) => {
-            if (socket.room) socket.leave(socket.room);
+            // if (socket.room) socket.leave(socket.room);
+            // socket.room = newMsg.room;
+            // socket.join(newMsg.room);
 
-            socket.room = newMsg.room;
-            socket.join(newMsg.room);
-
+            if (socket.room !== newMsg.room){
+                socket.leave(socket.room);
+                socket.join(newMsg.room);
+            }
+            
+            console.log('Mi Ze Ba?', newMsg)
             io.sockets.in(newMsg.room).emit('renderMsg', newMsg)
         });
+
+
 
     });
 

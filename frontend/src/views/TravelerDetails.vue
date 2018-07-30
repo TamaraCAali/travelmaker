@@ -9,7 +9,11 @@
                 <h2>{{user.name.first}} {{user.name.last}}, {{user.age}}
                 </h2>
 
-                <button class="chat-icon" @click="toggleChat">
+                <button 
+                class="chat-icon" 
+                @click="toggleChat"
+                v-if="$store.getters.loggedinUser._id !== $route.params.userId"
+                >
                     <i class="far fa-comments"></i>
                 </button>
             </div>
@@ -20,8 +24,14 @@
                 </p>
             </div>
             <div>
-                <strong>Interests: </strong>
-                <span v-for="interest in user.about.interests" :key="interest"> {{interest}}, </span>
+                <strong>Interests:  &thinsp;</strong>
+                <span v-for="(interest, idx) in user.about.interests" :key="interest"> {{interest}}
+                 <span v-if="idx < user.about.interests.length-1" >❦</span>
+                </span>
+            </div>
+            <div>
+                <strong>Next Destinations: </strong>
+                <span v-for="dest in user.about.nextDest" :key="dest"> {{dest}}, </span>
             </div>
             <div class="langs">
                 <langs v-for="langs in user.about.langs" :key="langs" :langs="langs"></langs>
@@ -78,9 +88,15 @@ export default {
       this.$router.push(`/event/${event._id}`);
     },
     toggleChat() {
-      console.log(this.user);
-      this.isChatMode = true;
-      // this.$router.push(`/chat/${this.user}`);
+      const loggedUser = this.$store.getters.getUser;
+      if (loggedUser._id) {
+        console.log(this.user);
+        this.isChatMode = true;
+        // this.$router.push(`/chat/${this.user}`);
+      } else {
+        this.$message.error('Please login to contact other people');
+        this.$router.push('/login');
+      }
     }
   },
   watch: {
@@ -130,8 +146,11 @@ h3 {
   // align-items: flex-end;
 }
 .chat-icon {
-  // float: right;
+  border: none;
+  color: #35495e;
+  background-color: transparent;
   cursor: pointer;
+  font-size: 1.35rem;
 }
 .fa-comments:before {
   content: '\f086';

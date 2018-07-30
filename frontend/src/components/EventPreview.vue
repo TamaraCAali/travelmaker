@@ -5,8 +5,8 @@
             <p>{{event.name}} <span class="date">{{date}}</span> </p>
           </div>
           <div class="event-pre-details">
-            <p>{{event.loc.title}}, {{dist}} away</p>
-            <p><i class="fas fa-user-friends"></i> {{event.attends.length}} people are attending</p>
+            <p>{{title}}...<span class="bold"> {{dist}} away</span></p>
+            <p><i class="fas fa-user-friends"></i> {{event.attends.length}} attending</p>
           </div>
       </div>
   </section>
@@ -32,6 +32,9 @@ export default {
         else return dist + ' km';
         return dist;
       }
+    },
+    title: function() {
+      return this.event.loc.title.substr(0, 30);
     }
   },
   methods: {
@@ -51,7 +54,7 @@ export default {
 }
 .event {
   width: 100%;
-  background-color: beige;
+  background-color: #f5f5dc;
   box-shadow: 0 0 5px #00000063;
   margin: 5px;
   transition: all 0.3s;
@@ -75,9 +78,13 @@ export default {
 }
 .event-pre-details {
   padding: 5px 10px;
+  font-size: 0.8em;
+  display: flex;
+  justify-content: space-between;
 }
 .event p {
   margin: 0;
+  padding: 2px;
 }
 .event-img p {
   box-shadow: 0 0 5px whitesmoke;
@@ -88,6 +95,9 @@ export default {
 }
 .date {
   float: right;
+}
+.bold {
+  font-weight: bold;
 }
 
 @media only screen and (max-width: 920px) {
