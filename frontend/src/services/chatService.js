@@ -27,7 +27,7 @@ function remove(room) {
 
 function update(chat) {
   return axios
-    .put(`${CHAT_URL}/${room}`, chat)
+    .put(`${CHAT_URL}/${chat.room}`, chat)
     .then(res => res.data)
     .catch(err => {
       console.warn(err);
