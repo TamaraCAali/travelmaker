@@ -21,7 +21,7 @@ const SOCKET_URL =
   process.env.NODE_ENV !== 'development'
     ? ''
     : '//localhost:3000';
-Vue.use(VueSocketio, '//localhost:3000', store);
+Vue.use(VueSocketio, SOCKET_URL, store);
 
 import VueClipboard from 'vue-clipboard2'
 Vue.use(VueClipboard)
