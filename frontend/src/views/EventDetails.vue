@@ -30,10 +30,15 @@
       </div>
       <div class="details-container">
         At: {{event.loc.title}}
-        <div class="attends-container">
+        <div class="attends-container" @click="showAttendsList = true">
           <i class="fas fa-user-friends"></i>
           {{event.attends.length}} people attending
         </div>
+        <attends-list v-if="showAttendsList" 
+          @close-list="showAttendsList = false"
+          @selected="openSelectedUsers"
+          :usersIds="event.attends">
+        </attends-list>
       </div>
       <div class="btns-container">
         <div @click="toggleEventAttendence()">
@@ -66,8 +71,17 @@
       <h3>Comments:</h3>
       <ul class="clean-list">
         <li class="comment" v-for="comment in event.comments" :key="comment.at">
-          <img :src="comment.creatorImg" />
-          <el-tag type="success">{{comment.txt}}</el-tag>
+          <img :src="comment.creatorImg" @click="$router.push(`/user/${comment.creatorId}`)" />
+          <el-tag type="success">{{comment.txt}} <span>- {{comment.at | commentTime}}</span></el-tag>
+        </li>
+        <li>
+          <input
+            class="new-comment-input"
+            :placeholder="newCommentPlaceholder"
+            @keydown.enter="submitComment"
+            v-model="newCommentTxt"
+            :disabled="!user._id"
+            />
         </li>
       </ul>
     </template>
@@ -76,12 +90,16 @@
 
 <script>
 import moment from 'moment';
+import AttendsList from '../components/AttendsList';
 import locService from '../services/locationService';
 import eventService from '../services/eventService';
 import userService from '../services/userService';
 
 export default {
   name: 'home',
+  components: {
+    AttendsList
+  },
   data() {
     return {
       event: {
@@ -91,13 +109,15 @@ export default {
       user: null,
       eventAddress: '',
       eventUrl: window.location.href,
+      newCommentTxt: '',
+      showAttendsList: false
     };
   },
   created() {
     let idFromParams = this.$route.params.eventId;
     // console.log('event id sent:', idFromParams);
     eventService.getById(idFromParams).then(res => {
-      // console.log('got event:', res);
+      console.log('got event:', res);
       return (this.event = JSON.parse(JSON.stringify(res)));
     });
     this.user = this.$store.getters.getUser;
@@ -107,7 +127,14 @@ export default {
     this.initMap();
   },
   methods: {
+    openSelectedUsers(user) {
+      this.$router.push(`/user/${user._id}`);
+    },
     toggleEventAttendence() {
+      if (!this.user._id) {
+        this.$message.error('You must be a logged-on user to join an event.');
+        return
+      }
       if (this.userIsAttending) {
         // console.log('leaving');
         let userIdx = this.event.attends.findIndex(id => id === this.user._id);
@@ -145,23 +172,35 @@ export default {
     },
     goEditEvent() {
       this.$router.push(`edit/${this.event._id}`);
+    },
+    submitComment() {
+      let newComment = {
+        creatorId: this.user._id,
+        creatorImg: this.user.img,
+        txt: this.newCommentTxt,
+        at: Date.now()
+      }
+      this.event.comments.push(newComment)
+      eventService.update(this.event);
+      console.log('saving comment:', newComment);
+      this.newCommentTxt = ''
     }
   },
   computed: {
     eventLvl() {
-      if (this.event.lvl === 0) {
+      if (this.event.level === 0) {
         return 'Easy';
       }
-      if (this.event.lvl === 1) {
+      if (this.event.level === 1) {
         return 'Light walking';
       }
-      if (this.event.lvl === 2) {
+      if (this.event.level === 2) {
         return 'Moderate trek';
       }
-      if (this.event.lvl === 3) {
+      if (this.event.level === 3) {
         return 'Advanced trek';
       }
-      if (this.event.lvl === 4) {
+      if (this.event.level === 4) {
         return 'Difficult trek';
       }
     },
@@ -177,6 +216,10 @@ export default {
     onSameDay() {
       return moment(+this.event.startTime).startOf('day')['_d'] + '' ==
              moment(+this.event.endTime).startOf('day')['_d'] + '';
+    },
+    newCommentPlaceholder() {
+      if (this.user._id) return 'Add a comment'
+      else return 'Please log in to add a comment'
     }
     // event() {
     //   this.initMap()
@@ -194,6 +237,9 @@ export default {
     },
     formatHour(val) {
       return moment(val).format('HH:mm');
+    },
+    commentTime(val) {
+      return moment(val).format('DD/MM/YYYY HH:mm')
     }
   }
 };
@@ -250,6 +296,15 @@ export default {
   align-self: flex-start;
   padding: 0 10px;
 }
+
+.attends-container {
+  cursor: pointer;
+}
+
+.attends-container:hover {
+  text-decoration: underline;
+}
+
 .btns-container {
   display: flex;
   align-items: center;
@@ -267,7 +322,7 @@ export default {
 }
 
 .tags-container span {
-  margin: 0 0.5em;
+  margin: 0.5em;
 }
 
 .map {
@@ -281,9 +336,26 @@ export default {
   align-items: center;
 }
 
+.comment span span{
+  font-size: 10px;
+}
+
 .comment img {
-  height: 42px;
-  width: auto;
+  height: auto;
+  width: 60px;
   margin: 1em;
+  cursor: pointer;
+}
+
+.new-comment-input {
+  border-radius: 4px;
+  border: 1px solid #dcdfe6;
+  color: #606266;
+  height: 40px;
+  line-height: 40px;
+  outline: 0;
+  padding: 0 15px;
+  margin: 0 1em;
+  width: 100%;
 }
 </style>

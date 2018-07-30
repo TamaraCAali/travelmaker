@@ -1,6 +1,14 @@
 <template>
   <div class="event">
-    <LocationInput v-if="user.loc"></LocationInput>
+    <div class="events-header">
+      <div class="new-event-container" @click="$router.push('/event/edit/newEvent')">
+        <div class="new-event">
+          <i class="far fa-plus-square fa-2x"></i>
+            New event
+        </div>
+      </div>
+      <LocationInput v-if="user.loc"></LocationInput>
+    </div>
     <EventList v-if="user.loc" :events="events" v-on:selected="openSelectedEvent"></EventList>
   </div>
 </template>
@@ -50,3 +58,44 @@ export default {
   }
 };
 </script>
+
+<style>
+.events-header {
+  display:flex;
+  justify-content: center;
+  position: relative;
+  padding: 1em 0;
+}
+
+.events-header .curr-loc{
+  margin: 0 auto;
+}
+
+.new-event {
+  cursor: pointer;
+  position: absolute;
+  /* bottom: 0px; */
+  padding: 5px 8px;
+  margin: 0 2em;
+  border-radius: 4px;
+  background-color: #f5f5dc;
+  display: flex;
+  /* flex-direction: column; */
+  justify-content: center;
+  align-items: center;
+  transition: 0.2s;
+}
+.new-event:hover {
+  background-color: #e0e0ca;
+}
+
+.new-event i {
+  margin-right: 5px;
+  transition: 0.2s;
+}
+.new-event:hover i {
+  margin-right: 10px;
+}
+
+
+</style>
