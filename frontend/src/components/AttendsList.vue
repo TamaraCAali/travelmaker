@@ -53,7 +53,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .modal-backdrop {
   z-index: 2;
   position: fixed;

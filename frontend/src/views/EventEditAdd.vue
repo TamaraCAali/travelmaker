@@ -20,6 +20,7 @@
       <div class="event-header">
         <h2>
           <el-input placeholder="Please input" v-model="event.name"></el-input>
+          <input placeholder="lalal "/>
         </h2>
         <div class="times-container">
           <div class="event-time">
@@ -113,15 +114,30 @@ export default {
     };
   },
   created() {
-    
-    let idFromParams = this.$route.params.eventId;
-    eventService.getById(idFromParams).then(res => {
-      console.log('got event:', res);
-      res.date = moment(res.date).format()
-      return (this.event = JSON.parse(JSON.stringify(res)));
-    });
     this.user = this.$store.getters.getUser;
-    console.log('this.showLvlInput:', this.showLvlInput);
+    let idFromParams = this.$route.params.eventId;
+    if (idFromParams === 'newEvent') {
+      console.log('new event!');
+      let emptyEvent = eventService.getEmptyEvent()
+      this.event = JSON.parse(JSON.stringify(emptyEvent))
+      this.event.creatorId = this.user._id
+    }
+    else {
+      eventService.getById(idFromParams)
+      .then(res => {
+        console.log('got event:', res);
+        res.date = moment(res.date).format()
+        this.event = JSON.parse(JSON.stringify(res));
+        this.initMap();
+        if (!this.event.level) this.showLvlInput = false
+        this.eventStartDate = moment(this.event.startTime).format('YYYY-MM-DD')
+        this.eventStartTime = moment(this.event.startTime).format('HH:mm')
+        this.eventEndDate = moment(this.event.endTime).format('YYYY-MM-DD')
+        this.eventEndTime = moment(this.event.endTime).format('HH:mm')
+        this.eventAddress = this.event.loc.title
+        this.dynamicTags = this.event.tags
+      });
+    }
     
   },
   mounted() {
@@ -253,22 +269,6 @@ export default {
     },
   },
   watch: {
-    event() {
-      console.log('event changed! (watch) :', this.event);
-      
-      this.initMap();
-      if (!this.event.level) this.showLvlInput = false
-      this.eventStartDate = moment(this.event.startTime).format('YYYY-MM-DD')
-      this.eventStartTime = moment(this.event.startTime).format('HH:mm')
-      this.eventEndDate = moment(this.event.endTime).format('YYYY-MM-DD')
-      this.eventEndTime = moment(this.event.endTime).format('HH:mm')
-      this.eventAddress = this.event.loc.title
-      this.dynamicTags = this.event.tags
-
-      // TODO put in start and end times
-
-      // console.log('is user attending?', this.userIsAttending);
-    }
   },
   filters: {
     stringifyEstTime(val) {
@@ -424,7 +424,8 @@ export default {
 }
 
 .event-loc .el-input input {
-  width: 100%
+  width: 100%;
+  font-family: inherit;
 }
 
 .event-description {
