@@ -21,14 +21,24 @@
         <h2>
           <el-input placeholder="Please input" v-model="event.name"></el-input>
         </h2>
-        <p class="event-time">
-          <div>
-            Date: <input type="date" v-model="eventDate"></input>
+        <div class="times-container">
+          <div class="event-time">
+            <div>
+              <span>Start date: </span><input type="date" v-model="eventStartDate"></input>
+            </div>
+            <div>
+              <span>Start Time: </span><input type="time" v-model="eventStartTime"></input>
+            </div>
           </div>
-          <div>
-            Time: <input type="time" v-model="eventTime"></input>
+          <div class="event-time">
+            <div>
+              <span>End date: </span><input type="date" v-model="eventEndDate"></input>
+            </div>
+            <div>
+              <span>End time: </span><input type="time" v-model="eventEndTime"></input>
+            </div>
           </div>
-        </p>
+        </div>
         <!-- <h2 class="event-time">
           <datetime type="datetime" v-model="event.date"></datetime>
         </h2> -->
@@ -44,7 +54,7 @@
           v-model="event.desc">
         </el-input>
       </p>
-      <div class="est-time-container">
+      <div class="difficulty-lvl-container">
         <i v-if="showLvlInput" class="el-icon-remove-outline" @click="toggleEventLvl"></i>
         <i v-else class="el-icon-circle-plus-outline" @click="toggleEventLvl"></i>
         <i class="fas fa-walking"></i>
@@ -56,19 +66,17 @@
           <option value="4">Difficult trek</option>
         </select>
       </div>
-      <div class="difficulty-lvl-container">
-        <i class="far fa-clock"></i> 
-        <p>
-          Takes About: 
-        </p> 
-        <input type="number" v-model="eventEstTime"></input> 
-        <select id="est-time-unit" v-model="estTimeUnit">
-          <option value="m">minutes</option>
-          <option value="h">hours</option>
-          <option value="d">days</option>
-        </select>
-      </div>
       <div v-if="event" class="map" ref="map"></div>
+      <div class="tags-container">
+        <el-tag :key="tag" v-for="tag in dynamicTags" closable
+          :disable-transitions="false" @close="handleClose(tag)">
+          {{tag}}
+        </el-tag>
+        <el-input class="input-new-tag" v-if="inputVisible" v-model="inputValue" ref="saveTagInput"
+          @keyup.enter.native="handleInputConfirm" @blur="handleInputConfirm">
+        </el-input>
+        <el-button class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
+      </div>
       <el-button @click="validateAndSave">Save event</el-button>
     </template>
   </div>
@@ -89,16 +97,23 @@ export default {
         attends: [],
         loc: { lat: 33, lng: 35 }
       },
+      dynamicTags: [],
+      inputVisible: false,
+      inputValue: '',
       user: null,
       eventAddress: '',
       showUploadIcon: false,
       showLvlInput: true,
-      eventDate: '',
-      eventTime: '',
-      eventLocChanged: false
+      eventStartDate: '',
+      eventStartTime: '',
+      eventEndDate: '',
+      eventEndTime: '',
+      eventLocChanged: false,
+      estTimeUnit: ''
     };
   },
   created() {
+    
     let idFromParams = this.$route.params.eventId;
     eventService.getById(idFromParams).then(res => {
       console.log('got event:', res);
@@ -161,6 +176,24 @@ export default {
           this.initMap();
         })
     },
+    handleClose(tag) {
+      this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
+    },
+    showInput() {
+      this.inputVisible = true;
+      this.$nextTick(_ => {
+        this.$refs.saveTagInput.$refs.input.focus();
+      });
+    },
+    handleInputConfirm() {
+      let inputValue = this.inputValue;
+      if (inputValue) {
+        this.dynamicTags.push(inputValue);
+      }
+      this.inputVisible = false;
+      this.inputValue = '';
+    },
+
     validateAndSave() {
       if (this.eventLocChanged) {
         this.getLocByName()
@@ -177,7 +210,9 @@ export default {
       }
     },
     saveEvent() {
-        this.event.date = moment(this.eventDate + ' ' + this.eventTime).format('X');
+        this.event.startTime = +moment(this.eventStartDate + ' ' + this.eventStartTime).format('x');
+        this.event.endTime = +moment(this.eventEndDate + ' ' + this.eventEndTime).format('x');
+        this.event.tags = this.dynamicTags
         
 
 
@@ -214,8 +249,8 @@ export default {
       // return this.event.creatorId === this.user._id
     },
     eventEstTime() {
-      return this.event.estTime
-    }
+      return this.event.endTime
+    },
   },
   watch: {
     event() {
@@ -223,9 +258,15 @@ export default {
       
       this.initMap();
       if (!this.event.level) this.showLvlInput = false
-      this.eventDate = moment(this.event.date).format('YYYY-MM-DD')
-      this.eventTime = moment(this.event.date).format('HH:mm')
+      this.eventStartDate = moment(this.event.startTime).format('YYYY-MM-DD')
+      this.eventStartTime = moment(this.event.startTime).format('HH:mm')
+      this.eventEndDate = moment(this.event.endTime).format('YYYY-MM-DD')
+      this.eventEndTime = moment(this.event.endTime).format('HH:mm')
       this.eventAddress = this.event.loc.title
+      this.dynamicTags = this.event.tags
+
+      // TODO put in start and end times
+
       // console.log('is user attending?', this.userIsAttending);
     }
   },
@@ -347,9 +388,28 @@ export default {
   padding: 0 15px;
   width: 100%;
 }
+
+.times-container {
+  display: flex;
+}
+
 .event-time {
-  width: 4em;
+  /* width: 4em; */
   text-align: center;
+}
+
+.event-time div {
+ display: flex;
+  width: fit-content;
+  justify-content: space-between;
+}
+
+.event-time div span{
+  width: 6em;
+}
+
+.event-time div input{
+  align-self: flex-end;
 }
 
 .event-loc {
@@ -378,6 +438,17 @@ export default {
   width: 6em;
 }
 
+.tags-container {
+ margin: 1em;
+}
+
+.tags-container span {
+  margin: 0 0.5em;
+}
+
+.tags-container div {
+  width: fit-content;
+}
 
 .map {
   width: 100%;

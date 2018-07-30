@@ -19,6 +19,9 @@ Vue.use(Datetime)
 import VueSocketio from 'vue-socket.io';
 Vue.use(VueSocketio, '//localhost:3000', store);
 
+import VueClipboard from 'vue-clipboard2'
+Vue.use(VueClipboard)
+
 Vue.config.productionTip = false;
 new Vue({
   router,
