@@ -26,7 +26,7 @@
             <div>
                 <strong>Interests:  &thinsp;</strong>
                 <span v-for="(interest, idx) in user.about.interests" :key="interest"> {{interest}}
-                 <span v-if="idx < user.about.interests.length-1" >❦</span>
+                 <span v-if="idx < user.about.interests.length-1" >•</span>
                 </span>
             </div>
             <div>
