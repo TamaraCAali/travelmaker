@@ -116,6 +116,7 @@ h4 {
   color: #35495e;
   background-color: transparent;
 }
+
 .fa-comments:before {
   font-size: 2em;
 }

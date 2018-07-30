@@ -15,16 +15,13 @@
         <router-link class="router-link" to="/user/edit/:userId"><i class="fas fa-cog"></i><span class="span-icon"></span>
         <img class="login-img" :src="userUrl"></router-link></div>
     </nav>
-    
     <user-msg></user-msg>
-    
     <router-view/>
-
-    <!-- <ChatWindow/> -->
   </div>
 </template>
 
 <script>
+import moment from 'moment';
 import ChatWindow from '@/components/ChatWindow.vue';
 import UserMsg from '@/components/UserMsg.vue';
 import EventBusService, {

@@ -16,7 +16,7 @@ import TravelersPreview from '@/components/travelers/TravelersPreview.vue';
 import ChatWindow from '@/components/ChatWindow.vue';
 
 export default {
-  name: 'TravelerstList',
+  name: 'TravelersList',
   components: {
     TravelersPreview,
     ChatWindow

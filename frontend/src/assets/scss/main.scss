@@ -21,10 +21,20 @@ body {
   color: #35495e;
   background-color: white;
 }
+
 h2 {
   padding: 0;
   margin: 0;
   font-size: 1.5rem;
+}
+
+.chat-icon {
+  text-align: center;
+  cursor: pointer;
+  float: right;
+  color: inherit;
+  background: inherit;
+  border: none;
 }
 
 /* --------------------helper---------------- */

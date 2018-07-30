@@ -1,6 +1,5 @@
 <template>
     <section class="chat-window">
-      <h1>Chatty chat</h1>
       <ol class="chat">
             <li 
               class="chat-msg-area"
@@ -16,7 +15,7 @@
                   <p>
                     {{msg.txt}}
                   </p>  
-                  <time>{{msg.at}}</time>
+                  <time>{{getMomentTime(msg.at)}}</time>
                 </div>
             </li>
 
@@ -49,9 +48,9 @@
                                       </li>
 
                             </examples> -->
+        <li ref="bottom" style="width:100px; height:50px;"></li>
         </ol>
 
-        
         <form action="">
           <input class="textarea" type="text" v-model="newMsgTxt" placeholder="Type here!"/><div class="emojis"></div>
           <button @click.prevent="addNewMsg" v-show="false">Send</button>
@@ -64,19 +63,21 @@
               <img :src="otherUser.img" draggable="false"/>
             </div>
             <div class="name">{{otherUser.name.first}}</div>
-            <div class="last">last seen at 18:09</div>
+            <!-- <div class="last">last seen at 18:09</div> -->
         </div>
    
     </section>
 </template>
 
 <script>
-// import ChatMsgArea from '@/components/chat/ChatMsgArea.vue';
-// import { LOAD_CHAT } from '@/storeModules/chatModule.js';
 import chatService from '@/services/chatService';
+import moment from 'moment';
+// TODOS: 1. Implement the emoji selector and apply it.
+//        2. Implement last seen.
+//        3. set the img well.
 
-// Theres no need to keep the chat history on the user but only at chat collection
 export default {
+  name: 'ChatWindow',
   props: {
     otherUser: Object
   },
@@ -119,26 +120,32 @@ export default {
         ? this.selfUser._id + this.otherUser._id
         : this.otherUser._id + this.selfUser._id;
 
-    this.$socket.emit('joinRoom', this.chat.room)
-    //TODO: check if prev. room exists.
-    // if not assign a new one from scratch
-  
     this.loadChat(this.chat.room);
+    this.$socket.emit('joinRoom', this.chat.room);
+    
+
   },
   methods: {
-    loadChat(room = '5b58aa7616f42101ded3362b5b58aa7616f42101ded3362a') {
+    loadChat(room) {
+      //  check if prev. room exists. if not: create a new one from scratch and save to DB
       chatService.getByRoom(room).then(chat => {
         if (chat) this.chat = chat;
         else {
-          // TODO:(create new room)? and add it to the collection and save to DB
-          // this.chat = {...this.chat,
-          //   room: room,
-          // }
+          // create new room and add it to the collection and save to DB
+          this.chat = {
+            room,
+            msgs: [],
+            // usernames: [this.otherUser.name.first, this.selfUser.name.first]
+          };
+          chatService.add(this.chat)
         }
       });
     },
+    getMomentTime(timestamp){
+      return moment(timestamp).format('MMM DD, YYYY HH:mm')
+    },
     saveToDB() {
-      // TODO: save chat to chat collection at DB
+      chatService.update(this.chat);
     },
     addNewMsg() {
       let objMsg = {
@@ -148,14 +155,13 @@ export default {
         at: Date.now()
       };
       console.log('this.newMsg in client', objMsg);
-      // this.chat.msgs.push(objMsg);
       // TODO: Make it work offline(!!?)
       this.$socket.emit('assignMsg', objMsg);
+      this.newMsgTxt = ''
     },
     backClicked() {
       this.$parent.isChatMode = false;
       this.$parent.userToChat = null;
-      // this.saveToDB()
     },
     getImgByCreatorId(userId) {
       return userId === this.selfUser._id
@@ -165,12 +171,16 @@ export default {
   },
   sockets: {
     connect() {
-      console.log('socket connected')
+      // console.log('socket connected');
     },
     renderMsg(msg) {
-      console.log('msg from socket', msg);
-      this.chat.msgs.push(msg);
-      // this.saveToDB();
+      // console.log('msg from socket: ', msg);
+      if (msg.creatorId === this.selfUser._id ||
+        msg.creatorId === this.otherUser._id) {
+        this.chat.msgs.push(msg);
+        this.$refs.bottom.scrollIntoView();
+        chatService.update(this.chat);
+      }
     }
   },
   components: {},
@@ -182,21 +192,7 @@ export default {
 ul li p {
   white-space: pre;
 }
-.chat-window {
-  background: beige;
-}
 
-// .chat-msg-area {
-//   background: wheat;
-//   color: blueviolet;
-//   padding: 0.5rem;
-//   margin: 0 0 0.5rem 0;
-// }
-
-// .chat-msg-area.self {
-//   background: blueviolet;
-//   color: wheat;
-// }
 
 // IMPORTED
 
@@ -220,7 +216,7 @@ a {
   right: 0px;
   width: 100%;
   height: 50px;
-  background: rgba(82, 179, 217, 0.9);
+  background:#41b883;
   z-index: 100;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -246,6 +242,7 @@ a {
   left: 30px;
   width: 40px;
   height: 40px;
+  object-fit: cover;
   background-color: rgba(255, 255, 255, 0.98);
   border-radius: 100%;
   -webkit-border-radius: 100%;
@@ -307,6 +304,7 @@ a {
 .chat .avatar img {
   width: 40px;
   height: 40px;
+  object-fit: cover;
   border-radius: 100%;
   -webkit-border-radius: 100%;
   -moz-border-radius: 100%;
