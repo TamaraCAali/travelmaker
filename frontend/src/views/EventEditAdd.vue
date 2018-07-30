@@ -13,7 +13,7 @@
             :on-success="handleAvatarSuccess"
             :before-upload="beforeAvatarUpload">
             <img v-if="imageUrl" :src="imageUrl" class="avatar">
-            <i v-else class="el-icon-upload2 avatar-uploader-icon"></i>
+            <i  class="el-icon-upload2 avatar-uploader-icon"></i>
           </el-upload>
         </div>
       </div>
