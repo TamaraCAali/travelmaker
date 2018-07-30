@@ -10,10 +10,23 @@
            @click="goEditEvent" 
            class="edit-btn far fa-edit fa-2x"></i>
         <h2 class="event-name">{{event.name}}</h2>
-        <p class="event-time">
-          {{event.date | formatDate}} <br/>
-          {{event.date | formatHour}}
-        </p>
+        <div class="event-time">
+          <p>
+            {{event.startTime | formatDate}} <br/>
+            {{event.startTime | formatHour}}
+            <template v-if="onSameDay">
+              - {{event.endTime | formatHour}}
+            </template>
+          </p>
+          <template v-if="!onSameDay">
+            -
+            <p>
+              {{event.endTime | formatDate}} <br/>
+              {{event.endTime | formatHour}}
+            </p>
+          </template>
+          
+        </div>
       </div>
       <div class="details-container">
         At: {{event.loc.title}}
@@ -33,9 +46,9 @@
             Leave
           </template>
         </div>
-        <div @click="shareEvent()">
-          <i class="fas fa-share-alt fa-2x"></i><br/>
-          Share 
+        <div @click="showCopyUrlMsg">
+            <i class="far fa-copy fa-2x" v-clipboard:copy="eventUrl"></i> <br/>
+            Copy Link
         </div>
       </div>
       <p>
@@ -45,16 +58,16 @@
         <i class="fas fa-walking"></i>
         {{eventLvl}}
       </div>
-      <div class="est-time-container">
-        <i class="far fa-clock"></i>  
-        Takes About: {{ event.estTime | stringifyEstTime }}
-      </div>
       <div v-if="event" class="map" ref="map"></div>
+      <div class="tags-container">
+        Tags: 
+        <el-tag v-for="tag in event.tags" :key="tag">{{tag}}</el-tag>
+      </div>
       <h3>Comments:</h3>
-      <ul>
-        <li v-for="comment in event.comments">
-        <!-- TODO: add key -->
-          
+      <ul class="clean-list">
+        <li class="comment" v-for="comment in event.comments" :key="comment.at">
+          <img :src="comment.creatorImg" />
+          <el-tag type="success">{{comment.txt}}</el-tag>
         </li>
       </ul>
     </template>
@@ -76,7 +89,8 @@ export default {
         loc: { lat: 33, lng: 35 }
       },
       user: null,
-      eventAddress: ''
+      eventAddress: '',
+      eventUrl: window.location.href,
     };
   },
   created() {
@@ -112,8 +126,11 @@ export default {
         userService.update(this.user);
       }
     },
-    shareEvent() {
-      console.log('sharing the event');
+    showCopyUrlMsg() {
+      this.$message({
+        message: 'URL copied',
+        type: 'success'
+      });
     },
     initMap() {
       // if (!this.event || !this.event.loc) return
@@ -156,6 +173,10 @@ export default {
     userIsAdmin() {
       return true;
       // return this.event.creatorId === this.user._id
+    },
+    onSameDay() {
+      return moment(+this.event.startTime).startOf('day')['_d'] + '' ==
+             moment(+this.event.endTime).startOf('day')['_d'] + '';
     }
     // event() {
     //   this.initMap()
@@ -168,31 +189,17 @@ export default {
     }
   },
   filters: {
-    stringifyEstTime(val) {
-      if (+val < 60) {
-        return val + ' minutes';
-      }
-      if (+val > 1440) {
-        let daysCount = +val / 720;
-        daysCount = daysCount.toFixed() / 2; //Support .5 days
-        return `${daysCount} days`;
-      } else {
-        let hoursCount = +val / 30;
-        hoursCount = hoursCount.toFixed() / 2; //Support .5 hours
-        return `${hoursCount} hours`;
-      }
-    },
     formatDate(val) {
-      return moment().format('MMM Do');
+      return moment(val).format('MMM Do');
     },
     formatHour(val) {
-      return moment().format('HH:mm');
+      return moment(val).format('HH:mm');
     }
   }
 };
 </script>
 
-<style>
+<style scoped>
 .people-icon {
   width: 14px;
 }
@@ -228,9 +235,15 @@ export default {
 }
 
 .event-time {
-  width: 6em;
+  width: 11em;
   padding: 0 1em;
   text-align: center;
+  display: flex;
+  align-items: center;
+}
+
+.event-time p {
+  padding: 2px
 }
 
 .details-container {
@@ -249,9 +262,28 @@ export default {
   cursor: pointer;
 }
 
+.tags-container {
+  margin: 1em;
+}
+
+.tags-container span {
+  margin: 0 0.5em;
+}
+
 .map {
   width: 100%;
   height: 250px;
   margin: 10px;
+}
+
+.comment {
+  display: flex;
+  align-items: center;
+}
+
+.comment img {
+  height: 42px;
+  width: auto;
+  margin: 1em;
 }
 </style>
