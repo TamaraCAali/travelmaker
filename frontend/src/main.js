@@ -19,7 +19,7 @@ Vue.use(Datetime)
 import VueSocketio from 'vue-socket.io';
 const SOCKET_URL =
   process.env.NODE_ENV !== 'development'
-    ? ''
+    ? '/'
     : '//localhost:3000';
 console.log('SOCKETURL', SOCKET_URL)
 Vue.use(VueSocketio, SOCKET_URL);

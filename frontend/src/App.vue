@@ -137,6 +137,9 @@ nav {
   height: 30px;
   border-radius: 50%;
 }
+.span-icon {
+    text-transform: capitalize;
+}
 
 @media only screen and (max-width: 420px) {
   .span-icon {
