@@ -1,14 +1,14 @@
 <template>
-  <div>
-   <!-- <h1 style="text-align: center;"> Hello {{$store.getters.loggedinUser.userName}}</h1> -->
-    <section class="travelers-list" v-if="!userToChat"> 
-    <TravelersPreview v-for="user in users" :key="user._id" :user="user" v-on:selected="openSelectedUsers"></TravelersPreview>
-    </section>
-    <ChatWindow 
-    v-if="userToChat"
-    :otherUser="userToChat"
-    />
-  </div>
+  <section class = "travelers-list">
+        <h3 v-if="!userToChat">Look who's around you</h3>
+        <section class="list-container" v-if="!userToChat"> 
+          <TravelersPreview v-for="user in users" :key="user._id" :user="user" v-on:selected="openSelectedUsers"></TravelersPreview>
+        </section>
+        <ChatWindow 
+        v-if="userToChat"
+        :otherUser="userToChat"
+        />
+  </section>
 </template>
 
 <script>
@@ -39,7 +39,12 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.travelers-list {
+h3 {
+  text-align: center;
+  font-size: 1.5rem;
+}
+
+.list-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-evenly;
