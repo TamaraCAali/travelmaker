@@ -1,6 +1,6 @@
 <template>
     <section class="chat-window">
-      <ol class="chat">
+      <ol class="chat" v-if="chat.msgs.length > 0">
             <li 
               class="chat-msg-area"
               v-for="msg in chat.msgs"
@@ -48,8 +48,8 @@
                                       </li>
 
                             </examples> -->
-        <li ref="bottom" style="width:100%; height:50px;"></li>
-        </ol>
+            <li ref="bottom" style="width:100%; height:50px;"></li>
+      </ol>
 
         <form action="">
           <input class="textarea" type="text" v-model="newMsgTxt" placeholder="Type here!"/><div class="emojis"></div>
@@ -72,6 +72,7 @@
 <script>
 import chatService from '@/services/chatService';
 import moment from 'moment';
+import eventBusService, { TOGGLE_CHAT } from '@/services/eventBusService';
 // TODOS: 1. Implement the emoji selector and apply it.
 //        2. Implement last seen.
 
@@ -86,14 +87,7 @@ export default {
         _id: 'chat-room-mongo_id',
         room: 'loading-room',
         users: [this.otherUser._id, 'self'],
-        msgs: [
-          {
-            creatorId: this.otherUser._id,
-            txt: 'Loading Chat...',
-            at: Date.now(),
-            room: 'loading-room'
-          }
-        ]
+        msgs: []
       },
       newMsgTxt: '',
       selfUser: {}
@@ -101,8 +95,6 @@ export default {
   },
   computed: {},
   created() {
-    this.$parent.$parent.$parent.showNavBar = false;
-
     this.selfUser = this.$store.getters.loggedinUser;
     this.chat.room =
       this.selfUser._id > this.otherUser._id
@@ -143,9 +135,7 @@ export default {
       this.newMsgTxt = '';
     },
     backClicked() {
-      this.$parent.$parent.$parent.showNavBar = true;
-      this.$parent.userToChat = null;
-      this.$parent.isChatMode = false;
+      eventBusService.$emit(TOGGLE_CHAT, null);
     },
     getImgByCreatorId(userId) {
       return userId === this.selfUser._id

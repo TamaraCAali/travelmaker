@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <nav v-show="showNavBar">
+    <nav v-show="!userToChat">
       <div>
         <router-link class="router-link" to="/login"><i class="fas fa-sign-in-alt"></i> <span @click="logout" class="span-icon"> {{login}}</span></router-link> |
         <router-link class="router-link" to="/"><i class="fas fa-calendar-alt"></i> <span class="span-icon"> events</span></router-link> |
@@ -16,7 +16,8 @@
         <img class="login-img" :src="userUrl"></router-link></div>
     </nav>
     <user-msg></user-msg>
-    <router-view/>
+    <router-view v-show="!userToChat"/>
+    <ChatWindow v-if="userToChat" :otherUser="userToChat" />
   </div>
 </template>
 
@@ -26,7 +27,8 @@ import ChatWindow from '@/components/ChatWindow.vue';
 import UserMsg from '@/components/UserMsg.vue';
 import EventBusService, {
   SHOW_MSG,
-  LOGIN
+  LOGIN,
+  TOGGLE_CHAT
 } from './services/eventBusService.js';
 import { LOGOUT } from './store.js';
 
@@ -40,23 +42,27 @@ export default {
   },
   data() {
     return {
-      showNavBar: true,
       login: null,
-      userUrl: userService.getLoggedInUserUrl()
+      userUrl: userService.getLoggedInUserUrl(),
+      userToChat: null
     };
   },
   created() {
     EventBusService.$on(SHOW_MSG, username => {
-      this.loadLogstatus();
+      this.loadLogStatus();
     });
     EventBusService.$on(LOGIN, userImg => {
       this.userUrl = userImg;
       //get from localstorage of user
     });
-    this.loadLogstatus();
+    EventBusService.$on(TOGGLE_CHAT, user => {
+      console.log('emit happens!', user)
+      this.userToChat = user;
+    });
+    this.loadLogStatus();
   },
   methods: {
-    loadLogstatus() {
+    loadLogStatus() {
       userService.getLoggedInUser()
         ? (this.login = 'logout')
         : (this.login = 'login');
@@ -139,7 +145,7 @@ nav {
   border-radius: 50%;
 }
 .span-icon {
-    text-transform: capitalize;
+  text-transform: capitalize;
 }
 
 @media only screen and (max-width: 420px) {
