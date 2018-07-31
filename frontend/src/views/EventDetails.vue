@@ -10,17 +10,35 @@
            @click="goEditEvent" 
            class="edit-btn far fa-edit fa-2x"></i>
         <h2 class="event-name">{{event.name}}</h2>
-        <p class="event-time">
-          {{event.date | formatDate}} <br/>
-          {{event.date | formatHour}}
-        </p>
+        <div class="event-time">
+          <p>
+            {{event.startTime | formatDate}} <br/>
+            {{event.startTime | formatHour}}
+            <template v-if="onSameDay">
+              - {{event.endTime | formatHour}}
+            </template>
+          </p>
+          <template v-if="!onSameDay">
+            -
+            <p>
+              {{event.endTime | formatDate}} <br/>
+              {{event.endTime | formatHour}}
+            </p>
+          </template>
+          
+        </div>
       </div>
       <div class="details-container">
         At: {{event.loc.title}}
-        <div class="attends-container">
+        <div class="attends-container" @click="showAttendsList = true">
           <i class="fas fa-user-friends"></i>
           {{event.attends.length}} people attending
         </div>
+        <attends-list v-if="showAttendsList" 
+          @close-list="showAttendsList = false"
+          @selected="openSelectedUsers"
+          :usersIds="event.attends">
+        </attends-list>
       </div>
       <div class="btns-container">
         <div @click="toggleEventAttendence()">
@@ -33,9 +51,9 @@
             Leave
           </template>
         </div>
-        <div @click="shareEvent()">
-          <i class="fas fa-share-alt fa-2x"></i><br/>
-          Share 
+        <div @click="showCopyUrlMsg">
+            <i class="far fa-copy fa-2x" v-clipboard:copy="eventUrl"></i> <br/>
+            Copy Link
         </div>
       </div>
       <p>
@@ -45,16 +63,25 @@
         <i class="fas fa-walking"></i>
         {{eventLvl}}
       </div>
-      <div class="est-time-container">
-        <i class="far fa-clock"></i>  
-        Takes About: {{ event.estTime | stringifyEstTime }}
-      </div>
       <div v-if="event" class="map" ref="map"></div>
+      <div class="tags-container">
+        Tags: 
+        <el-tag v-for="tag in event.tags" :key="tag">{{tag}}</el-tag>
+      </div>
       <h3>Comments:</h3>
-      <ul>
-        <li v-for="comment in event.comments">
-        <!-- TODO: add key -->
-          
+      <ul class="clean-list">
+        <li class="comment" v-for="comment in event.comments" :key="comment.at">
+          <img :src="comment.creatorImg" @click="$router.push(`/user/${comment.creatorId}`)" />
+          <el-tag type="success">{{comment.txt}} <span>- {{comment.at | commentTime}}</span></el-tag>
+        </li>
+        <li>
+          <input
+            class="new-comment-input"
+            :placeholder="newCommentPlaceholder"
+            @keydown.enter="submitComment"
+            v-model="newCommentTxt"
+            :disabled="!user._id"
+            />
         </li>
       </ul>
     </template>
@@ -63,12 +90,16 @@
 
 <script>
 import moment from 'moment';
+import AttendsList from '../components/AttendsList';
 import locService from '../services/locationService';
 import eventService from '../services/eventService';
 import userService from '../services/userService';
 
 export default {
   name: 'home',
+  components: {
+    AttendsList
+  },
   data() {
     return {
       event: {
@@ -76,14 +107,17 @@ export default {
         loc: { lat: 33, lng: 35 }
       },
       user: null,
-      eventAddress: ''
+      eventAddress: '',
+      eventUrl: window.location.href,
+      newCommentTxt: '',
+      showAttendsList: false
     };
   },
   created() {
     let idFromParams = this.$route.params.eventId;
     // console.log('event id sent:', idFromParams);
     eventService.getById(idFromParams).then(res => {
-      // console.log('got event:', res);
+      console.log('got event:', res);
       return (this.event = JSON.parse(JSON.stringify(res)));
     });
     this.user = this.$store.getters.getUser;
@@ -93,7 +127,14 @@ export default {
     this.initMap();
   },
   methods: {
+    openSelectedUsers(user) {
+      this.$router.push(`/user/${user._id}`);
+    },
     toggleEventAttendence() {
+      if (!this.user._id) {
+        this.$message.error('You must be a logged-on user to join an event.');
+        return
+      }
       if (this.userIsAttending) {
         // console.log('leaving');
         let userIdx = this.event.attends.findIndex(id => id === this.user._id);
@@ -112,8 +153,11 @@ export default {
         userService.update(this.user);
       }
     },
-    shareEvent() {
-      console.log('sharing the event');
+    showCopyUrlMsg() {
+      this.$message({
+        message: 'URL copied',
+        type: 'success'
+      });
     },
     initMap() {
       // if (!this.event || !this.event.loc) return
@@ -128,23 +172,35 @@ export default {
     },
     goEditEvent() {
       this.$router.push(`edit/${this.event._id}`);
+    },
+    submitComment() {
+      let newComment = {
+        creatorId: this.user._id,
+        creatorImg: this.user.img,
+        txt: this.newCommentTxt,
+        at: Date.now()
+      }
+      this.event.comments.push(newComment)
+      eventService.update(this.event);
+      console.log('saving comment:', newComment);
+      this.newCommentTxt = ''
     }
   },
   computed: {
     eventLvl() {
-      if (this.event.lvl === 0) {
+      if (this.event.level === 0) {
         return 'Easy';
       }
-      if (this.event.lvl === 1) {
+      if (this.event.level === 1) {
         return 'Light walking';
       }
-      if (this.event.lvl === 2) {
+      if (this.event.level === 2) {
         return 'Moderate trek';
       }
-      if (this.event.lvl === 3) {
+      if (this.event.level === 3) {
         return 'Advanced trek';
       }
-      if (this.event.lvl === 4) {
+      if (this.event.level === 4) {
         return 'Difficult trek';
       }
     },
@@ -156,6 +212,14 @@ export default {
     userIsAdmin() {
       return true;
       // return this.event.creatorId === this.user._id
+    },
+    onSameDay() {
+      return moment(+this.event.startTime).startOf('day')['_d'] + '' ==
+             moment(+this.event.endTime).startOf('day')['_d'] + '';
+    },
+    newCommentPlaceholder() {
+      if (this.user._id) return 'Add a comment'
+      else return 'Please log in to add a comment'
     }
     // event() {
     //   this.initMap()
@@ -168,31 +232,20 @@ export default {
     }
   },
   filters: {
-    stringifyEstTime(val) {
-      if (+val < 60) {
-        return val + ' minutes';
-      }
-      if (+val > 1440) {
-        let daysCount = +val / 720;
-        daysCount = daysCount.toFixed() / 2; //Support .5 days
-        return `${daysCount} days`;
-      } else {
-        let hoursCount = +val / 30;
-        hoursCount = hoursCount.toFixed() / 2; //Support .5 hours
-        return `${hoursCount} hours`;
-      }
-    },
     formatDate(val) {
-      return moment().format('MMM Do');
+      return moment(val).format('MMM Do');
     },
     formatHour(val) {
-      return moment().format('HH:mm');
+      return moment(val).format('HH:mm');
+    },
+    commentTime(val) {
+      return moment(val).format('DD/MM/YYYY HH:mm')
     }
   }
 };
 </script>
 
-<style>
+<style scoped>
 .people-icon {
   width: 14px;
 }
@@ -228,15 +281,30 @@ export default {
 }
 
 .event-time {
-  width: 6em;
+  width: 11em;
   padding: 0 1em;
   text-align: center;
+  display: flex;
+  align-items: center;
+}
+
+.event-time p {
+  padding: 2px
 }
 
 .details-container {
   align-self: flex-start;
   padding: 0 10px;
 }
+
+.attends-container {
+  cursor: pointer;
+}
+
+.attends-container:hover {
+  text-decoration: underline;
+}
+
 .btns-container {
   display: flex;
   align-items: center;
@@ -249,9 +317,45 @@ export default {
   cursor: pointer;
 }
 
+.tags-container {
+  margin: 1em;
+}
+
+.tags-container span {
+  margin: 0.5em;
+}
+
 .map {
   width: 100%;
   height: 250px;
   margin: 10px;
+}
+
+.comment {
+  display: flex;
+  align-items: center;
+}
+
+.comment span span{
+  font-size: 10px;
+}
+
+.comment img {
+  height: auto;
+  width: 60px;
+  margin: 1em;
+  cursor: pointer;
+}
+
+.new-comment-input {
+  border-radius: 4px;
+  border: 1px solid #dcdfe6;
+  color: #606266;
+  height: 40px;
+  line-height: 40px;
+  outline: 0;
+  padding: 0 15px;
+  margin: 0 1em;
+  width: 100%;
 }
 </style>

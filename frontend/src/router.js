@@ -28,14 +28,14 @@ export default new Router({
       component: Travelers
     },
     {
-      path: '/event/:eventId',
-      name: 'event-details',
-      component: EventDetails
-    },
-    {
       path: '/event/edit/:eventId',
       name: 'event-edit',
       component: EventEditAdd
+    },
+    {
+      path: '/event/:eventId',
+      name: 'event-details',
+      component: EventDetails
     },
     {
       path: '/user/:userId',

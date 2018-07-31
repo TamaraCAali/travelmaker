@@ -11,7 +11,8 @@ export default {
   add,
   remove,
   update,
-  getById
+  getById,
+  getEmptyEvent
 };
 
 function query() {
@@ -49,9 +50,25 @@ function getById(eventId) {
   return axios.get(`${EVENT_URL}/${eventId}`).then(res => res.data);
 }
 
-// function getEmptyEvent() {
-//     return {
-//         txt: '',
-//         isDone: false
-//     }
-// }
+function getEmptyEvent() {
+    return {
+      creatorId: '',
+      name: '',
+      loc: {
+        lat: undefined,
+        lng: undefined,
+        title: ''
+      },
+      endTime: undefined,
+      desc: '',
+      img: 'https://youthentrepreneurship.club/wp-content/themes/klasik/images/prettyPhoto/default.jpg',
+      attends: [],
+      isPrivate: false,
+      isFull: false,
+      maxCapacity: undefined,
+      startTime: undefined,
+      tags: [],
+      level: 0,
+      comments: []
+    }
+}

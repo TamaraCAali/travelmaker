@@ -1,6 +1,7 @@
 <template>
     <section class="chat-window">
-      <ol class="chat">
+      <h3 v-if="chat.room === 'loading-room'">Loading Chat...</h3>
+      <ol class="chat" v-else>
             <li 
               class="chat-msg-area"
               v-for="msg in chat.msgs"
@@ -48,8 +49,8 @@
                                       </li>
 
                             </examples> -->
-        <li ref="bottom" style="width:100px; height:50px;"></li>
-        </ol>
+        <li ref="bottom" style="width:100%; height:50px;"></li>
+      </ol>
 
         <form action="">
           <input class="textarea" type="text" v-model="newMsgTxt" placeholder="Type here!"/><div class="emojis"></div>
@@ -74,7 +75,6 @@ import chatService from '@/services/chatService';
 import moment from 'moment';
 // TODOS: 1. Implement the emoji selector and apply it.
 //        2. Implement last seen.
-//        3. set the img well.
 
 export default {
   name: 'ChatWindow',
@@ -85,35 +85,25 @@ export default {
     return {
       chat: {
         _id: 'chat-room-mongo_id',
-        room: '5b58aa7616f42101ded3362c5b58aa7616f42101ded3362d',
-        usernames: ['Beatrice', 'Short'],
+        room: 'loading-room',
+        users: [this.otherUser._id, 'self'],
         msgs: [
           {
-            creator: 1,
-            txt: 'Lochets',
-            at: 1532595342052,
-            room: '5b58aa7616f42101ded3362c5b58aa7616f42101ded3362d'
-          },
-          {
-            creator: 0,
-            txt: 'Whattt',
-            at: 1532595423061,
-            room: '5b58aa7616f42101ded3362c5b58aa7616f42101ded3362d'
-          },
-          {
-            creator: 1,
-            txt: 'Yes',
-            at: 1532595787693,
-            room: '5b58aa7616f42101ded3362c5b58aa7616f42101ded3362d'
+            creatorId: this.otherUser._id,
+            txt: 'Loading Chat...',
+            at: Date.now(),
+            room: 'loading-room'
           }
         ]
       },
       newMsgTxt: '',
-      selfUser: ''
+      selfUser: {}
     };
   },
   computed: {},
   created() {
+    this.$parent.$parent.$parent.showNavBar = false;
+
     this.selfUser = this.$store.getters.loggedinUser;
     this.chat.room =
       this.selfUser._id > this.otherUser._id
@@ -122,8 +112,6 @@ export default {
 
     this.loadChat(this.chat.room);
     this.$socket.emit('joinRoom', this.chat.room);
-    
-
   },
   methods: {
     loadChat(room) {
@@ -134,18 +122,15 @@ export default {
           // create new room and add it to the collection and save to DB
           this.chat = {
             room,
-            msgs: [],
-            // usernames: [this.otherUser.name.first, this.selfUser.name.first]
+            users: [this.otherUser._id, this.selfUser._id],
+            msgs: []
           };
-          chatService.add(this.chat)
+          chatService.add(this.chat);
         }
       });
     },
-    getMomentTime(timestamp){
-      return moment(timestamp).format('MMM DD, YYYY HH:mm')
-    },
-    saveToDB() {
-      chatService.update(this.chat);
+    getMomentTime(timestamp) {
+      return moment(timestamp).format('MMM DD, YYYY HH:mm');
     },
     addNewMsg() {
       let objMsg = {
@@ -155,13 +140,13 @@ export default {
         at: Date.now()
       };
       console.log('this.newMsg in client', objMsg);
-      // TODO: Make it work offline(!!?)
       this.$socket.emit('assignMsg', objMsg);
-      this.newMsgTxt = ''
+      this.newMsgTxt = '';
     },
     backClicked() {
-      this.$parent.isChatMode = false;
+      this.$parent.$parent.$parent.showNavBar = true;
       this.$parent.userToChat = null;
+      this.$parent.isChatMode = false;
     },
     getImgByCreatorId(userId) {
       return userId === this.selfUser._id
@@ -169,14 +154,19 @@ export default {
         : this.otherUser.img;
     }
   },
+  destroyed() {
+      this.$parent.$parent.$parent.showNavBar = true;    
+  },
   sockets: {
     connect() {
       // console.log('socket connected');
     },
     renderMsg(msg) {
       // console.log('msg from socket: ', msg);
-      if (msg.creatorId === this.selfUser._id ||
-        msg.creatorId === this.otherUser._id) {
+      if (
+        msg.creatorId === this.selfUser._id ||
+        msg.creatorId === this.otherUser._id
+      ) {
         this.chat.msgs.push(msg);
         this.$refs.bottom.scrollIntoView();
         chatService.update(this.chat);
@@ -192,7 +182,6 @@ export default {
 ul li p {
   white-space: pre;
 }
-
 
 // IMPORTED
 
@@ -216,7 +205,7 @@ a {
   right: 0px;
   width: 100%;
   height: 50px;
-  background:#41b883;
+  background: #41b883;
   z-index: 100;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
