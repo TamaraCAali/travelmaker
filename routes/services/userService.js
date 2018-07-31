@@ -7,6 +7,26 @@ function query() {
     return collection.find({}).toArray();
   });
 }
+
+function queryFilterLoc(loc, range) {
+  var metersToRadian = function(meters) {
+    var earthRadiusInMeters = 6371000;
+    return meters / earthRadiusInMeters;
+  };
+  // var landmark = db.landmarks.findOne({ name: 'Washington DC' });
+  var query = {
+    loc: {
+      $geoWithin: {
+        $centerSphere: [loc, metersToRadian(range)]
+      }
+    }
+  };
+  return mongoService.connect().then(db => {
+    const collection = db.collection('user');
+    return collection.find(query).toArray();
+  });
+}
+
 function remove(userId) {
   userId = new ObjectId(userId);
   return mongoService.connect().then(db => {
@@ -14,11 +34,20 @@ function remove(userId) {
     return collection.remove({ _id: userId });
   });
 }
+
 function getById(userId) {
   userId = new ObjectId(userId);
   return mongoService.connect().then(db => {
     const collection = db.collection('user');
     return collection.findOne({ _id: userId });
+  });
+}
+function getByFbId(userId) {
+  console.log('mongo', userId);
+
+  return mongoService.connect().then(db => {
+    const collection = db.collection('user');
+    return collection.findOne({ FB_id: userId });
   });
 }
 
@@ -60,8 +89,10 @@ function checkForUser(user) {
 
 module.exports = {
   query,
+  queryFilterLoc,
   remove,
   getById,
+  getByFbId,
   add,
   update,
   checkForUser

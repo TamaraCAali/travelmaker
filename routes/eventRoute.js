@@ -8,6 +8,14 @@ module.exports = app => {
     eventService.query().then(events => res.json(events));
   });
 
+  app.post(EVENT_URL + '/range', (req, res) => {
+    const filter = req.body;
+    const loc = filter.loc;
+    const range = filter.range;
+    console.log('inside post filter 11', loc, range);
+    eventService.queryFilterLoc(loc, range).then(users => res.json(users));
+  });
+
   app.get(EVENT_URL + '/:eventId', (req, res) => {
     const eventId = req.params.eventId;
 

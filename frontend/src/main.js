@@ -12,12 +12,15 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 Vue.use(ElementUI);
 
-import Datetime from 'vue-datetime'
-import 'vue-datetime/dist/vue-datetime.css'
-Vue.use(Datetime)
+import Datetime from 'vue-datetime';
+import 'vue-datetime/dist/vue-datetime.css';
+Vue.use(Datetime);
 
 import VueSocketio from 'vue-socket.io';
 Vue.use(VueSocketio, '//localhost:3000', store);
+
+import FBSignInButton from 'vue-facebook-signin-button';
+Vue.use(FBSignInButton);
 
 Vue.config.productionTip = false;
 new Vue({
@@ -25,4 +28,3 @@ new Vue({
   store,
   render: h => h(App)
 }).$mount('#app');
-

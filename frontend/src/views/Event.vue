@@ -34,11 +34,11 @@ export default {
       this.user = this.$store.getters.loggedinUser;
       console.log('event', this.user);
       EventBusService.$emit(LOGIN, this.user.img);
-      this.loadEvent();
+      this.loadEvent(this.user);
     },
-    loadEvent() {
+    loadEvent(user) {
       this.$store
-        .dispatch(LOAD_EVENTS)
+        .dispatch(LOAD_EVENTS, { user })
         .then()
         .catch(err => {
           console.log('err in load events');

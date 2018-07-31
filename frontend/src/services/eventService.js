@@ -7,6 +7,7 @@ const EVENT_URL =
 
 export default {
   query,
+  queryByRange,
   add,
   remove,
   update,
@@ -15,6 +16,14 @@ export default {
 
 function query() {
   return axios.get(EVENT_URL).then(res => res.data);
+}
+
+function queryByRange(userLoc) {
+  console.log('inside service events', userLoc);
+
+  const loc = [userLoc[1], userLoc[0]];
+  const range = 5000000000000000;
+  return axios.post(EVENT_URL + '/range', { loc, range }).then(res => res.data);
 }
 
 function add(event) {

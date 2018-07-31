@@ -137,6 +137,9 @@ h3 {
   height: 250px;
   object-fit: cover;
 }
+.user-pre-details {
+  width: 100%;
+}
 .user-pre-details div {
   margin: 10px 0;
 }
