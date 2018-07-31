@@ -8,6 +8,26 @@ function query() {
     return collection.find({}).toArray();
   });
 }
+
+function queryFilterLoc(loc, range) {
+  var metersToRadian = function(meters) {
+    var earthRadiusInMeters = 6371000;
+    return meters / earthRadiusInMeters;
+  };
+  // var landmark = db.landmarks.findOne({ name: 'Washington DC' });
+  var query = {
+    loc: {
+      $geoWithin: {
+        $centerSphere: [loc, metersToRadian(range)]
+      }
+    }
+  };
+  return mongoService.connect().then(db => {
+    const collection = db.collection('event');
+    return collection.find(query).toArray();
+  });
+}
+
 function remove(eventId) {
   eventId = new ObjectId(eventId);
   return mongoService.connect().then(db => {
@@ -50,6 +70,7 @@ function update(event) {
 
 module.exports = {
   query,
+  queryFilterLoc,
   remove,
   getById,
   add,

@@ -31,13 +31,14 @@ export default {
     }
   },
   actions: {
-    [LOAD_EVENTS](context) {
-      return eventService.query().then(events =>
+    [LOAD_EVENTS](context, { user }) {
+      return eventService.queryByRange(user.loc.coordinates).then(events => {
+        console.log('test events', events);
         context.commit({
           type: LOAD_EVENTS,
           events
-        })
-      );
+        });
+      });
     },
     [LOAD_EVENT](context, { eventId }) {
       return eventService.getById(eventId);
