@@ -16,13 +16,8 @@
         <img class="login-img" :src="userUrl"></router-link></div>
     </nav>
     <user-msg></user-msg>
-<<<<<<< HEAD
     <router-view v-show="!userToChat"/>
     <ChatWindow v-if="userToChat" :otherUser="userToChat" />
-=======
-
-    <router-view/>
->>>>>>> master
   </div>
 
 </template>

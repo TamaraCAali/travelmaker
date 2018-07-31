@@ -33,18 +33,11 @@ export default {
     langs
   },
   computed: {
-<<<<<<< HEAD
     dist() {
-      const userLoc = this.$store.getters.getCurrLoc;
-
-      const dist = locService.getDistance(userLoc, this.user.loc).toFixed();
-=======
-    dist: function() {
       const userLoc = this.$store.getters.getCurrLoc.coordinates;
       const dist = locService
         .getDistance(userLoc, this.user.loc.coordinates)
         .toFixed();
->>>>>>> master
       if (dist < 1) return dist + ' m';
       else return dist + ' km';
       return dist;
