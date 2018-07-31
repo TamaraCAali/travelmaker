@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.4.1/workbox-sw.js");
 
 importScripts(
-  "/precache-manifest.97303e550e6985bbe5aec57996ed1574.js"
+  "/precache-manifest.b4610a9cb7c7ee0a38492b6e508bfb6c.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "travelmaker"});
@@ -25,5 +25,7 @@ workbox.core.setCacheNameDetails({prefix: "travelmaker"});
  * See https://goo.gl/S9QRab
  */
 self.__precacheManifest = [].concat(self.__precacheManifest || []);
+
+console.log('sdsdsdsdsds',{self})
 workbox.precaching.suppressWarnings();
 workbox.precaching.precacheAndRoute(self.__precacheManifest, {});

@@ -12,8 +12,12 @@
         TravelMaker
         </div>
         <div>
-        <router-link class="router-link" to="/user/edit/:userId"><i class="fas fa-cog"></i><span class="span-icon"></span>
-        <img class="login-img" :src="userUrl"></router-link></div>
+          <router-link class="router-link" to="/user/edit/:userId"><i class="fas fa-cog"></i><span class="span-icon"></span>
+          <img class="login-img" :src="userUrl"></router-link>
+        </div>
+        <!-- <didi-sandbox> -->
+          <NotificationMenu/>
+        <!-- </didi-sandbox> -->
     </nav>
     <user-msg></user-msg>
     <router-view v-show="!userToChat"/>
@@ -47,6 +51,7 @@
 
 import moment from 'moment';
 import ChatWindow from '@/components/ChatWindow.vue';
+import NotificationMenu from '@/components/NotificationMenu.vue';
 import UserMsg from '@/components/UserMsg.vue';
 
 import EventBusService, {
@@ -62,7 +67,8 @@ export default {
   name: 'app',
   components: {
     ChatWindow,
-    UserMsg
+    UserMsg,
+    NotificationMenu
   },
   data() {
     return {

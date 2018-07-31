@@ -1,7 +1,8 @@
 <template>
     <section class="chat-window">
-      <ol class="chat" v-if="chat.msgs.length > 0">
+      <ol class="chat" >
             <li 
+              v-if="chat.msgs.length > 0"
               class="chat-msg-area"
               v-for="msg in chat.msgs"
               :msg="msg"
@@ -72,9 +73,14 @@
 <script>
 import chatService from '@/services/chatService';
 import moment from 'moment';
-import eventBusService, { TOGGLE_CHAT } from '@/services/eventBusService';
+import store, { UPDATE_USER } from '@/store';
+import eventBusService, {
+  TOGGLE_CHAT,
+  PUSH_NOTIFICATION
+} from '@/services/eventBusService';
 // TODOS: 1. Implement the emoji selector and apply it.
 //        2. Implement last seen.
+//        3. Possible: change the key to the otherUser Id
 
 export default {
   name: 'ChatWindow',
@@ -84,13 +90,14 @@ export default {
   data() {
     return {
       chat: {
-        _id: 'chat-room-mongo_id',
         room: 'loading-room',
         users: [this.otherUser._id, 'self'],
         msgs: []
       },
       newMsgTxt: '',
-      selfUser: {}
+      selfUser: {},
+      updatedOtherUser: {},
+      otherChatNtfsMap: {}
     };
   },
   computed: {},
@@ -101,6 +108,7 @@ export default {
         ? this.selfUser._id + this.otherUser._id
         : this.otherUser._id + this.selfUser._id;
 
+    this.resetUpdatedUser();
     this.loadChat(this.chat.room);
     this.$socket.emit('joinRoom', this.chat.room);
   },
@@ -108,8 +116,11 @@ export default {
     loadChat(room) {
       //  check if prev. room exists. if not: create a new one from scratch and save to DB
       chatService.getByRoom(room).then(chat => {
-        if (chat) this.chat = chat;
-        else {
+        if (chat) {
+          this.chat = chat;
+          let lastMsg = chat.msgs[this.chat.msgs.length - 1];
+          // if(!lastMsg.isSeen && lastMsg.creatorId === this.otherUser._id)
+        } else {
           // create new room and add it to the collection and save to DB
           this.chat = {
             room,
@@ -123,15 +134,38 @@ export default {
     getMomentTime(timestamp) {
       return moment(timestamp).format('MMM DD, YYYY HH:mm');
     },
+    resetUpdatedUser() {
+      console.log('this.otherUser', this.otherUser);
+      this.updatedOtherUser = { ...this.otherUser };
+      if (!this.updatedOtherUser.chatNtfsMap) {
+        this.updatedOtherUser.chatNtfsMap = { [this.selfUser._id]: [] };
+      } else if (!this.updatedOtherUser.chatNtfsMap[this.selfUser._id]) {
+        this.updatedOtherUser.chatNtfsMap[this.selfUser._id] = [];
+      }
+    },
+    setOtherNtfsMap() {
+      this.otherChatNtfsMap = { ...this.otherUser.chatNtfsMap };
+      if (!otherChatNtfsMap[this.selfUser._id]) {
+        otherChatNtfsMap[this.selfUser._id] = [];
+      }
+    },
     addNewMsg() {
       let objMsg = {
         txt: this.newMsgTxt,
         room: this.chat.room,
         creatorId: this.selfUser._id,
         at: Date.now()
+        // isSeen: false
       };
       console.log('this.newMsg in client', objMsg);
       this.$socket.emit('assignMsg', objMsg);
+      this.updatedOtherUser.chatNtfsMap[this.selfUser._id].push(objMsg);
+      this.$store.dispatch({ type: UPDATE_USER, user: this.updatedOtherUser });
+
+      // send notification to otherUser here, to his own unique ntfs channel
+      // every user is automatically connect to itself's user._id socket
+      // maybe 'ntfs_<user._id>'
+
       this.newMsgTxt = '';
     },
     backClicked() {
@@ -141,10 +175,22 @@ export default {
       return userId === this.selfUser._id
         ? this.selfUser.img
         : this.otherUser.img;
+    },
+    clearSelfNtfsMap() {
+      if (this.selfUser.chatNtfsMap[this.otherUser._id]) {
+        delete this.selfUser.chatNtfsMap[this.otherUser._id];
+        this.$store.dispatch({ type: UPDATE_USER, user: this.selfUser });
+      }
     }
   },
   destroyed() {
-      this.$parent.$parent.$parent.showNavBar = true;    
+    //update the selfUser chatNtfsMap in this room as read.
+    this.clearSelfNtfsMap();
+    // Possible senario - leaving the room when destroyed, and then we
+    // know when to send push-Notification:
+    // another possibility is to create a room with the otherUser room and
+    //  keep him connected to this room whenever he's logged in
+    // this.$socket.emit('leaveRoom', this.chat.room)
   },
   sockets: {
     connect() {
@@ -159,6 +205,13 @@ export default {
         this.chat.msgs.push(msg);
         this.$refs.bottom.scrollIntoView();
         chatService.update(this.chat);
+      }
+      if (msg.creatorId === this.otherUser._id) {
+        let title = 'TravelMaker';
+        let options = {
+          body: 'You have a new message!'
+        };
+        eventBusService.$emit(PUSH_NOTIFICATION, { title, options });
       }
     }
   },

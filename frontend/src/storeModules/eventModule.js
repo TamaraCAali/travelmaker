@@ -33,7 +33,6 @@ export default {
   actions: {
     [LOAD_EVENTS](context, { user }) {
       return eventService.queryByRange(user.loc.coordinates).then(events => {
-        console.log('test events', events);
         context.commit({
           type: LOAD_EVENTS,
           events

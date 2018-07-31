@@ -26,19 +26,19 @@ export default new Vuex.Store({
   mutations: {
     [LOAD_CURR_LOC](state, { currLoc }) {
       state.user.loc = currLoc;
-      console.log('LOAD_CURR_LOC', state.user);
+      // console.log('LOAD_CURR_LOC', state.user);
     },
     [SEARCHED_LOC](state, { pos }) {
       state.searchedLoc = pos;
     },
     [SET_USER](state, { user }) {
       state.user = user;
-      console.log('SET_USER', state.user);
+      // console.log('SET_USER', state.user);
     }
   },
   getters: {
     getCurrLoc(state) {
-      console.log('inside getCurrLoc ');
+      // console.log('inside getCurrLoc ');
       return state.user.loc;
     },
     getUser(state) {
@@ -67,10 +67,10 @@ export default new Vuex.Store({
         });
     },
     [SEARCHED_LOC](context, { searchInput }) {
-      console.log('store got:', searchInput);
+      // console.log('store got:', searchInput);
 
       locService.getPositionByName(searchInput).then(pos => {
-        console.log('pos', pos);
+        // console.log('pos', pos);
         context.commit({
           type: SEARCHED_LOC,
           pos
@@ -81,7 +81,7 @@ export default new Vuex.Store({
       return userService
         .login(user)
         .then(user => {
-          console.log('after login', user);
+          // console.log('after login', user);
           return context.commit({ type: SET_USER, user });
         })
         .catch(err => {
@@ -89,11 +89,11 @@ export default new Vuex.Store({
         });
     },
     [FB_LOGIN](context, { user }) {
-      console.log('store', user);
+      // console.log('store', user);
       return userService
         .fbLogin(user)
         .then(user => {
-          console.log('after fb login', user);
+          // console.log('after fb login', user);
           return context.commit({ type: SET_USER, user });
         })
         .catch(err => {
@@ -106,14 +106,14 @@ export default new Vuex.Store({
       });
     },
     [UPDATE_USER](context, { user }) {
-      console.log('update', user);
+      // console.log('update', user);
       return userService.update(user).then();
     },
     [ADD_USER](context, { user }) {
-      console.log(user);
+      // console.log(user);
       return _getAppLoc().then(loc => {
         user.loc = loc;
-        console.log(user);
+        // console.log(user);
 
         return userService.add(user).then(user => {
           return context.commit({
@@ -127,7 +127,7 @@ export default new Vuex.Store({
       var user = _loadUser();
       return _getAppLoc().then(loc => {
         user.loc = loc;
-        console.log('SET_GUEST', user);
+        // console.log('SET_GUEST', user);
         userService.setGuestLonin(user);
         return context.commit({
           type: SET_USER,
