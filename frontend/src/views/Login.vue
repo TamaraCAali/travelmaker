@@ -10,14 +10,12 @@
             <button class="btn-submit" type="submit">Login</button>
           </form>
             <p>Or login with</p>
-                <div class="flex justify-center" >
-					<a href="#"  class="login-social-icon">
-						<i class="fab fa-facebook-f"></i>
-					</a>
-					<a href="#" class="login-social-icon">
-						<img src="../assets/img/icon-google.png">
-					</a>
-				</div>
+              <div class="flex justify-center" >
+                <!-- <FBLogin ></FBLogin>   -->
+                <a href="#" class="login-social-icon">
+                  <img src="../assets/img/icon-google.png">
+                </a>
+				      </div>
         <router-link to="/user/edit/:userId"><span >Open new account</span></router-link>
           </div>
           
@@ -25,48 +23,21 @@
 </template>
 
 <script>
-// ***********LOGIN WITH FACEBOOK START*********************//
-
-// function logInWithFacebook() {
-//   FB.login(function(response) {
-//     if (response.authResponse) {
-//       alert('You are logged in &amp; cookie set!');
-//       // Now you can redirect the user or do an AJAX request to
-//       // a PHP script that grabs the signed request from the cookie.
-//     } else {
-//       alert('User cancelled login or did not fully authorize.');
-//     }
-//   });
-//   return false;
-// }
-// window.fbAsyncInit = function() {
-//   FB.init({
-//     appId: 'your-app-id',
-//     cookie: true, // This is important, it's not enabled by default
-//     version: 'v2.2'
-//   });
-// };
-
-// (function(d, s, id) {
-//   var js,
-//     fjs = d.getElementsByTagName(s)[0];
-//   if (d.getElementById(id)) {
-//     return;
-//   }
-//   js = d.createElement(s);
-//   js.id = id;
-//   js.src = 'https://connect.facebook.net/en_US/sdk.js';
-//   fjs.parentNode.insertBefore(js, fjs);
-// })(document, 'script', 'facebook-jssdk');
-
-// ***********LOGIN WITH FACEBOOK END*********************//
-
 import { LOGIN } from '../store.js';
+import { FB_LOGIN } from '../store.js';
+
 import { SET_GUEST } from '../store.js';
-import EventBusService, { SHOW_MSG } from '../services/eventBusService.js';
+import EventBusService, {
+  SHOW_MSG,
+  FB_LOGIN_MSG
+} from '../services/eventBusService.js';
+import FBLogin from '@/components/Logins/FBLogin.vue';
 
 export default {
   name: 'Login',
+  components: {
+    FBLogin
+  },
   data() {
     return {
       ChekcIn: {
@@ -75,7 +46,11 @@ export default {
       }
     };
   },
-  created() {},
+  created() {
+    EventBusService.$on(FB_LOGIN_MSG, fbUser => {
+      this.fbLogin(fbUser);
+    });
+  },
   computed: {},
   methods: {
     login() {
@@ -106,6 +81,24 @@ export default {
           console.log('here');
           EventBusService.$emit(SHOW_MSG, {
             txt: `Login as guest`,
+            type: 'success'
+          });
+          this.$router.push('/');
+        })
+        .catch(err => {
+          console.log('err', err);
+          EventBusService.$emit(SHOW_MSG, {
+            txt: err,
+            type: 'danger'
+          });
+        });
+    },
+    fbLogin(user) {
+      this.$store
+        .dispatch(FB_LOGIN, { user })
+        .then(_ => {
+          EventBusService.$emit(SHOW_MSG, {
+            txt: `Login successfully as ${user.name}`,
             type: 'success'
           });
           this.$router.push('/');
@@ -190,7 +183,6 @@ body,
 .login-social-icon {
   font-size: 25px;
   color: #3b5998;
-
   display: -webkit-box;
   display: -webkit-flex;
   display: -moz-box;
@@ -204,10 +196,6 @@ body,
   background-color: #fff;
   margin: 5px;
   box-shadow: 0 5px 20px 0px rgba(0, 0, 0, 0.1);
-  -moz-box-shadow: 0 5px 20px 0px rgba(0, 0, 0, 0.1);
-  -webkit-box-shadow: 0 5px 20px 0px rgba(0, 0, 0, 0.1);
-  -o-box-shadow: 0 5px 20px 0px rgba(0, 0, 0, 0.1);
-  -ms-box-shadow: 0 5px 20px 0px rgba(0, 0, 0, 0.1);
 }
 
 .login-social-icon img {
@@ -217,10 +205,6 @@ body,
 .login-social-icon:hover {
   color: #3b5998;
   box-shadow: 0 5px 20px 0px rgba(0, 0, 0, 0.2);
-  -moz-box-shadow: 0 5px 20px 0px rgba(0, 0, 0, 0.2);
-  -webkit-box-shadow: 0 5px 20px 0px rgba(0, 0, 0, 0.2);
-  -o-box-shadow: 0 5px 20px 0px rgba(0, 0, 0, 0.2);
-  -ms-box-shadow: 0 5px 20px 0px rgba(0, 0, 0, 0.2);
 }
 .try-us {
   font-weight: bold;

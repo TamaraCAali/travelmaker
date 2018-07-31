@@ -1,0 +1,14 @@
+db.getCollection('chat').insert({{
+    "room" : "5b58aa7616f42101ded3362a5b58aa7616f42101ded3362b",
+    "usernames" : [
+        "Kate-Update",
+         "Bauer"
+    ],
+    "msgs": [
+        {"msg": "How Are you?", "creator": 0, "at":1532608098785},
+        {"msg": "I'm fine thank you.", "creator": 1, "at":1532608153203},
+        {"msg": "And You :)", "creator": 1, "at":1532608185418},
+        {"msg": "Very good, so nice of you to ask :))", "creator": 0, "at":1532608232542},
+    ]
+    }
+}})
