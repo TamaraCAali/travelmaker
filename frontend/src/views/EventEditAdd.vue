@@ -13,7 +13,7 @@
             :on-success="handleAvatarSuccess"
             :before-upload="beforeAvatarUpload">
             <img v-if="imageUrl" :src="imageUrl" class="avatar">
-            <i  class="el-icon-upload2 avatar-uploader-icon"></i>
+            <i class="el-icon-upload2 avatar-uploader-icon"></i>
           </el-upload>
         </div>
       </div>
@@ -25,18 +25,18 @@
         <div class="times-container">
           <div class="event-time">
             <div>
-              <span>Start date: </span><input type="date" v-model="eventStartDate"></input>
+              <span>Start date: </span><input type="date" v-model="eventStartDate"/>>
             </div>
             <div>
-              <span>Start Time: </span><input type="time" v-model="eventStartTime"></input>
+              <span>Start Time: </span><input type="time" v-model="eventStartTime"/>
             </div>
           </div>
           <div class="event-time">
             <div>
-              <span>End date: </span><input type="date" v-model="eventEndDate"></input>
+              <span>End date: </span><input type="date" v-model="eventEndDate"/>
             </div>
             <div>
-              <span>End time: </span><input type="time" v-model="eventEndTime"></input>
+              <span>End time: </span><input type="time" v-model="eventEndTime"/>>
             </div>
           </div>
         </div>
@@ -230,8 +230,13 @@ export default {
         this.event.endTime = +moment(this.eventEndDate + ' ' + this.eventEndTime).format('x');
         this.event.tags = this.dynamicTags
         
-
-
+        if (this.event._id) {
+          eventService.update(this.event)
+        }
+        else {
+          eventService.add(this.event)
+        }
+        
         //TODO: rest setup of saving event
 
         console.log('saving event:', this.event);
