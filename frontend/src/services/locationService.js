@@ -12,9 +12,7 @@ function getAddressFromLoc(loc) {
   // console.log('service got loc:', loc);
   return axios
     .get(
-      `https://maps.googleapis.com/maps/api/geocode/json?latlng=${loc[0]},${
-        loc[1]
-      }&key=${API_KEY}`,
+      `https://maps.googleapis.com/maps/api/geocode/json?latlng=${loc[0]},${loc[1]}&key=${API_KEY}`,
       {
         withCredentials: false
       }

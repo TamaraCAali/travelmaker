@@ -1,7 +1,7 @@
 <template>
   <div class="event">
     <div class="events-header">
-      <div class="new-event-container" @click="$router.push('/event/edit/newEvent')">
+      <div class="new-event-container" @click="onNewEvent">
         <div class="new-event">
           <i class="far fa-plus-square fa-2x"></i>
             New event
@@ -54,6 +54,13 @@ export default {
     },
     openSelectedEvent(event) {
       this.$router.push(`event/${event._id}`);
+    },
+    onNewEvent() {
+      if (this.user._id) this.$router.push('/event/edit/newEvent')
+      else {
+        this.$message.error('Please login to create an event');
+        this.$router.push('/login');
+      }
     }
   }
 };
@@ -97,5 +104,26 @@ export default {
   margin-right: 10px;
 }
 
+@media screen and (max-width: 700px) {
+  .events-header {
+    flex-wrap: wrap-reverse;
+  }
 
+  .curr-loc {
+    margin: 0;
+  }
+
+  .new-event {
+    position: static;
+  }
+
+  .new-event:hover i {
+    margin-right: 5px;
+  }
+}
+@media screen and (max-width: 570px) {
+  .new-event:hover i {
+    margin-right: 10px;
+  }
+}
 </style>
