@@ -16,15 +16,44 @@
         <img class="login-img" :src="userUrl"></router-link></div>
     </nav>
     <user-msg></user-msg>
+<<<<<<< HEAD
     <router-view v-show="!userToChat"/>
     <ChatWindow v-if="userToChat" :otherUser="userToChat" />
+=======
+
+    <router-view/>
+>>>>>>> master
   </div>
+
 </template>
 
 <script>
+// ***********LOGIN WITH FACEBOOK START*********************//
+
+// window.fbAsyncInit = function() {
+//   FB.init({
+//     appId: 433876200458410,
+//     cookie: true, // enable cookies to allow the server to access the session
+//     xfbml: true, // parse social plugins on this page
+//     version: 'v2.8', // use graph api version 2.8
+//   });
+// };
+// (function(d, s, id) {
+//   var js,
+//     fjs = d.getElementsByTagName(s)[0];
+//   if (d.getElementById(id)) return;
+//   js = d.createElement(s);
+//   js.id = id;
+//   js.src = '//connect.facebook.net/en_US/sdk.js';
+//   fjs.parentNode.insertBefore(js, fjs);
+// })(document, 'script', 'facebook-jssdk');
+
+// ***********LOGIN WITH FACEBOOK END*********************//
+
 import moment from 'moment';
 import ChatWindow from '@/components/ChatWindow.vue';
 import UserMsg from '@/components/UserMsg.vue';
+
 import EventBusService, {
   SHOW_MSG,
   LOGIN,
@@ -76,7 +105,6 @@ export default {
   }
 };
 </script>
-
 
 
 <style  lang="scss">

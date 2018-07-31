@@ -6,7 +6,7 @@
           <div class="user-img" :style="'background-image: url('+user.img+')'">
           </div>
           <div class="user-pre-details">
-            <div class="bold">{{user.name.first}},  {{user.age}} <span class="dist"> {{dist}} away</span></div>
+            <div class="bold">{{user.name.first}},  {{user.age}} <span class="dist"> {{dist}}  away</span></div>
               <div class="langs">
                 <langs v-for="langs in user.about.langs" :key="langs" :langs="langs"></langs>
                 <button class="chat-icon" @click.stop="toggleChat">
@@ -33,10 +33,18 @@ export default {
     langs
   },
   computed: {
+<<<<<<< HEAD
     dist() {
       const userLoc = this.$store.getters.getCurrLoc;
 
       const dist = locService.getDistance(userLoc, this.user.loc).toFixed();
+=======
+    dist: function() {
+      const userLoc = this.$store.getters.getCurrLoc.coordinates;
+      const dist = locService
+        .getDistance(userLoc, this.user.loc.coordinates)
+        .toFixed();
+>>>>>>> master
       if (dist < 1) return dist + ' m';
       else return dist + ' km';
       return dist;

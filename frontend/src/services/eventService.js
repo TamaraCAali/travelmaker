@@ -7,14 +7,24 @@ const EVENT_URL =
 
 export default {
   query,
+  queryByRange,
   add,
   remove,
   update,
-  getById
+  getById,
+  getEmptyEvent
 };
 
 function query() {
   return axios.get(EVENT_URL).then(res => res.data);
+}
+
+function queryByRange(userLoc) {
+  console.log('inside service events', userLoc);
+
+  const loc = [userLoc[1], userLoc[0]];
+  const range = 5000000000000000;
+  return axios.post(EVENT_URL + '/range', { loc, range }).then(res => res.data);
 }
 
 function add(event) {
@@ -40,9 +50,25 @@ function getById(eventId) {
   return axios.get(`${EVENT_URL}/${eventId}`).then(res => res.data);
 }
 
-// function getEmptyEvent() {
-//     return {
-//         txt: '',
-//         isDone: false
-//     }
-// }
+function getEmptyEvent() {
+    return {
+      creatorId: '',
+      name: '',
+      loc: {
+        lat: undefined,
+        lng: undefined,
+        title: ''
+      },
+      endTime: undefined,
+      desc: '',
+      img: 'https://youthentrepreneurship.club/wp-content/themes/klasik/images/prettyPhoto/default.jpg',
+      attends: [],
+      isPrivate: false,
+      isFull: false,
+      maxCapacity: undefined,
+      startTime: undefined,
+      tags: [],
+      level: 0,
+      comments: []
+    }
+}

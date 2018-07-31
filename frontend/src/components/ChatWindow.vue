@@ -1,6 +1,11 @@
 <template>
     <section class="chat-window">
+<<<<<<< HEAD
       <ol class="chat" v-if="chat.msgs.length > 0">
+=======
+      <h3 v-if="chat.room === 'loading-room'">Loading Chat...</h3>
+      <ol class="chat" v-else>
+>>>>>>> master
             <li 
               class="chat-msg-area"
               v-for="msg in chat.msgs"
@@ -48,7 +53,11 @@
                                       </li>
 
                             </examples> -->
+<<<<<<< HEAD
             <li ref="bottom" style="width:100%; height:50px;"></li>
+=======
+        <li ref="bottom" style="width:100%; height:50px;"></li>
+>>>>>>> master
       </ol>
 
         <form action="">
@@ -142,6 +151,9 @@ export default {
         ? this.selfUser.img
         : this.otherUser.img;
     }
+  },
+  destroyed() {
+      this.$parent.$parent.$parent.showNavBar = true;    
   },
   sockets: {
     connect() {

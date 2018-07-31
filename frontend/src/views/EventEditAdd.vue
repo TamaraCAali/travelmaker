@@ -13,13 +13,14 @@
             :on-success="handleAvatarSuccess"
             :before-upload="beforeAvatarUpload">
             <img v-if="imageUrl" :src="imageUrl" class="avatar">
-            <i v-else class="el-icon-upload2 avatar-uploader-icon"></i>
+            <i  class="el-icon-upload2 avatar-uploader-icon"></i>
           </el-upload>
         </div>
       </div>
       <div class="event-header">
         <h2>
           <el-input placeholder="Please input" v-model="event.name"></el-input>
+          <input placeholder="lalal "/>
         </h2>
         <div class="times-container">
           <div class="event-time">
@@ -58,7 +59,7 @@
         <i v-if="showLvlInput" class="el-icon-remove-outline" @click="toggleEventLvl"></i>
         <i v-else class="el-icon-circle-plus-outline" @click="toggleEventLvl"></i>
         <i class="fas fa-walking"></i>
-        <select v-show="showLvlInput" id="lvl-select" v-model="event.level">
+        <select v-show="showLvlInput" class="lvl-select" v-model="event.level">
           <option value="0">Easy</option>
           <option value="1">Light walking</option>
           <option value="2">Moderate trek</option>
@@ -113,15 +114,30 @@ export default {
     };
   },
   created() {
-    
-    let idFromParams = this.$route.params.eventId;
-    eventService.getById(idFromParams).then(res => {
-      console.log('got event:', res);
-      res.date = moment(res.date).format()
-      return (this.event = JSON.parse(JSON.stringify(res)));
-    });
     this.user = this.$store.getters.getUser;
-    console.log('this.showLvlInput:', this.showLvlInput);
+    let idFromParams = this.$route.params.eventId;
+    if (idFromParams === 'newEvent') {
+      console.log('new event!');
+      let emptyEvent = eventService.getEmptyEvent()
+      this.event = JSON.parse(JSON.stringify(emptyEvent))
+      this.event.creatorId = this.user._id
+    }
+    else {
+      eventService.getById(idFromParams)
+      .then(res => {
+        console.log('got event:', res);
+        res.date = moment(res.date).format()
+        this.event = JSON.parse(JSON.stringify(res));
+        this.initMap();
+        if (!this.event.level) this.showLvlInput = false
+        this.eventStartDate = moment(this.event.startTime).format('YYYY-MM-DD')
+        this.eventStartTime = moment(this.event.startTime).format('HH:mm')
+        this.eventEndDate = moment(this.event.endTime).format('YYYY-MM-DD')
+        this.eventEndTime = moment(this.event.endTime).format('HH:mm')
+        this.eventAddress = this.event.loc.title
+        this.dynamicTags = this.event.tags
+      });
+    }
     
   },
   mounted() {
@@ -253,22 +269,6 @@ export default {
     },
   },
   watch: {
-    event() {
-      console.log('event changed! (watch) :', this.event);
-      
-      this.initMap();
-      if (!this.event.level) this.showLvlInput = false
-      this.eventStartDate = moment(this.event.startTime).format('YYYY-MM-DD')
-      this.eventStartTime = moment(this.event.startTime).format('HH:mm')
-      this.eventEndDate = moment(this.event.endTime).format('YYYY-MM-DD')
-      this.eventEndTime = moment(this.event.endTime).format('HH:mm')
-      this.eventAddress = this.event.loc.title
-      this.dynamicTags = this.event.tags
-
-      // TODO put in start and end times
-
-      // console.log('is user attending?', this.userIsAttending);
-    }
   },
   filters: {
     stringifyEstTime(val) {
@@ -391,11 +391,14 @@ export default {
 
 .times-container {
   display: flex;
+  flex-wrap: wrap;
+  margin: 0.5em;
 }
 
 .event-time {
   /* width: 4em; */
   text-align: center;
+  margin: 0.5em;
 }
 
 .event-time div {
@@ -421,7 +424,8 @@ export default {
 }
 
 .event-loc .el-input input {
-  width: 100%
+  width: 100%;
+  font-family: inherit;
 }
 
 .event-description {
@@ -443,11 +447,22 @@ export default {
 }
 
 .tags-container span {
-  margin: 0 0.5em;
+  margin: 0.5em;
 }
 
 .tags-container div {
   width: fit-content;
+}
+
+.lvl-select {
+  border-radius: 4px;
+  border: 1px solid #dcdfe6;
+  color: #606266;
+  height: 40px;
+  line-height: 40px;
+  outline: 0;
+  padding: 0 15px;
+  margin: 0 0.5em;
 }
 
 .map {

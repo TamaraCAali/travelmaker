@@ -12,8 +12,8 @@ function getAddressFromLoc(loc) {
   // console.log('service got loc:', loc);
   return axios
     .get(
-      `https://maps.googleapis.com/maps/api/geocode/json?latlng=${loc.lat},${
-        loc.lng
+      `https://maps.googleapis.com/maps/api/geocode/json?latlng=${loc[0]},${
+        loc[1]
       }&key=${API_KEY}`,
       {
         withCredentials: false
@@ -47,10 +47,10 @@ function getPositionByName(cityName) {
 
 function getDistance(userLoc, diffLoc) {
   var R = 6371e3; // metres
-  var φ1 = (userLoc.lat * Math.PI) / 180;
-  var φ2 = (diffLoc.lat * Math.PI) / 180;
-  var Δφ = ((diffLoc.lat - userLoc.lat) * Math.PI) / 180;
-  var Δλ = ((diffLoc.lng - userLoc.lng) * Math.PI) / 180;
+  var φ1 = (userLoc[0] * Math.PI) / 180;
+  var φ2 = (diffLoc[0] * Math.PI) / 180;
+  var Δφ = ((diffLoc[0] - userLoc[0]) * Math.PI) / 180;
+  var Δλ = ((diffLoc[1] - userLoc[1]) * Math.PI) / 180;
   var a =
     Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
     Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);

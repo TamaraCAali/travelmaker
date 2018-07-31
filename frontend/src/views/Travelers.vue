@@ -24,8 +24,9 @@ export default {
   },
   methods: {
     loadUsers() {
+      const user = this.$store.getters.getUser;
       this.$store
-        .dispatch(LOAD_USERS)
+        .dispatch(LOAD_USERS, { user })
         .then()
         .catch(err => {
           console.log('err in load users');

@@ -11,6 +11,7 @@ import chatModule from '@/storeModules/chatModule.js';
 export const LOAD_CURR_LOC = 'getCurrLoc';
 export const SEARCHED_LOC = 'getSearchesLoc';
 export const LOGIN = 'user/login';
+export const FB_LOGIN = 'user/fb-login';
 export const LOGOUT = 'user/logout';
 export const SET_USER = 'user/setUser';
 export const UPDATE_USER = 'user/updateLocUser';
@@ -37,6 +38,7 @@ export default new Vuex.Store({
   },
   getters: {
     getCurrLoc(state) {
+      console.log('inside getCurrLoc ');
       return state.user.loc;
     },
     getUser(state) {
@@ -48,15 +50,13 @@ export default new Vuex.Store({
   },
   actions: {
     [LOAD_CURR_LOC](context) {
-      var currLoc;
+      var currLoc = {};
+      currLoc.type = 'Point';
       return locService
         .getPosition()
         .then(res => {
-          currLoc = {
-            lat: res.coords.latitude,
-            lng: res.coords.longitude
-          };
-          return locService.getAddressFromLoc(currLoc);
+          currLoc.coordinates = [res.coords.latitude, res.coords.longitude];
+          return locService.getAddressFromLoc(currLoc.coordinates);
         })
         .then(name => {
           currLoc.name = name;
@@ -82,6 +82,18 @@ export default new Vuex.Store({
         .login(user)
         .then(user => {
           console.log('after login', user);
+          return context.commit({ type: SET_USER, user });
+        })
+        .catch(err => {
+          return Promise.reject(err);
+        });
+    },
+    [FB_LOGIN](context, { user }) {
+      console.log('store', user);
+      return userService
+        .fbLogin(user)
+        .then(user => {
+          console.log('after fb login', user);
           return context.commit({ type: SET_USER, user });
         })
         .catch(err => {
@@ -160,15 +172,13 @@ function _loadUser() {
 }
 
 function _getAppLoc() {
-  var currLoc;
+  var currLoc = {};
+  currLoc.type = 'Point';
   return locService
     .getPosition()
     .then(res => {
-      currLoc = {
-        lat: res.coords.latitude,
-        lng: res.coords.longitude
-      };
-      return locService.getAddressFromLoc(currLoc);
+      currLoc.coordinates = [res.coords.latitude, res.coords.longitude];
+      return locService.getAddressFromLoc(currLoc.coordinates);
     })
     .then(name => {
       currLoc.name = name;
