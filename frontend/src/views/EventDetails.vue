@@ -6,28 +6,24 @@
     <template v-else>
       <div class="img-container screen">
         <img class="event-img screen" :src="event.img"/>
-      </div>
-      <div class="event-header">
-        <i v-if="userIsAdmin"
-           @click="goEditEvent" 
-           class="edit-btn far fa-edit fa-2x"></i>
-        <h2 class="event-name">{{event.name}}</h2>
-        <div class="event-time">
-          <p>
-            {{event.startTime | formatDate}} <br/>
-            {{event.startTime | formatHour}}
-            <template v-if="onSameDay">
-              - {{event.endTime | formatHour}}
-            </template>
-          </p>
-          <template v-if="!onSameDay">
-            -
-            <p>
-              {{event.endTime | formatDate}} <br/>
-              {{event.endTime | formatHour}}
-            </p>
-          </template>
-          
+          <div class="event-header">
+            <h2 class="event-name">{{event.name}}</h2>
+            <div class="event-time">
+              <p>
+                {{event.startTime | formatDate}} <br/>
+                {{event.startTime | formatHour}}
+                <template v-if="onSameDay">
+                  - {{event.endTime | formatHour}}
+                </template>
+              </p>
+              <template v-if="!onSameDay">
+                -
+                <p>
+                  {{event.endTime | formatDate}} <br/>
+                  {{event.endTime | formatHour}}
+                </p>
+              </template>
+            </div>
         </div>
       </div>
       <div class="details-container">
@@ -49,6 +45,10 @@
         </attends-list>
       </div>
       <div class="btns-container">
+        <i v-if="userIsAdmin"
+          @click="goEditEvent" 
+          class="edit-btn far fa-edit fa-2x">
+        </i>
         <div @click="toggleEventAttendence()">
           <template v-if="!userIsAttending">
             <i class="far fa-check-circle fa-2x"></i><br/>
@@ -271,23 +271,45 @@ export default {
 }
 
 .event-details {
+  position: relative;
+  top: 50px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  box-shadow: 0 0 5px #00000063;
-  padding: 10px;
+  /* padding: 10px; */
   transition: all 0.3s;
+}
+
+
+.screen {
+  position: relative;
+}
+
+.screen::before {
+  content: "";
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  bottom: 3px;
+  z-index: 2;
+  background: linear-gradient(rgba(0, 0, 0, 0),
+                              rgba(0, 0, 0, 0.7), 
+                              rgba(0, 0, 0, 0.9) );
 }
 
 .event-img {
   width: 100%;
-  height: 250px;
+  height: 300px;
   object-fit: cover;
 }
 
 .event-header {
+  position: absolute;
+  bottom: 5em;
   margin: 0 auto;
   display: flex;
+  color: white;
+  z-index: 3;
 }
 
 .event-name {
