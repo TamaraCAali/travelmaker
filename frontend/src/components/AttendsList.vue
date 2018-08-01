@@ -27,24 +27,15 @@ import TravelersPreview from '@/components/travelers/TravelersPreview.vue';
 
 export default {
   name: 'attends-list-cmp',
-  props: ['usersIds'],
+  props: ['users'],
   components: {
     TravelersPreview
   },
   data() {
-    return {
-      users: []
-    }
   },
   created() {
-    let userPrms = this.usersIds.map(userId => userService.getById(userId))
-    Promise.all(userPrms)
-    .then(results => {
-      this.users = results
       console.log('users:', this.users);
-    })
   },
-
   methods: {
     openUser(user) {
       this.$router.push(`/user/${user._id}`);

@@ -65,6 +65,23 @@ h2 {
 .justify-center {
   justify-content: center;
 }
+
+.screen {
+  position: relative;
+}
+
+.screen::before {
+  content: "";
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  bottom: 3px;
+  z-index: 2;
+  background: linear-gradient(rgba($color: #000000, $alpha: 0),
+                              rgba($color: #000000, $alpha: 0.3), 
+                              rgba($color: #000000, $alpha: 0.9) );
+}
+
 input {
   padding: 5px;
 }

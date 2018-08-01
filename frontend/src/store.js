@@ -46,7 +46,10 @@ export default new Vuex.Store({
     },
     loggedinUser(state) {
       return state.user;
-    }
+    },
+    searchedLoc(state) {
+      return state.searchedLoc;
+    },
   },
   actions: {
     [LOAD_CURR_LOC](context) {
@@ -67,14 +70,12 @@ export default new Vuex.Store({
         });
     },
     [SEARCHED_LOC](context, { searchInput }) {
-      // console.log('store got:', searchInput);
-
-      locService.getPositionByName(searchInput).then(pos => {
-        // console.log('pos', pos);
+      return locService.getPositionByName(searchInput).then(pos => {
         context.commit({
           type: SEARCHED_LOC,
           pos
         });
+        return pos
       });
     },
     [LOGIN](context, { user }) {

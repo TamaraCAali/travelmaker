@@ -19,11 +19,9 @@ function query() {
   return axios.get(EVENT_URL).then(res => res.data);
 }
 
-function queryByRange(userLoc) {
-  console.log('inside service events', userLoc);
-
+function queryByRange(userLoc, radius) {
   const loc = [userLoc[1], userLoc[0]];
-  const range = 5000000000000000;
+  const range = radius;
   return axios.post(EVENT_URL + '/range', { loc, range }).then(res => res.data);
 }
 
