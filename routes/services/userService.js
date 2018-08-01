@@ -42,6 +42,17 @@ function getById(userId) {
     return collection.findOne({ _id: userId });
   });
 }
+
+function getByIds(userIds) {
+  userIds = userIds.map(userId => new ObjectId(userId))
+  console.log('backend service usersids:', userIds);
+  
+  return mongoService.connect().then(db => {
+    // const collection = db.getCollection('user');
+    return db.collection('user').find({ _id: { $in: userIds }}).toArray()
+  });
+}
+
 function getByFbId(userId) {
   console.log('mongo', userId);
 
@@ -92,6 +103,7 @@ module.exports = {
   queryFilterLoc,
   remove,
   getById,
+  getByIds,
   getByFbId,
   add,
   update,

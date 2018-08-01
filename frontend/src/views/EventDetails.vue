@@ -120,6 +120,7 @@ export default {
       console.log('got event:', res);
       this.event = JSON.parse(JSON.stringify(res));
       this.initMap()
+      this.getAttendingUsers()
     });
     this.user = this.$store.getters.getUser;
     // console.log('user:', this.user);
@@ -188,6 +189,15 @@ export default {
       eventService.update(this.event);
       console.log('saving comment:', newComment);
       this.newCommentTxt = ''
+    },
+    getAttendingUsers() {
+      userService.getByIds(this.event.attends)
+      .then(res => {
+        console.log('got attending users:', res);
+      })
+      .catch(err => {
+        console.log('Err:', err);
+      })
     }
   },
   computed: {
@@ -225,9 +235,6 @@ export default {
       if (this.user._id) return 'Add a comment'
       else return 'Please log in to add a comment'
     }
-    // event() {
-    //   this.initMap()
-    // }
   },
   watch: {
     event() {

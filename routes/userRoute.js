@@ -17,10 +17,21 @@ module.exports = app => {
     userService.queryFilterLoc(loc, range).then(users => res.json(users));
   });
 
+  app.post(USER_URL + '/users', (req, res) => {
+    const userIds = req.body.userIds;
+    console.log('routes userIds:', userIds);
+    
+    return userService.getByIds(userIds)
+    .then(users => {
+      console.log('routes got:', users);
+      return res.json(users)
+    });
+  });
+  
   app.get(USER_URL + '/:userId', (req, res) => {
     const userId = req.params.userId;
 
-    userService.getById(userId).then(user => res.json(user));
+    return userService.getById(userId).then(user => res.json(user));
   });
 
   app.delete(USER_URL + '/:userId', (req, res) => {
