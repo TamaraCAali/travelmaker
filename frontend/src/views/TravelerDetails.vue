@@ -49,7 +49,7 @@
 
         </div>
     </div>
-    <ChatWindow :otherUser="user" v-if="isChatMode"/> 
+    <!-- <ChatWindow :otherUser="user" v-if="isChatMode"/>  -->
     <!-- Possible: Apply the chat room before the user click the button by v-show -->
 </section>
 </template>
@@ -60,6 +60,9 @@ import eventService from '../services/eventService';
 import EventPreview from '@/components/EventPreview.vue';
 import ChatWindow from '@/components/ChatWindow.vue';
 import langs from '@/components/travelers/langs.vue';
+import eventBusService, {
+  TOGGLE_CHAT
+} from '@/services/eventBusService';
 
 export default {
   name: 'TravelerDetails',
@@ -90,11 +93,11 @@ export default {
     toggleChat() {
       const loggedUser = this.$store.getters.getUser;
       if (loggedUser._id) {
-        console.log(this.user);
-        this.isChatMode = true;
+        eventBusService.$emit(TOGGLE_CHAT, this.user);
+        // this.isChatMode = true;
         // this.$router.push(`/chat/${this.user}`);
       } else {
-        this.$message.error('Please login to contact other people');
+        this.$message.error('Please login to contact other travelers');
         this.$router.push('/login');
       }
     }

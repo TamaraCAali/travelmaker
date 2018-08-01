@@ -21,7 +21,9 @@
 import moment from 'moment';
 import locService from '@/services/locationService.js';
 import langs from '@/components/travelers/langs.vue';
-
+import eventBusService, {
+  TOGGLE_CHAT
+} from '@/services/eventBusService';
 export default {
   name: 'UserPreview',
   props: {
@@ -31,7 +33,7 @@ export default {
     langs
   },
   computed: {
-    dist: function() {
+    dist() {
       const userLoc = this.$store.getters.getCurrLoc.coordinates;
       const dist = locService
         .getDistance(userLoc, this.user.loc.coordinates)
@@ -48,8 +50,10 @@ export default {
     toggleChat() {
       const loggedUser = this.$store.getters.getUser;
       if (loggedUser._id) {
-        this.$parent.userToChat = { ...this.user };
+        // this.$parent.userToChat = { ...this.user };
+        eventBusService.$emit(TOGGLE_CHAT, this.user)
       } else {
+
         this.$message.error('Please login to contact other people');
         this.$router.push('/login');
       }

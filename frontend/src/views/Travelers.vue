@@ -49,7 +49,6 @@ export default {
     },
     openSelectedUsers(user) {
       console.log(user, `user/${user._id}`);
-
       this.$router.push(`user/${user._id}`);
     }
   }
