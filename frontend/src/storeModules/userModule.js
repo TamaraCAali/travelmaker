@@ -29,7 +29,6 @@ export default {
   actions: {
     [LOAD_USERS](context, { user }) {
       return userService.queryByRange(user.loc.coordinates).then(users => {
-        console.log('test users', users);
         context.commit({
           type: LOAD_USERS,
           users

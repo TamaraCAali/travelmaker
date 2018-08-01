@@ -60,12 +60,18 @@ export default {
       let user = { ...this.ChekcIn };
       this.$store
         .dispatch(LOGIN, { user })
-        .then(_ => {
+        .then(result => {
           EventBusService.$emit(SHOW_MSG, {
             txt: `Login successfully as ${user.userName}`,
             type: 'success'
           });
 
+          //After login happened, join notifications socket room:
+          this.$socket.emit(
+            'joinRoom',
+            'ntf-' + this.$store.getters.loggedinUser._id
+          );
+          //Go to HomePage
           this.$router.push('/');
         })
         .catch(err => {

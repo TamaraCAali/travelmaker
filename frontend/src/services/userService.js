@@ -31,7 +31,7 @@ function query() {
 }
 
 function queryByRange(userLoc) {
-  console.log('inside service users', userLoc);
+  // console.log('inside service users', userLoc);
 
   const loc = [userLoc[1], userLoc[0]];
   const range = 500000000000000000;
@@ -42,7 +42,7 @@ function add(user) {
   return axios
     .post(USER_URL, user)
     .then(res => {
-      console.log('service front  good username');
+      // console.log('service front  good username');
       _setLoggedinUser(res.data);
       return res.data;
     })
@@ -57,7 +57,7 @@ function remove(userId) {
 }
 
 function update(user) {
-  console.log('serve', user);
+  // console.log('serve', user);
 
   _setLoggedinUser(user);
 
@@ -83,7 +83,7 @@ function login(user) {
   return axios
     .post(USER_URL + '/setUser', user)
     .then(res => {
-      console.log('inside then', res);
+      // console.log('inside then', res);
       var loggedUser = res.data;
       _setLoggedinUser(loggedUser);
       return loggedUser;

@@ -43,7 +43,6 @@ export default {
   },
   methods: {
     loadUser() {
-      debugger;
       this.user = this.$store.getters.loggedinUser;
       locService.getAppLoc().then(currLoc => {
         this.user.loc = currLoc;
