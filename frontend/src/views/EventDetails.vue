@@ -271,6 +271,8 @@ export default {
 }
 
 .event-details {
+  position: relative;
+  top: 50px;
   display: flex;
   flex-direction: column;
   align-items: center;
