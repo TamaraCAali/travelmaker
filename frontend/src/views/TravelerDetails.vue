@@ -23,14 +23,14 @@
                   {{user.about.desc}}
                 </p>
             </div>
-            <div>
-                <strong>Interests:  &thinsp;</strong>
+            <div class="title">
+                <strong >Interests:  &thinsp;</strong>
                 <span v-for="(interest, idx) in user.about.interests" :key="interest"> {{interest}}
                  <span v-if="idx < user.about.interests.length-1" >•</span>
                 </span>
             </div>
-            <div>
-                <strong>Next Destinations: </strong>
+            <div class="title">
+                <strong >Next Destinations: </strong>
                 <span v-for="dest in user.about.nextDest" :key="dest"> {{dest}}, </span>
             </div>
             <div class="langs">
@@ -125,14 +125,7 @@ h3 {
 }
 
 .user-details {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: beige;
-  box-shadow: 0 0 5px #00000063;
-  margin: 10px;
-  padding: 10px;
-  transition: all 0.3s;
+  margin: 40px 0 0 0;
 }
 
 .user-img {
@@ -141,9 +134,10 @@ h3 {
   object-fit: cover;
 }
 .user-pre-details {
-  width: 100%;
+  padding: 20px;
 }
-.user-pre-details div {
+
+.title {
   margin: 10px 0;
 }
 .name {
@@ -169,5 +163,6 @@ h3 {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-evenly;
+  background-color: #f5f5dc;
 }
 </style>

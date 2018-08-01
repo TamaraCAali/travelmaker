@@ -1,11 +1,12 @@
 <template>
       <section >
           <div class="back-login"></div>
+
           <div class="login">
-            <button class="router-link try-us"><span @click="setGuest">Try Us!</span> </button> 
+        <router-link class="btn-submit try-us" to="/user/edit/:userId"><span >Open new account</span></router-link>
             <h1>Sign In</h1>      
           <form  @submit.prevent="login">
-            <input class="input-login" type="text" v-model="ChekcIn.username" placeholder="username">
+            <input class="input-login" type="text" v-model="ChekcIn.userName" placeholder="user name">
             <input class="input-login" type="password" v-model="ChekcIn.password" placeholder="password">
             <button class="btn-submit" type="submit">Login</button>
           </form>
@@ -13,10 +14,12 @@
               <div class="flex justify-center" >
                 <!-- <FBLogin ></FBLogin>   -->
                 <a href="#" class="login-social-icon">
+						      <i class="fab fa-facebook-f"></i>
+					      </a>
+                <a href="#" class="login-social-icon">
                   <img src="../assets/img/icon-google.png">
                 </a>
 				      </div>
-        <router-link to="/user/edit/:userId"><span >Open new account</span></router-link>
           </div>
           
       </section>
@@ -41,7 +44,7 @@ export default {
   data() {
     return {
       ChekcIn: {
-        username: null,
+        userName: null,
         password: null
       }
     };
@@ -59,7 +62,7 @@ export default {
         .dispatch(LOGIN, { user })
         .then(_ => {
           EventBusService.$emit(SHOW_MSG, {
-            txt: `Login successfully as ${user.username}`,
+            txt: `Login successfully as ${user.userName}`,
             type: 'success'
           });
 
@@ -73,26 +76,26 @@ export default {
           });
         });
     },
-    setGuest() {
-      console.log('set setGuest');
-      this.$store
-        .dispatch(SET_GUEST)
-        .then(_ => {
-          console.log('here');
-          EventBusService.$emit(SHOW_MSG, {
-            txt: `Login as guest`,
-            type: 'success'
-          });
-          this.$router.push('/');
-        })
-        .catch(err => {
-          console.log('err', err);
-          EventBusService.$emit(SHOW_MSG, {
-            txt: err,
-            type: 'danger'
-          });
-        });
-    },
+    // setGuest() {
+    //   console.log('set setGuest');
+    //   this.$store
+    //     .dispatch(SET_GUEST)
+    //     .then(_ => {
+    //       console.log('here');
+    //       EventBusService.$emit(SHOW_MSG, {
+    //         txt: `Login as guest`,
+    //         type: 'success'
+    //       });
+    //       this.$router.push('/');
+    //     })
+    //     .catch(err => {
+    //       console.log('err', err);
+    //       EventBusService.$emit(SHOW_MSG, {
+    //         txt: err,
+    //         type: 'danger'
+    //       });
+    //     });
+    // },
     fbLogin(user) {
       this.$store
         .dispatch(FB_LOGIN, { user })
@@ -120,7 +123,6 @@ body,
 .back-login {
   position: fixed !important;
   position: absolute;
-  top: 0;
   right: 0;
   bottom: 0;
   left: 0;
@@ -141,11 +143,11 @@ body,
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  top: 40px;
+  top: 85px;
   width: 300px;
   border-radius: 29px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 30px;
 }
 .input-login {
   font-size: 1.1em;
@@ -164,7 +166,7 @@ body,
   align-items: center;
   padding: 0 20px;
   margin: 0 auto;
-  min-width: 160px;
+  min-width: 110px;
   height: 50px;
   background-color: #41b883;
   border: none;
@@ -207,12 +209,25 @@ body,
   box-shadow: 0 5px 20px 0px rgba(0, 0, 0, 0.2);
 }
 .try-us {
-  font-weight: bold;
-  border-bottom: 1px solid;
-  align-self: end;
-  background-color: transparent;
-  border: none;
-  color: #35495e;
-  border-bottom: 1px solid;
+  background-color: #35495ed1;
+  min-width: 160px;
+  height: 50px;
+}
+
+.try-us:hover {
+  background-color: #35495e;
+}
+h1 {
+  margin: 20px 0 0 0;
+}
+.new-acount {
+  font-size: 1.3em;
+  text-align: center;
+  transition: all 0.4s;
+}
+
+.new-acount:hover {
+  font-size: 1.4em;
+  color: #438467;
 }
 </style>

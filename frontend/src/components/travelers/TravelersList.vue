@@ -46,7 +46,8 @@ export default {
 <style scoped lang="scss">
 h3 {
   text-align: center;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
+  margin: 2em 0 0.5em 0;
 }
 
 .list-container {

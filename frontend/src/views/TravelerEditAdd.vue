@@ -14,36 +14,39 @@
 
         <div class="user-details">
             <form @submit.prevent="SaveUser">
-                <input class="input-login" type="text" v-model="user.userName" placeholder="user name" required>
-                <input class="input-login" type="text" v-model="user.name.first" placeholder="first name" required>
-                <input class="input-login" type="text" v-model="user.name.last" placeholder="last name" required>
-                <input class="input-login" type="text" v-model="user.password" placeholder="password" required>
-                <input class="input-login" type="email" v-model="user.email" placeholder="name@xxx.com" >
-                <input class="input-login" type="number" v-model="user.age" placeholder="age" required>
-                <textarea class="input-login" v-model="user.about.desc" placeholder="write something about you.." rows="10" cols="30"></textarea>
-                    <h4>My Interests</h4>                
-                        <div class="interests">
-                        <label><input type="checkbox" v-model="user.about.interests" value="Reading"> Reading</label>
-                        <label><input type="checkbox" v-model="user.about.interests" value="Drawing"> Drawing</label>
-                        <label><input type="checkbox" v-model="user.about.interests" value="Cooking"> Cooking</label>
-                        <label><input type="checkbox" v-model="user.about.interests" value="Sport"> Sport</label>
-                        <label><input type="checkbox" v-model="user.about.interests" value="Music"> Music</label>
-                        <label><input type="checkbox" v-model="user.about.interests" value="Juggling"> Juggling</label>
-                        <label><input type="checkbox" v-model="user.about.interests" value="Gaming"> Gaming</label>
-                        <label><input type="checkbox" v-model="user.about.interests" value="Fishing"> Fishing</label>
-                        <label><input type="checkbox" v-model="user.about.interests" value="Dancing"> Dancing </label>
-                        </div>
-                    <h4>Next Destinations</h4>
-                        <div class="next-dest">
-                        <label><input type="checkbox" v-model="user.about.nextDest" value="Africa"> Africa</label>
-                        <label><input type="checkbox" v-model="user.about.nextDest" value="Antarctica"> Antarctica</label>
-                        <label><input type="checkbox" v-model="user.about.nextDest" value="Asia"> Asia</label>
-                        <label><input type="checkbox" v-model="user.about.nextDest" value="Europe"> Europe</label>
-                        <label><input type="checkbox" v-model="user.about.nextDest" value="North America"> North America</label>
-                        <label><input type="checkbox" v-model="user.about.nextDest" value="Australia/Oceania"> Australia/Oceania</label>
-                        <label><input type="checkbox" v-model="user.about.nextDest" value="South America"> South America</label>
-                        </div>
-                    <h4>Languages</h4>                
+                <span>User Name</span><input class="input-login" type="text" v-model="user.userName" placeholder="user name" required>
+                <span>First Mame</span><input class="input-login" type="text" v-model="user.name.first" placeholder="first name" required>
+                <span>Last Name</span><input class="input-login" type="text" v-model="user.name.last" placeholder="last name" required>
+                <span>Password</span><input class="input-login" type="text" v-model="user.password" placeholder="password" required>
+                <span>Email Address</span><input class="input-login" type="email" v-model="user.email" placeholder="name@xxx.com" >
+                <span>Age</span><input class="input-login" type="number" v-model="user.age" placeholder="age" required>
+                <span>Write something about yourself</span><textarea class="input-login" v-model="user.about.desc" placeholder="write something about yourself.." rows="10" cols="30"></textarea>
+
+                        <h4>My Interests</h4>   
+                      <div class="tags-container">
+                        <el-tag :key="interest" v-for="interest in user.about.interests" closable
+                          :disable-transitions="false" @close="handleClose(interest)">
+                          {{interest}}
+                        </el-tag>
+                        <el-input class="input-new-tag" v-if="inputVisible" v-model="inputValue" ref="saveTagInput"
+                          @keyup.enter.native="handleInputConfirm" @blur="handleInputConfirm">
+                        </el-input>
+                        <el-button class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
+                      </div>
+
+                        <h4>Next Destinations</h4>
+                      <div class="tags-container">
+                        <el-tag :key="dest" v-for="dest in user.about.nextDest" closable
+                          :disable-transitions="false" @close="handleCloseDest(dest)">
+                          {{dest}}
+                        </el-tag>
+                        <el-input class="input-new-tag" v-if="inputVisibleDest" v-model="inputValueDest" ref="saveTagInput"
+                          @keyup.enter.native="handleInputConfirmDest" @blur="handleInputConfirmDest">
+                        </el-input>
+                        <el-button class="button-new-tag" size="small" @click="showInputDest">+ New Tag</el-button>
+                      </div>
+
+                       <h4>Languages</h4>                
                         <div class="langs">
                         <label><input type="checkbox" v-model="user.about.langs" value="AR"> Arabic</label>
                         <label><input type="checkbox" v-model="user.about.langs" value="CH"> Chinese</label>
@@ -56,6 +59,7 @@
                         <label><input type="checkbox" v-model="user.about.langs" value="HE"> Hebrew </label>
                         <label><input type="checkbox" v-model="user.about.langs" value="JA"> Japanese</label>
                         </div>
+
                 <button class="btn-submit" type="submit">Save</button>
             </form>
         </div>
@@ -74,6 +78,10 @@ export default {
   name: 'TravelerEditAdd',
   data() {
     return {
+      inputVisible: false,
+      inputValue: '',
+      inputVisibleDest: false,
+      inputValueDest: '',
       user: {
         password: '',
         userName: '',
@@ -105,6 +113,46 @@ export default {
     if (loggeduser) this.user = loggeduser;
   },
   methods: {
+    handleClose(interest) {
+      this.user.about.interests.splice(
+        this.user.about.interests.indexOf(interest),
+        1
+      );
+    },
+    handleCloseDest(dest) {
+      this.user.about.nextDest.splice(
+        this.user.about.nextDest.indexOf(dest),
+        1
+      );
+    },
+    showInput() {
+      this.inputVisible = true;
+      this.$nextTick(_ => {
+        this.$refs.saveTagInput.$refs.input.focus();
+      });
+    },
+    showInputDest() {
+      this.inputVisibleDest = true;
+      this.$nextTick(_ => {
+        this.$refs.saveTagInput.$refs.input.focus();
+      });
+    },
+    handleInputConfirm() {
+      let inputValue = this.inputValue;
+      if (inputValue) {
+        this.user.about.interests.push(inputValue);
+      }
+      this.inputVisible = false;
+      this.inputValue = '';
+    },
+    handleInputConfirmDest() {
+      let inputValueDest = this.inputValueDest;
+      if (inputValueDest) {
+        this.user.about.nextDest.push(inputValueDest);
+      }
+      this.inputVisibleDest = false;
+      this.inputValueDest = '';
+    },
     SaveUser() {
       if (this.user._id) {
         console.log('inside update user');
@@ -132,23 +180,17 @@ export default {
         this.$store
           .dispatch(ADD_USER, { user })
           .then(_ => {
+            console.log('inside add', user);
             this.$router.push('/');
-            EventBusService.$emit(SHOW_MSG, {
-              txt: `Login successfully`,
-              type: 'success'
-            });
+            this.$message.success('Login successfully');
           })
           .catch(err => {
             console.log('err', err);
-            EventBusService.$emit(SHOW_MSG, {
-              txt: 'Could not save changes, please change picture type',
-              type: 'danger'
-            });
+            this.$message.error(err);
           });
       }
     },
     hendleFileSelected(ev) {
-      console.log('jojoj');
       var files = ev.target.files;
       var reader = new FileReader();
       var urlUpload = '';
@@ -295,5 +337,20 @@ form {
 .inputfile:focus + label,
 .inputfile + label:hover {
   background-color: red;
+}
+
+h4 {
+  margin: 0;
+}
+.tags-container {
+  margin: 1em;
+}
+
+.tags-container span {
+  margin: 0.5em;
+}
+
+.tags-container div {
+  width: fit-content;
 }
 </style>

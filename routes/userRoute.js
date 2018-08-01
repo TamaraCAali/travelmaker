@@ -17,10 +17,18 @@ module.exports = app => {
     userService.queryFilterLoc(loc, range).then(users => res.json(users));
   });
 
+  app.post(USER_URL + '/users', (req, res) => {
+    const userIds = req.body.userIds;
+    return userService.getByIds(userIds)
+    .then(users => {
+      return res.json(users)
+    });
+  });
+  
   app.get(USER_URL + '/:userId', (req, res) => {
     const userId = req.params.userId;
 
-    userService.getById(userId).then(user => res.json(user));
+    return userService.getById(userId).then(user => res.json(user));
   });
 
   app.delete(USER_URL + '/:userId', (req, res) => {
@@ -31,9 +39,20 @@ module.exports = app => {
 
   app.post(USER_URL, (req, res) => {
     const user = req.body;
-    userService.add(user).then(user => {
-      res.json(user);
-    });
+    userService
+      .add(user)
+      .then(user => {
+        console.log('after check username', user);
+        if (user !== undefined) {
+          console.log('return route good username');
+          res.json(user);
+        } else {
+          console.log('username alredy exist');
+
+          throw 'username alredy exist';
+        }
+      })
+      .catch(err => res.status(401).send('username alredy exist'));
   });
 
   app.put(USER_URL + '/:userId', (req, res) => {
