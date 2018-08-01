@@ -110,7 +110,6 @@ export default {
 .new-event:hover i {
   margin-right: 10px;
 }
-<<<<<<< HEAD
 
 @media screen and (max-width: 700px) {
   .events-header {
@@ -134,6 +133,4 @@ export default {
     margin-right: 10px;
   }
 }
-=======
->>>>>>> master
 </style>
