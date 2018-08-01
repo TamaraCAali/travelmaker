@@ -42,7 +42,6 @@ new Vue({
     this.applyNotifications();
     this.displayNotification();
     eventBusService.$on(PUSH_NOTIFICATION, ({ title, options }) => {
-      console.log('title', title)
       this.displayNotification(title, options);
     })
   },

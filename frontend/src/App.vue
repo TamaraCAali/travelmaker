@@ -86,10 +86,15 @@ export default {
       //get from localstorage of user
     });
     EventBusService.$on(TOGGLE_CHAT, user => {
-      console.log('emit happens!', user)
+      console.log('emit happens!', user);
       this.userToChat = user;
     });
     this.loadLogStatus();
+  },
+  sockets: {
+    renderPushNtf(pushNtf) {
+      eventBusService.$emit(PUSH_NOTIFICATION, pushNtf);
+    }
   },
   methods: {
     loadLogStatus() {
