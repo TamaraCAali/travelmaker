@@ -67,7 +67,6 @@ export default {
 }
 .user {
   width: 100%;
-  background-color: #f5f5dc;
   box-shadow: 0 0 5px #00000063;
   margin: 5px;
   transition: all 0.3s;

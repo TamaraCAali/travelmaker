@@ -31,9 +31,20 @@ module.exports = app => {
 
   app.post(USER_URL, (req, res) => {
     const user = req.body;
-    userService.add(user).then(user => {
-      res.json(user);
-    });
+    userService
+      .add(user)
+      .then(user => {
+        console.log('after check username', user);
+        if (user !== undefined) {
+          console.log('return route good username');
+          res.json(user);
+        } else {
+          console.log('username alredy exist');
+
+          throw 'username alredy exist';
+        }
+      })
+      .catch(err => res.status(401).send('username alredy exist'));
   });
 
   app.put(USER_URL + '/:userId', (req, res) => {
