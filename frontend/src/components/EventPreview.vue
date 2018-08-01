@@ -25,10 +25,11 @@ export default {
       return moment(this.event.startTime).format('MMM Do YY');
     },
     dist: function() {
-      const userLoc = this.$store.getters.getCurrLoc.coordinates;
+      const userLoc = this.$store.getters.getCurrLoc;
+      var cords = userLoc.coordinates;
       if (userLoc) {
         const dist = locService
-          .getDistance(userLoc, this.event.loc.coordinates)
+          .getDistance(cords, this.event.loc.coordinates)
           .toFixed();
         if (dist < 1) return dist + ' m';
         else return dist + ' km';
@@ -56,7 +57,6 @@ export default {
 }
 .event {
   width: 100%;
-  background-color: #f5f5dc;
   box-shadow: 0 0 5px #00000063;
   margin: 5px;
   transition: all 0.3s;

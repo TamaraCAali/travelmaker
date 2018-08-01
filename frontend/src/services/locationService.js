@@ -5,7 +5,8 @@ export default {
   getAddressFromLoc,
   getPosition,
   getPositionByName,
-  getDistance
+  getDistance,
+  getAppLoc
 };
 
 function getAddressFromLoc(loc) {
@@ -58,4 +59,16 @@ function getDistance(userLoc, diffLoc) {
   var d = R * c;
 
   return d / 1000;
+}
+
+function getAppLoc() {
+  var currLoc = {};
+  currLoc.type = 'Point';
+  return getPosition().then(res => {
+    currLoc.coordinates = [res.coords.latitude, res.coords.longitude];
+    return getAddressFromLoc(currLoc.coordinates).then(name => {
+      currLoc.name = name;
+      return currLoc;
+    });
+  });
 }

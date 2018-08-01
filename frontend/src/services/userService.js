@@ -21,7 +21,7 @@ export default {
   fbLogin,
   logout,
   getLoggedInUser,
-  setGuestLonin,
+  // setGuestLonin,
   getLoggedInUserUrl
 };
 
@@ -38,10 +38,17 @@ function queryByRange(userLoc) {
 }
 
 function add(user) {
-  return axios.post(USER_URL, user).then(res => {
-    _setLoggedinUser(res.data);
-    return res.data;
-  });
+  return axios
+    .post(USER_URL, user)
+    .then(res => {
+      console.log('service front  good username');
+      _setLoggedinUser(res.data);
+      return res.data;
+    })
+    .catch(err => {
+      console.log('inside err', err);
+      return Promise.reject('username alredy exist');
+    });
 }
 
 function remove(userId) {
@@ -126,7 +133,6 @@ function fbLogin(user) {
 
 function logout() {
   StorageService.clearStorage(STORAGE_KEY);
-  return Promise.resolve();
 }
 
 function getLoggedInUser() {
@@ -140,9 +146,9 @@ function getLoggedInUserUrl() {
     return 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjvdv8INW6OzjzPL8JyQlDbYOxZjabXx8xcNlhroqSHOMZh4C35g';
 }
 
-function setGuestLonin(user) {
-  _setLoggedinUser(user);
-}
+// function setGuestLonin(user) {
+//   _setLoggedinUser(user);
+// }
 
 function _setLoggedinUser(user) {
   loggedinUser = user;

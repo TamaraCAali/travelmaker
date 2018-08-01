@@ -34,6 +34,7 @@ export default {
           type: LOAD_USERS,
           users
         });
+        return users;
       });
     }
   }
