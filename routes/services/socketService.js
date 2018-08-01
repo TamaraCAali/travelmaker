@@ -33,9 +33,9 @@ module.exports = io => {
             io.sockets.in(newMsg.room).emit('renderMsg', newMsg)
         });
         socket.on('assignPushNtf', pushNtf => {
-            // if(!socket.rooms[pushNtf.chatRoom]){
+            if(!socket.rooms[pushNtf.chatRoom]){
                 io.sockets.in(pushNtf.ntfRoom).emit('renderPushNtf', pushNtf);
-            // }
+            }
         });
 
 
