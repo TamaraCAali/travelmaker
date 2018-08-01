@@ -4,7 +4,9 @@
       Loading Event...
     </div>
     <template v-else>
-      <img class="event-img" :src="event.img"/>
+      <div class="img-container screen">
+        <img class="event-img screen" :src="event.img"/>
+      </div>
       <div class="event-header">
         <i v-if="userIsAdmin"
            @click="goEditEvent" 
@@ -272,9 +274,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: beige;
   box-shadow: 0 0 5px #00000063;
-  margin: 10px;
   padding: 10px;
   transition: all 0.3s;
 }
