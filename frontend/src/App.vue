@@ -54,7 +54,8 @@ import ChatWindow from '@/components/ChatWindow.vue';
 import NotificationMenu from '@/components/NotificationMenu.vue';
 import UserMsg from '@/components/UserMsg.vue';
 
-import EventBusService, {
+import eventBusService, {
+  PUSH_NOTIFICATION,
   SHOW_MSG,
   LOGIN,
   TOGGLE_CHAT
@@ -78,14 +79,14 @@ export default {
     };
   },
   created() {
-    EventBusService.$on(SHOW_MSG, username => {
+    eventBusService.$on(SHOW_MSG, username => {
       this.loadLogStatus();
     });
-    EventBusService.$on(LOGIN, userImg => {
+    eventBusService.$on(LOGIN, userImg => {
       this.userUrl = userImg;
       //get from localstorage of user
     });
-    EventBusService.$on(TOGGLE_CHAT, user => {
+    eventBusService.$on(TOGGLE_CHAT, user => {
       console.log('emit happens!', user);
       this.userToChat = user;
     });
@@ -93,6 +94,7 @@ export default {
   },
   sockets: {
     renderPushNtf(pushNtf) {
+      console.log('renderPushNtf', pushNtf)
       eventBusService.$emit(PUSH_NOTIFICATION, pushNtf);
     }
   },
