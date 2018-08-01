@@ -10,33 +10,31 @@
           <el-upload
             class="event-img-uploader"
             action="https://jsonplaceholder.typicode.com/posts/"
-            :on-success="handleAvatarSuccess"
-            :before-upload="beforeAvatarUpload">
-            <img v-if="imageUrl" :src="imageUrl" class="avatar">
-            <i  class="el-icon-upload2 avatar-uploader-icon"></i>
+            :before-upload="beforeAvatarUpload"
+            :on-success="handleAvatarSuccess">
+            <i class="el-icon-upload2 avatar-uploader-icon"></i>
           </el-upload>
         </div>
       </div>
       <div class="event-header">
         <h2>
           <el-input placeholder="Please input" v-model="event.name"></el-input>
-          <input placeholder="lalal "/>
         </h2>
         <div class="times-container">
           <div class="event-time">
             <div>
-              <span>Start date: </span><input type="date" v-model="eventStartDate"></input>
+              <span>Start date:</span><input type="date" v-model="eventStartDate"/>
             </div>
             <div>
-              <span>Start Time: </span><input type="time" v-model="eventStartTime"></input>
+              <span>Start Time:</span><input type="time" v-model="eventStartTime"/>
             </div>
           </div>
           <div class="event-time">
             <div>
-              <span>End date: </span><input type="date" v-model="eventEndDate"></input>
+              <span>End date:</span><input type="date" v-model="eventEndDate"/>
             </div>
             <div>
-              <span>End time: </span><input type="time" v-model="eventEndTime"></input>
+              <span>End time:</span><input type="time" v-model="eventEndTime"/>
             </div>
           </div>
         </div>
@@ -88,12 +86,12 @@ import moment from 'moment';
 import locService from '../services/locationService';
 import eventService from '../services/eventService';
 import userService from '../services/userService';
+import cloudinaryService from '../services/cloudinaryService';
 
 export default {
   name: 'home',
   data() {
     return {
-      imageUrl: '',
       event: {
         attends: [],
         loc: { lat: 33, lng: 35 }
@@ -110,7 +108,9 @@ export default {
       eventEndDate: '',
       eventEndTime: '',
       eventLocChanged: false,
-      estTimeUnit: ''
+      estTimeUnit: '',
+      base64Img: '',
+      originalImg: ''
     };
   },
   created() {
@@ -140,9 +140,6 @@ export default {
     }
     
   },
-  mounted() {
-    this.initMap();
-  },
   methods: {
     mouseOnImg() {
       this.showUploadIcon = true;
@@ -157,16 +154,31 @@ export default {
       // if (!this.event || !this.event.loc) return
       var map = new google.maps.Map(this.$refs.map, {
         zoom: 4,
-        center: this.event.loc
+        center: { 
+                lat: this.event.loc.coordinates[0],
+                lng: this.event.loc.coordinates[1]
+                }
       });
       var marker = new google.maps.Marker({
-        position: this.event.loc,
+        position: { 
+                  lat: this.event.loc.coordinates[0],
+                  lng: this.event.loc.coordinates[1]
+                  },
         map: map
       });
     },
     handleAvatarSuccess(res, file) {
-        this.imageUrl = URL.createObjectURL(file.raw);
-      },
+      this.originalImg = this.event.img
+      console.log('saved originalImg', this.originalImg);
+      
+      this.event.img = URL.createObjectURL(file.raw);
+      let reader = new FileReader();
+      reader.readAsDataURL(file.raw); 
+      reader.onload = () => {
+          this.base64Img = reader.result;                
+          console.log('this.base64Img', this.base64Img);
+      }
+    },
     beforeAvatarUpload(file) {
       const isJPG = file.type === 'image/jpeg';
       const isLt2M = file.size / 1024 / 1024 < 2;
@@ -184,8 +196,8 @@ export default {
         .then(res => {
           this.eventAddress = res.address
           this.event.loc = {
-            lat: res.lat,
-            lng: res.lng,
+            coordinates: [res.lat, res.lng],
+            type: "Point",
             title: res.address
           }
           
@@ -209,7 +221,23 @@ export default {
       this.inputVisible = false;
       this.inputValue = '';
     },
+    uploadImg() {
+      if (this.base64Img) {
+        var formData = new FormData();
+        formData.append('file', this.base64Img);
+        console.log('formData', formData);
+        
+        let fakeEv = {preventDefault: function() {return}}
 
+        return cloudinaryService.uploadImg(formData, fakeEv)
+                .then(res => {
+                  this.event.img = res.url;
+                })
+      }
+      else {
+        return Promise.resolve()
+      }
+    },
     validateAndSave() {
       if (this.eventLocChanged) {
         this.getLocByName()
@@ -221,20 +249,30 @@ export default {
         })
       }
       else {
-        console.log('got here!');     
         this.saveEvent()
       }
     },
     saveEvent() {
-        this.event.startTime = +moment(this.eventStartDate + ' ' + this.eventStartTime).format('x');
-        this.event.endTime = +moment(this.eventEndDate + ' ' + this.eventEndTime).format('x');
-        this.event.tags = this.dynamicTags
-        
+      this.event.startTime = +moment(this.eventStartDate + ' ' + this.eventStartTime).format('x');
+      this.event.endTime = +moment(this.eventEndDate + ' ' + this.eventEndTime).format('x');
+      this.event.tags = this.dynamicTags
 
-
-        //TODO: rest setup of saving event
-
+      this.uploadImg()
+      .then(() => {
         console.log('saving event:', this.event);
+        if (this.event._id) {
+            eventService.update(this.event)
+          .then(() => {
+            this.$router.push(`/event/${this.event._id}`);
+          })
+        }
+        else {
+          eventService.add(this.event)
+          .then(() => {
+            this.$router.push(`/event/${this.event._id}`);
+          })
+        }
+      })
     }
   },
   computed: {
@@ -296,6 +334,17 @@ export default {
 </script>
 
 <style scoped>
+input {
+  border-radius: 4px;
+  border: 1px solid #dcdfe6;
+  color: #606266;
+  height: 40px;
+  line-height: 40px;
+  outline: 0;
+  padding: 0 15px;
+  margin: 0 0.5em;
+}
+
 .people-icon {
   width: 14px;
 }
@@ -393,6 +442,10 @@ export default {
   display: flex;
   flex-wrap: wrap;
   margin: 0.5em;
+}
+
+.times-container span {
+  line-height: 40px;
 }
 
 .event-time {

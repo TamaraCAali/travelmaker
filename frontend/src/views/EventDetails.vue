@@ -33,6 +33,7 @@
         <div class="attends-container" @click="showAttendsList = true">
           <i class="fas fa-user-friends"></i>
           {{event.attends.length}} people attending
+          <img v-for="(user, userIdx) in attendingUsers.slice(0, 3)" class="attends-img" :src="user.img" :key="user._id">
         </div>
         <attends-list v-if="showAttendsList" 
           @close-list="showAttendsList = false"
@@ -69,7 +70,7 @@
         <el-tag v-for="tag in event.tags" :key="tag">{{tag}}</el-tag>
       </div>
       <h3>Comments:</h3>
-      <ul class="clean-list">
+      <ul class="comments clean-list">
         <li class="comment" v-for="comment in event.comments" :key="comment.at">
           <img :src="comment.creatorImg" @click="$router.push(`/user/${comment.creatorId}`)" />
           <el-tag type="success">{{comment.txt}} <span>- {{comment.at | commentTime}}</span></el-tag>
@@ -110,7 +111,8 @@ export default {
       eventAddress: '',
       eventUrl: window.location.href,
       newCommentTxt: '',
-      showAttendsList: false
+      showAttendsList: false,
+      attendingUsers: []
     };
   },
   created() {
@@ -118,13 +120,12 @@ export default {
     // console.log('event id sent:', idFromParams);
     eventService.getById(idFromParams).then(res => {
       console.log('got event:', res);
-      return (this.event = JSON.parse(JSON.stringify(res)));
+      this.event = JSON.parse(JSON.stringify(res));
+      this.initMap()
+      this.getAttendingUsers()
     });
     this.user = this.$store.getters.getUser;
     // console.log('user:', this.user);
-  },
-  mounted() {
-    this.initMap();
   },
   methods: {
     openSelectedUsers(user) {
@@ -132,8 +133,8 @@ export default {
     },
     toggleEventAttendence() {
       if (!this.user._id) {
-        this.$message.error('You must be a logged-on user to join an event.');
-        return
+        this.$message.error('Please login to join an event');
+        this.$router.push('/login');
       }
       if (this.userIsAttending) {
         // console.log('leaving');
@@ -163,10 +164,16 @@ export default {
       // if (!this.event || !this.event.loc) return
       var map = new google.maps.Map(this.$refs.map, {
         zoom: 4,
-        center: this.event.loc
+        center: { 
+                lat: this.event.loc.coordinates[0],
+                lng: this.event.loc.coordinates[1]
+                }
       });
       var marker = new google.maps.Marker({
-        position: this.event.loc,
+        position: { 
+                  lat: this.event.loc.coordinates[0],
+                  lng: this.event.loc.coordinates[1]
+                  },
         map: map
       });
     },
@@ -184,6 +191,15 @@ export default {
       eventService.update(this.event);
       console.log('saving comment:', newComment);
       this.newCommentTxt = ''
+    },
+    getAttendingUsers() {
+      userService.getByIds(this.event.attends)
+      .then(res => {
+        this.attendingUsers = res.data;
+      })
+      .catch(err => {
+        console.log('Err:', err);
+      })
     }
   },
   computed: {
@@ -221,9 +237,6 @@ export default {
       if (this.user._id) return 'Add a comment'
       else return 'Please log in to add a comment'
     }
-    // event() {
-    //   this.initMap()
-    // }
   },
   watch: {
     event() {
@@ -305,6 +318,11 @@ export default {
   text-decoration: underline;
 }
 
+.attends-img {
+  height: 25px;
+  border-radius: 2px;
+}
+
 .btns-container {
   display: flex;
   align-items: center;
@@ -329,6 +347,10 @@ export default {
   width: 100%;
   height: 250px;
   margin: 10px;
+}
+
+.comments {
+  align-self: flex-start;
 }
 
 .comment {

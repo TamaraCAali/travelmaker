@@ -3,13 +3,12 @@ const CLOUD_NAME = 'travelmaker'
 const UPLOAD_URL = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
 const UPLOAD_PRESET = 'wfirfq3z';
 
-export default {
-    uploadImg
-};
 
 // on submit call to this function
-function uploadImg(formData, ev) {
-    console.log('cloudinaryServ got', formData);
+function uploadImg(elForm, ev) {
+    console.log('elForm', elForm);
+    console.log('elForm[0].files[0]', elForm[0].files[0]);
+    
     
     ev.preventDefault();
    
@@ -17,16 +16,17 @@ function uploadImg(formData, ev) {
     function onSuccess(res) {
         console.log('uploadedImg', res);
         console.log('uploadedImg', res.url);
-        return res;
     }
 
-    return doUploadImg(formData, onSuccess);
+    doUploadImg(elForm, onSuccess);
 }
 
-function doUploadImg(formData, onSuccess) {
+function doUploadImg(elForm, onSuccess) {
+    var formData = new FormData();
+    formData.append('file', elForm[0].files[0])
     formData.append('upload_preset', UPLOAD_PRESET);
 
-    return fetch(UPLOAD_URL, {
+    fetch(UPLOAD_URL, {
         method: 'POST',
         body: formData
     })

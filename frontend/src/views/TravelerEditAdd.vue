@@ -191,7 +191,6 @@ export default {
       }
     },
     hendleFileSelected(ev) {
-      console.log('jojoj');
       var files = ev.target.files;
       var reader = new FileReader();
       var urlUpload = '';

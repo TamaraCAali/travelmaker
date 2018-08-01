@@ -17,6 +17,7 @@ export default {
   remove,
   update,
   getById,
+  getByIds,
   login,
   fbLogin,
   logout,
@@ -71,6 +72,11 @@ function update(user) {
 
 function getById(userId) {
   return axios.get(`${USER_URL}/${userId}`).then(res => res.data);
+}
+
+function getByIds(userIds) {
+  return axios.post(USER_URL + '/users', {userIds})
+
 }
 
 function login(user) {
