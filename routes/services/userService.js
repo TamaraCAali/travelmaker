@@ -61,15 +61,23 @@ function getByFbId(userId) {
 }
 
 function add(user) {
-  return mongoService.connect().then(db => {
-    const collection = db.collection('user');
-    return collection
-      .insertOne(user)
-      .then(result => {
-        user._id = result.insertedId;
-        return user;
-      })
-      .catch(err => console.log('caught error', err));
+  console.log('user from add1', user);
+
+  return checkForUser(user).then(res => {
+    if (res === null) {
+      return mongoService.connect().then(db => {
+        const collection = db.collection('user');
+        return collection
+          .insertOne(user)
+          .then(result => {
+            user._id = result.insertedId;
+            return user;
+          })
+          .catch(err => console.log('caught error', err));
+      });
+    } else {
+      console.log('unser name exist');
+    }
   });
 }
 
@@ -92,7 +100,7 @@ function update(user) {
 function checkForUser(user) {
   return mongoService.connect().then(db => {
     const collection = db.collection('user');
-    return collection.findOne({ userName: user.username });
+    return collection.findOne({ userName: user.userName });
   });
 }
 

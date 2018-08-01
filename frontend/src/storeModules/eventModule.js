@@ -38,6 +38,7 @@ export default {
           type: LOAD_EVENTS,
           events
         });
+        return events;
       });
     },
     [LOAD_EVENT](context, { eventId }) {

@@ -2,7 +2,7 @@
   <div id="app">
     <nav v-show="showNavBar">
       <div>
-        <router-link class="router-link" to="/login"><i class="fas fa-sign-in-alt"></i> <span @click="logout" class="span-icon"> {{login}}</span></router-link> |
+        <router-link class="router-link" to="/login"><i class="fas fa-sign-in-alt"></i> <span @click="logoutUser" class="span-icon"> {{login}}</span></router-link> |
         <router-link class="router-link" to="/"><i class="fas fa-calendar-alt"></i> <span class="span-icon"> events</span></router-link> |
         <router-link class="router-link" to="/travelers"><i class="fas fa-user-friends"></i> <span class="span-icon"> travelers</span></router-link>|
       </div>
@@ -86,7 +86,7 @@ export default {
         ? (this.login = 'logout')
         : (this.login = 'login');
     },
-    logout() {
+    logoutUser() {
       this.login = 'login';
       this.userUrl =
         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjvdv8INW6OzjzPL8JyQlDbYOxZjabXx8xcNlhroqSHOMZh4C35g';
@@ -103,6 +103,13 @@ nav {
   justify-content: space-around;
   align-items: center;
   color: #41b883;
+  position: fixed;
+  opacity: 0.8;
+  z-index: 10;
+  background-color: whitesmoke;
+  top: 0;
+  left: 0;
+  width: 100%;
 }
 .router-link i {
   color: #35495e;
@@ -163,7 +170,7 @@ nav {
   border-radius: 50%;
 }
 .span-icon {
-    text-transform: capitalize;
+  text-transform: capitalize;
 }
 
 @media only screen and (max-width: 420px) {

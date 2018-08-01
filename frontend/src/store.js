@@ -16,7 +16,7 @@ export const LOGOUT = 'user/logout';
 export const SET_USER = 'user/setUser';
 export const UPDATE_USER = 'user/updateLocUser';
 export const ADD_USER = 'user/addUser';
-export const SET_GUEST = 'user/setGuest';
+// export const SET_GUEST = 'user/setGuest';
 
 export default new Vuex.Store({
   state: {
@@ -78,6 +78,7 @@ export default new Vuex.Store({
       });
     },
     [LOGIN](context, { user }) {
+      debugger;
       return userService
         .login(user)
         .then(user => {
@@ -101,38 +102,30 @@ export default new Vuex.Store({
         });
     },
     [LOGOUT](context) {
-      return userService.logout().then(() => {
-        return context.commit({ type: SET_USER, user: null });
-      });
+      userService.logout();
+      context.commit({ type: SET_USER, user: _loadUser() });
     },
     [UPDATE_USER](context, { user }) {
       console.log('update', user);
       return userService.update(user).then();
     },
     [ADD_USER](context, { user }) {
-      console.log(user);
       return _getAppLoc().then(loc => {
         user.loc = loc;
-        console.log(user);
+        return userService
+          .add(user)
+          .then(user => {
+            console.log('return store then good username');
+            return context.commit({
+              type: SET_USER,
+              user
+            });
+          })
+          .catch(err => {
+            console.log('service store err username');
 
-        return userService.add(user).then(user => {
-          return context.commit({
-            type: SET_USER,
-            user
+            return Promise.reject(err);
           });
-        });
-      });
-    },
-    [SET_GUEST](context) {
-      var user = _loadUser();
-      return _getAppLoc().then(loc => {
-        user.loc = loc;
-        console.log('SET_GUEST', user);
-        userService.setGuestLonin(user);
-        return context.commit({
-          type: SET_USER,
-          user
-        });
       });
     }
   },

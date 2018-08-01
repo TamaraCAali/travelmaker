@@ -1,7 +1,7 @@
 <template>
   <div class="event">
     <div class="events-header">
-      <div class="new-event-container" @click="onNewEvent">
+      <div class="new-event-container" @click="$router.push('/event/edit/newEvent')">
         <div class="new-event">
           <i class="far fa-plus-square fa-2x"></i>
             New event
@@ -9,12 +9,13 @@
       </div>
       <LocationInput v-if="user.loc"></LocationInput>
     </div>
-    <EventList v-if="user.loc" :events="events" v-on:selected="openSelectedEvent"></EventList>
+    <EventList v-if="events"  :events="events" v-on:selected="openSelectedEvent"></EventList>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
+import locService from '@/services/locationService.js';
 import EventList from '@/components/EventList.vue';
 import LocationInput from '@/components/LocationInput.vue';
 import EventBusService, { LOGIN } from '../services/eventBusService.js';
@@ -27,27 +28,37 @@ export default {
     EventList
   },
   data() {
-    return { user: null };
+    return {
+      user: null,
+      events: null
+    };
   },
   created() {
     this.loadUser();
   },
   computed: {
-    events() {
-      return this.$store.getters.eventForDisplay;
-    }
+    // events() {
+    //   return this.$store.getters.eventForDisplay;
+    // }
   },
   methods: {
     loadUser() {
+      debugger;
       this.user = this.$store.getters.loggedinUser;
-      console.log('event', this.user);
-      EventBusService.$emit(LOGIN, this.user.img);
-      this.loadEvent(this.user);
+      locService.getAppLoc().then(currLoc => {
+        this.user.loc = currLoc;
+        console.log('user', this.user);
+        EventBusService.$emit(LOGIN, this.user.img);
+        this.loadEvent(this.user);
+      });
     },
     loadEvent(user) {
       this.$store
         .dispatch(LOAD_EVENTS, { user })
-        .then()
+        .then(events => {
+          console.log('events', events);
+          this.events = events;
+        })
         .catch(err => {
           console.log('err in load events', err);
         });
@@ -68,14 +79,10 @@ export default {
 
 <style>
 .events-header {
-  display:flex;
+  display: flex;
   justify-content: center;
   position: relative;
-  padding: 1em 0;
-}
-
-.events-header .curr-loc{
-  margin: 0 auto;
+  padding: 2em 0 0 1em;
 }
 
 .new-event {
@@ -103,6 +110,7 @@ export default {
 .new-event:hover i {
   margin-right: 10px;
 }
+<<<<<<< HEAD
 
 @media screen and (max-width: 700px) {
   .events-header {
@@ -126,4 +134,6 @@ export default {
     margin-right: 10px;
   }
 }
+=======
+>>>>>>> master
 </style>
