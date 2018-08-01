@@ -33,6 +33,7 @@
         <div class="attends-container" @click="showAttendsList = true">
           <i class="fas fa-user-friends"></i>
           {{event.attends.length}} people attending
+          <img v-for="(user, userIdx) in attendingUsers.slice(0, 3)" class="attends-img" :src="user.img" :key="user._id">
         </div>
         <attends-list v-if="showAttendsList" 
           @close-list="showAttendsList = false"
@@ -110,7 +111,8 @@ export default {
       eventAddress: '',
       eventUrl: window.location.href,
       newCommentTxt: '',
-      showAttendsList: false
+      showAttendsList: false,
+      attendingUsers: []
     };
   },
   created() {
@@ -193,7 +195,7 @@ export default {
     getAttendingUsers() {
       userService.getByIds(this.event.attends)
       .then(res => {
-        console.log('got attending users:', res);
+        this.attendingUsers = res.data;
       })
       .catch(err => {
         console.log('Err:', err);
@@ -314,6 +316,11 @@ export default {
 
 .attends-container:hover {
   text-decoration: underline;
+}
+
+.attends-img {
+  height: 25px;
+  border-radius: 2px;
 }
 
 .btns-container {

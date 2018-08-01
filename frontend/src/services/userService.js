@@ -68,7 +68,6 @@ function getById(userId) {
 }
 
 function getByIds(userIds) {
-  // console.log('fronend service got:', userIds);
   return axios.post(USER_URL + '/users', {userIds})
 
 }

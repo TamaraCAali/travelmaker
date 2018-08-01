@@ -45,11 +45,9 @@ function getById(userId) {
 
 function getByIds(userIds) {
   userIds = userIds.map(userId => new ObjectId(userId))
-  console.log('backend service usersids:', userIds);
-  
   return mongoService.connect().then(db => {
-    // const collection = db.getCollection('user');
-    return db.collection('user').find({ _id: { $in: userIds }}).toArray()
+    const collection = db.collection('user');
+    return collection.find({ _id: { $in: userIds }}).toArray()
   });
 }
 

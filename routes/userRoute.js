@@ -19,11 +19,8 @@ module.exports = app => {
 
   app.post(USER_URL + '/users', (req, res) => {
     const userIds = req.body.userIds;
-    console.log('routes userIds:', userIds);
-    
     return userService.getByIds(userIds)
     .then(users => {
-      console.log('routes got:', users);
       return res.json(users)
     });
   });
