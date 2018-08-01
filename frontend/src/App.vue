@@ -16,7 +16,7 @@
           <img class="login-img" :src="userUrl"></router-link>
         </div>
         <!-- <didi-sandbox> -->
-          <NotificationMenu/>
+          <!-- <NotificationMenu/> -->
         <!-- </didi-sandbox> -->
     </nav>
     <user-msg></user-msg>
