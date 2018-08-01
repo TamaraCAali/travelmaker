@@ -78,7 +78,6 @@ export default new Vuex.Store({
       });
     },
     [LOGIN](context, { user }) {
-      debugger;
       return userService
         .login(user)
         .then(user => {

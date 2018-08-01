@@ -33,13 +33,17 @@
         <div class="attends-container" @click="showAttendsList = true">
           <i class="fas fa-user-friends"></i>
           {{event.attends.length}} people attending
-          <img v-for="(user, userIdx) in attendingUsers.slice(0, 3)" class="attends-img" :src="user.img" :key="user._id">
+          <img v-for="(user, userIdx) in attendingUsers.slice(0, 3)" 
+                class="attends-img" 
+                :style="{ right: userIdx*5 + 'px' }"
+                :src="user.img" 
+                :key="user._id">
           <span>...</span>
         </div>
         <attends-list v-if="showAttendsList" 
           @close-list="showAttendsList = false"
           @selected="openSelectedUsers"
-          :usersIds="event.attends">
+          :users="attendingUsers">
         </attends-list>
       </div>
       <div class="btns-container">
@@ -320,10 +324,16 @@ export default {
 }
 
 .attends-img {
+  position: relative;
   height: 25px;
   width: 25px;
   object-fit: cover;
   border-radius: 50%;
+}
+
+.attends-container span {
+  position: relative;
+  right: 15px;
 }
 
 .btns-container {
