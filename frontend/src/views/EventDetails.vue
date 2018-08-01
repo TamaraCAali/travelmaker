@@ -34,6 +34,7 @@
           <i class="fas fa-user-friends"></i>
           {{event.attends.length}} people attending
           <img v-for="(user, userIdx) in attendingUsers.slice(0, 3)" class="attends-img" :src="user.img" :key="user._id">
+          <span>...</span>
         </div>
         <attends-list v-if="showAttendsList" 
           @close-list="showAttendsList = false"
@@ -320,7 +321,9 @@ export default {
 
 .attends-img {
   height: 25px;
-  border-radius: 2px;
+  width: 25px;
+  object-fit: cover;
+  border-radius: 50%;
 }
 
 .btns-container {

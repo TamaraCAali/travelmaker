@@ -84,16 +84,19 @@ export default {
   padding: 2em 0 0 1em;
 }
 
+.new-event-container {
+  /* position: relative; */
+  position: absolute;
+  left: 10px;
+}
+
 .new-event {
   cursor: pointer;
-  position: absolute;
-  /* bottom: 0px; */
   padding: 5px 8px;
   margin: 0 2em;
   border-radius: 4px;
   background-color: #f5f5dc;
   display: flex;
-  /* flex-direction: column; */
   justify-content: center;
   align-items: center;
   transition: 0.2s;
@@ -117,6 +120,10 @@ export default {
 
   .curr-loc {
     margin: 0;
+  }
+
+  .new-event-container {
+    position: static;
   }
 
   .new-event {
