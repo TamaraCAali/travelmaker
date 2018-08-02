@@ -1,7 +1,6 @@
 <template>
   <div id="app">
-    <nav>
-    <!-- v-show="!userToChat" -->
+    <nav :class="[(userToChat)? 'desktop-only': 'mobile']">
       <div class="logo">
         <i class="fas fa-walking"></i>
         <i class="fas fa-search"></i>
@@ -19,8 +18,7 @@
           
     </nav>
     <user-msg></user-msg>
-    <router-view />
-    <!-- v-show="!userToChat" -->
+    <router-view :class="[(userToChat)? 'desktop-only': 'mobile']"></router-view>
     <ChatWindow
       v-if="userToChat" 
       :otherUser="userToChat" 
@@ -212,6 +210,12 @@ nav {
     display: flex;
     justify-content: space-around;
     z-index: 10;
+  }
+}
+
+@media only screen and (max-width: 700px) {
+  .desktop-only {
+    display: none;
   }
 }
 </style>

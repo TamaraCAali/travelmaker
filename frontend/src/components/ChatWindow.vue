@@ -640,7 +640,7 @@ input.textarea {
     top: 50px;
   }
   .chat {
-    z-index: 79;
+    z-index: 81;
     position: fixed;
     top:40px;
     bottom: 0;
