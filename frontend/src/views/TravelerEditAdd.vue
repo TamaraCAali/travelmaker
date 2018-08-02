@@ -1,14 +1,14 @@
 <template>
-  <div class="traveler-edit-add">
-        <div >
-            <img class="user-img" :src="user.img">
+  <div class="traveler-edit-add container">
+        <div class="img-container">
+            <img class="user-img" :src="base64Img">
         </div>
 
 
             <div class="input-file-container">
             <input  type="file" name="image" class="import-img input-file"
             @input="hendleFileSelected" multiple="false" accept="image/*" />
-            <label tabindex="0" for="my-file" class="btn-submit">Select a file...</label>
+            <label tabindex="0" for="my-file" class="btn-submit">Upload image</label>
              </div>
 
 
@@ -71,7 +71,7 @@ import userService from '../services/userService';
 import { ADD_USER } from '../store.js';
 import { UPDATE_USER } from '../store.js';
 import { LOAD_CURR_LOC } from '../store.js';
-
+import cloudinaryService from '../services/cloudinaryService';
 import EventBusService, { SHOW_MSG } from '../services/eventBusService.js';
 
 export default {
@@ -82,6 +82,8 @@ export default {
       inputValue: '',
       inputVisibleDest: false,
       inputValueDest: '',
+      base64Img:
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjvdv8INW6OzjzPL8JyQlDbYOxZjabXx8xcNlhroqSHOMZh4C35g',
       user: {
         password: '',
         userName: '',
@@ -112,7 +114,10 @@ export default {
   computed: {},
   created() {
     var loggeduser = this.$store.getters.getUser;
-    if (loggeduser) this.user = loggeduser;
+    if (loggeduser) {
+      this.user = loggeduser;
+      this.base64Img = this.user.img;
+    }
   },
   methods: {
     handleClose(interest) {
@@ -156,41 +161,43 @@ export default {
       this.inputValueDest = '';
     },
     SaveUser() {
-      if (this.user._id) {
-        console.log('inside update user');
-        const user = JSON.parse(JSON.stringify(this.user));
-        this.$store
-          .dispatch(UPDATE_USER, { user })
-          .then(_ => {
-            this.$router.push('/');
-            EventBusService.$emit(SHOW_MSG, {
-              txt: `Updated successfully`,
-              type: 'success'
+      this.uploadImg().then(_ => {
+        if (this.user._id) {
+          console.log('inside update user');
+          const user = JSON.parse(JSON.stringify(this.user));
+          this.$store
+            .dispatch(UPDATE_USER, { user })
+            .then(_ => {
+              this.$router.push('/');
+              EventBusService.$emit(SHOW_MSG, {
+                txt: `Updated successfully`,
+                type: 'success'
+              });
+            })
+            .catch(err => {
+              console.log('err', err);
+              EventBusService.$emit(SHOW_MSG, {
+                txt: 'Could not save changes, please change picture type',
+                type: 'danger'
+              });
             });
-          })
-          .catch(err => {
-            console.log('err', err);
-            EventBusService.$emit(SHOW_MSG, {
-              txt: 'Could not save changes, please change picture type',
-              type: 'danger'
+        } else {
+          console.log('inside create user');
+          const user = JSON.parse(JSON.stringify(this.user));
+          console.log('user details', user);
+          this.$store
+            .dispatch(ADD_USER, { user })
+            .then(_ => {
+              console.log('inside add', user);
+              this.$router.push('/');
+              this.$message.success('Login successfully');
+            })
+            .catch(err => {
+              console.log('err', err);
+              this.$message.error(err);
             });
-          });
-      } else {
-        console.log('inside create user');
-        const user = JSON.parse(JSON.stringify(this.user));
-        console.log('user details', user);
-        this.$store
-          .dispatch(ADD_USER, { user })
-          .then(_ => {
-            console.log('inside add', user);
-            this.$router.push('/');
-            this.$message.success('Login successfully');
-          })
-          .catch(err => {
-            console.log('err', err);
-            this.$message.error(err);
-          });
-      }
+        }
+      });
     },
     hendleFileSelected(ev) {
       var files = ev.target.files;
@@ -199,31 +206,52 @@ export default {
       reader.onload = (file => {
         return e => {
           urlUpload = e.target.result;
-          this.user.img = urlUpload;
+          this.base64Img = urlUpload;
         };
       })(files[0]);
       reader.readAsDataURL(files[0]);
       console.log(urlUpload);
       console.log('úser', this.user);
+    },
+    uploadImg() {
+      if (this.base64Img) {
+        var formData = new FormData();
+        formData.append('file', this.base64Img);
+        console.log('formData', formData);
+
+        let fakeEv = {
+          preventDefault: function() {
+            return;
+          }
+        };
+
+        return cloudinaryService.uploadImg(formData, fakeEv).then(res => {
+          this.user.img = res.url;
+        });
+      } else {
+        return Promise.resolve();
+      }
     }
   }
 };
 </script>
 <style scoped lang="scss">
 .traveler-edit-add {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: beige;
-  box-shadow: 0 0 5px #00000063;
-  margin: 10px;
-  padding: 10px;
   transition: all 0.3s;
+}
+.img-container {
+  text-align: center;
+  width: 100%;
 }
 .user-img {
   width: 100%;
   height: 250px;
-  object-fit: cover;
+  object-fit: contain;
 }
 form {
   display: flex;

@@ -7,6 +7,7 @@ import Event from './views/Event.vue';
 import Travelers from './views/Travelers.vue';
 import TravelerDetails from './views/TravelerDetails.vue';
 import TravelerEditAdd from './views/TravelerEditAdd.vue';
+import ProfilePage from './views/ProfilePage.vue';
 
 Vue.use(Router);
 
@@ -38,10 +39,16 @@ export default new Router({
       component: EventDetails
     },
     {
+      path: '/user/profile',
+      name: 'user-profile',
+      component: ProfilePage
+    },
+    {
       path: '/user/:userId',
       name: 'user-details',
       component: TravelerDetails
     },
+
     {
       path: '/user/edit/:userId',
       name: 'user-edit',

@@ -68,4 +68,10 @@ h3 {
     font-size: 1.3em;
   }
 }
+
+@media screen and (max-width: 470px) {
+  .list-container {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+}
 </style>

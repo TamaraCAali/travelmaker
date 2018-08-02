@@ -25,4 +25,10 @@ export default {
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 10px;
 }
+
+@media screen and (max-width: 720px) {
+  .event-list {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+}
 </style>
