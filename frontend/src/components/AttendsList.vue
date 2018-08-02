@@ -31,8 +31,6 @@ export default {
   components: {
     TravelersPreview
   },
-  data() {
-  },
   created() {
       console.log('users:', this.users);
   },
@@ -46,7 +44,7 @@ export default {
 
 <style scoped>
 .modal-backdrop {
-  z-index: 2;
+  z-index: 6;
   position: fixed;
   top: 0;
   bottom: 0;
@@ -69,6 +67,7 @@ export default {
   align-items: flex-start;
   border-radius: 10px;
   margin: 5em;
+  z-index: 7;
 }
 
 .fade-enter-active, .fade-leave-active {
@@ -102,8 +101,8 @@ export default {
   background-size: cover;
   padding: 10px;
   transition: all 1s ease;
-  opacity: 0.8;
   background-position: center;
+  z-index: auto;
 }
 .user-img:hover {
   opacity: 1;

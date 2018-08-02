@@ -211,6 +211,9 @@ nav {
     justify-content: space-around;
     z-index: 10;
   }
+  nav {
+    padding: 0;
+  }
 }
 
 @media only screen and (max-width: 700px) {
