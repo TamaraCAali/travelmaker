@@ -1,21 +1,14 @@
 <template>
-  <section class="traveler-details">
-    <div class="user-details" v-if="user" v-show="!isChatMode">
+  <section class="traveler-profile">
+    <div class="user-details" v-if="user">
         <div class="user-img-cover screen">
-            <img class="user-img" :src=" `${user.img}`" alt="">
+            <img class="user-img" :src=" `${user.img}`">
         </div>
         <div class="user-pre-details container">
             <div class="name">
                 <h2>{{user.name.first}} {{user.name.last}}, {{user.age}}
                 </h2>
-
-                <button 
-                class="chat-icon" 
-                @click="toggleChat"
-                v-if="$store.getters.loggedinUser._id !== $route.params.userId"
-                >
-                    <i class="far fa-comments"></i>
-                </button>
+                          <router-link class="router-link" to="/user/edit/:userId"><i class="far fa-edit"></i><span class="span-icon"></span></router-link>
             </div>
             <div>
                 <strong>About me: </strong> 
@@ -49,8 +42,7 @@
 
         </div>
     </div>
-    <!-- <ChatWindow :otherUser="user" v-if="isChatMode"/>  -->
-    <!-- Possible: Apply the chat room before the user click the button by v-show -->
+
 </section>
 </template>
 
@@ -58,7 +50,6 @@
 import userService from '../services/userService';
 import eventService from '../services/eventService';
 import EventPreview from '@/components/EventPreview.vue';
-import ChatWindow from '@/components/ChatWindow.vue';
 import langs from '@/components/travelers/langs.vue';
 import eventBusService, { TOGGLE_CHAT } from '@/services/eventBusService';
 
@@ -66,36 +57,17 @@ export default {
   name: 'TravelerDetails',
   components: {
     langs,
-    EventPreview,
-    ChatWindow
+    EventPreview
   },
   data() {
     return {
       user: null,
-      userEvents: null,
-      isChatMode: false
+      userEvents: null
     };
   },
   computed: {},
   created() {
-    let idFromParams = this.$route.params.userId;
-    userService.getById(idFromParams).then(user => {
-      this.user = user;
-      console.log('user', user);
-    });
-  },
-  methods: {
-    toggleChat() {
-      const loggedUser = this.$store.getters.getUser;
-      if (loggedUser._id) {
-        eventBusService.$emit(TOGGLE_CHAT, this.user);
-        // this.isChatMode = true;
-        // this.$router.push(`/chat/${this.user}`);
-      } else {
-        this.$message.error('Please login to contact other travelers');
-        this.$router.push('/login');
-      }
-    }
+    this.user = this.$store.getters.getUser;
   },
   watch: {
     user() {
@@ -110,7 +82,8 @@ export default {
         });
       }
     }
-  }
+  },
+  methods: {}
 };
 </script>
 
@@ -154,14 +127,7 @@ export default {
   display: flex;
   align-items: center;
 }
-.chat-icon {
-  border: none;
-  color: #35495e;
-  background-color: transparent;
-  cursor: pointer;
-  font-size: 1.35rem;
-  padding: 0 0 0 30px;
-}
+
 .fa-comments:before {
   content: '\f086';
   font-size: 2em;
@@ -200,6 +166,7 @@ export default {
 @media screen and (max-width: 450px) {
   .user-img {
     left: 33%;
+    top: 107px;
   }
 }
 </style>
