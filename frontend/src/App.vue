@@ -11,7 +11,7 @@
         <router-link class="router-link" to="/login"><i class="fas fa-sign-in-alt"></i> <span @click="logoutUser" class="span-icon"> {{login}}</span></router-link> |
         <router-link class="router-link" to="/"><i class="fas fa-calendar-alt"></i> <span class="span-icon"> events</span></router-link> |
         <router-link class="router-link" to="/travelers"><i class="fas fa-user-friends"></i> <span class="span-icon"> travelers</span></router-link>|
-          <router-link class="router-link" to="/user/edit/:userId"><i class="fas fa-cog"></i><span class="span-icon"></span>
+          <router-link class="router-link" to="/user/profile"><i class="fas fa-cog"></i><span class="span-icon"></span>
           <img class="login-img" :src="userUrl"></router-link>
         </div>
 

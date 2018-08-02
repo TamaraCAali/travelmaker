@@ -62,12 +62,12 @@ export default {
 <style scoped lang="scss">
 .user-preview {
   width: 100%;
+  border: 1px solid #ccc;
 }
 .user {
   width: 100%;
   transition: all 0.3s;
   cursor: pointer;
-  border: 1px solid #ccc;
   margin: 0 0 5px 0;
 }
 
