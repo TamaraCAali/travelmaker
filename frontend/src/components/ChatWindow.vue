@@ -19,36 +19,6 @@
                   <time>{{getMomentTime(msg.at)}}</time>
                 </div>
             </li>
-
-                            <!-- <examples>
-                              
-
-                                      <li class="other">
-                                          <div class="avatar"><img src="https://i.imgur.com/DY6gND0.png" draggable="false"/></div>
-                                        <div class="msg">
-                                          <p>Hola!</p>
-                                          <p>Te vienes a cenar al centro? <emoji class="pizza"/></p>
-                                          <time>20:17</time>
-                                        </div>
-                                      </li>
-                                      <li class="self">
-                                          <div class="avatar"><img src="https://i.imgur.com/HYcn9xO.png" draggable="false"/></div>
-                                        <div class="msg">
-                                          <p>Puff...</p>
-                                          <p>Aún estoy haciendo el contexto de Góngora... <emoji class="books"/></p>
-                                          <p>Mejor otro día</p>
-                                          <time>20:18</time>
-                                        </div>
-                                      </li>
-                                      <li class="other">
-                                          <div class="avatar"><img src="https://i.imgur.com/DY6gND0.png" draggable="false"/></div>
-                                        <div class="msg">
-                                          <p>Qué contexto de Góngora? <emoji class="suffocated"/></p>
-                                          <time>20:18</time>
-                                        </div>
-                                      </li>
-
-                            </examples> -->
             <li ref="bottom" style="width:100%; height:50px;"></li>
       </ol>
 
@@ -80,9 +50,6 @@ import eventBusService, {
   TOGGLE_CHAT,
   PUSH_NOTIFICATION
 } from '@/services/eventBusService';
-// TODOS: 1. Implement the emoji selector and apply it.
-//        2. Implement last seen.
-//        3. Possible: change the key to the otherUser Id
 
 export default {
   name: 'ChatWindow',
@@ -118,8 +85,6 @@ export default {
       chatService.getByRoom(room).then(chat => {
         if (chat) {
           this.chat = chat;
-          let lastMsg = chat.msgs[this.chat.msgs.length - 1];
-          // if(!lastMsg.isSeen && lastMsg.creator._id === this.otherUser._id)
         } else {
           // create new room and add it to the collection and save to DB
           this.chat = {
@@ -145,26 +110,22 @@ export default {
       otherUserUpdated.chatNtfsMap[this.selfUser._id] = this.otherNtfs;
       userService
         .updateOtherUser(otherUserUpdated)
-        .then(_ => console.log('user Updated'));
+        .then(_ => console.log('User Updated'));
     },
     addNewMsg() {
       let objMsg = {
         txt: this.newMsgTxt,
         room: this.chat.room,
         at: Date.now(),
-        //maybe add a picture of the user here.
         creator: {
           _id: this.selfUser._id,
           img:
             'https://romero.co.il/wp-content/uploads/2018/01/%D7%A8%D7%95%D7%9E%D7%A8%D7%95-%D7%9C%D7%91-%D7%90%D7%99%D7%99%D7%A7%D7%95%D7%9F-300x300.png',
-          // After applying cloudinary service=>
-          //      img: this.selfUser.img,
           fullName: this.selfUser.name.first + ' ' + this.selfUser.name.last
         }
-        // isSeen: false
       };
-      // console.log('this.newMsg in client', objMsg);
       this.$socket.emit('assignMsg', objMsg);
+
       //DB notification
       this.updateOtherUserNtfsMap(objMsg);
       //socket notification
@@ -218,11 +179,6 @@ export default {
     console.log('Chat Destroyed.', this.chat);
     this.clearSelfNtfsMap();
     chatService.update(this.chat);
-
-    // Possible senario - leaving the room when destroyed, and then we
-    // know when to send push-Notification:
-    // another possibility is to create a room with the otherUser room and
-    //  keep him connected to this room whenever he's logged in
     this.$socket.emit('leaveRoom', this.chat.room);
   },
   sockets: {
@@ -231,6 +187,7 @@ export default {
     },
     renderMsg(msg) {
       // console.log('msg from socket: ', msg);
+
       if (
         msg.creator._id === this.selfUser._id ||
         msg.creator._id === this.otherUser._id
@@ -241,17 +198,8 @@ export default {
           .update(this.chat)
           .then(chat => console.log(chat.room, 'Updated!'));
       }
-      // if (msg.creator._id === this.otherUser._id) {
-      //   let title = 'TravelMaker';
-      //   let options = {
-      //     body: 'You have a new message!'
-      //   };
-      //   eventBusService.$emit(PUSH_NOTIFICATION, { title, options });
-      // }
     }
-  },
-  components: {},
-  computed: {}
+  }
 };
 </script>
     
@@ -630,7 +578,7 @@ input.textarea {
   opacity: 0.9;
 }
 
-@media only screen and (min-width: 700px){
+@media only screen and (min-width: 700px) {
   .menu,
   .chat,
   .chat-window .textarea {
@@ -642,10 +590,10 @@ input.textarea {
   .chat {
     z-index: 81;
     position: fixed;
-    top:40px;
+    top: 40px;
     bottom: 0;
     right: 0;
-    left: 0; 
+    left: 0;
     background-color: white;
     // border: 2px solid black;
     // padding: 0;
