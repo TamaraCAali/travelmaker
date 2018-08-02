@@ -15,30 +15,47 @@
             add event
         </div>
       </div>
-      <LocationInput v-if="user.loc"></LocationInput>
+      <LocationInput v-if="user.loc" @events-changed="getEvents"></LocationInput>
+      <div class="sliders-btn-container" @click="showEventsFilter = !showEventsFilter">
+        <i class="fas fa-sliders-h"></i>
+      </div>
     </div>
-    <hr>
-    <EventList v-if="events"  :events="events" ></EventList>
+   
+                <events-filter v-if="showEventsFilter" 
+              @events-changed="getEvents" 
+              @just-radius-changed="loadEvent(user)">
+            </events-filter>
+
+            <hr>
+
+            
+          <EventList v-if="events"  :events="events" ></EventList>
+           
     </div>
+
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
 import locService from '@/services/locationService.js';
-import EventList from '@/components/EventList.vue';
-import LocationInput from '@/components/LocationInput.vue';
 import EventBusService, { LOGIN } from '../services/eventBusService.js';
 import { LOAD_EVENTS } from '../storeModules/eventModule.js';
+
+import EventList from '@/components/EventList.vue';
+import LocationInput from '@/components/LocationInput.vue';
+import eventsFilter from '@/components/EventsFilter.vue';
 
 export default {
   name: 'Event',
   components: {
     LocationInput,
-    EventList
+    EventList,
+    eventsFilter
   },
   data() {
     return {
+      showEventsFilter: false,
       user: null,
       events: null,
       titles: [
@@ -55,7 +72,6 @@ export default {
   computed: {},
   methods: {
     loadUser() {
-      debugger;
       this.user = this.$store.getters.loggedinUser;
       locService.getAppLoc().then(currLoc => {
         this.user.loc = currLoc;
@@ -81,6 +97,12 @@ export default {
       else {
         this.$message.error('Please login to create an event');
         this.$router.push('/login');
+      }
+    },
+    getEvents() {
+      this.events = this.$store.getters.eventForDisplay;
+      if (!this.events[0]) {
+        this.$message.error('No events in that area');
       }
     }
   }
@@ -196,6 +218,12 @@ export default {
     rgba(0, 0, 0, 0.3),
     rgba(0, 0, 0, 0.9)
   );
+}
+.sliders-btn-container {
+  cursor: pointer;
+  font-size: 1.1em;
+  display: flex;
+  align-items: center;
 }
 
 @media screen and (max-width: 700px) {

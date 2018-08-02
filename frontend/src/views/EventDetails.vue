@@ -54,16 +54,19 @@
         <div class="attends-container" @click="showAttendsList = true">
           <i class="fas fa-user-friends"></i>
           {{event.attends.length}} people attending
-          <img v-for="(user, userIdx) in attendingUsers.slice(0, 3)" class="attends-img" :src="user.img" :key="user._id">
+          <img v-for="(user, userIdx) in attendingUsers.slice(0, 3)" 
+                class="attends-img" 
+                :style="{ right: userIdx*5 + 'px' }"
+                :src="user.img" 
+                :key="user._id">
           <span>...</span>
         </div>
         <attends-list v-if="showAttendsList" 
           @close-list="showAttendsList = false"
           @selected="openSelectedUsers"
-          :usersIds="event.attends">
+          :users="attendingUsers">
         </attends-list>
       </div>
-
       <p>
       {{event.desc}}
       </p>
@@ -293,10 +296,30 @@ export default {
 }
 
 .event-details {
+  position: relative;
+  top: 50px;
   display: flex;
   flex-direction: column;
   align-items: center;
   transition: all 0.3s;
+}
+
+.screen {
+  position: relative;
+}
+
+.screen::before {
+  content: '';
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  bottom: 3px;
+  z-index: 2;
+  background: linear-gradient(
+    rgba(0, 0, 0, 0),
+    rgba(0, 0, 0, 0.7),
+    rgba(0, 0, 0, 0.9)
+  );
 }
 
 .event-img {
@@ -346,10 +369,16 @@ export default {
 }
 
 .attends-img {
+  position: relative;
   height: 25px;
   width: 25px;
   object-fit: cover;
   border-radius: 50%;
+}
+
+.attends-container span {
+  position: relative;
+  right: 15px;
 }
 
 .btns-container {

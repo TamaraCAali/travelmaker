@@ -11,6 +11,8 @@
 import { LOAD_CURR_LOC } from '../store.js';
 import { SEARCHED_LOC } from '../store.js';
 import { UPDATE_USER } from '../store.js';
+import { LOAD_EVENTS_BY_LOC } from '../storeModules/eventModule.js';
+
 
 import locService from '../services/locationService.js';
 
@@ -46,7 +48,17 @@ export default {
       let searchInput = this.searchInput;
       this.$store
         .dispatch(SEARCHED_LOC, { searchInput })
-        .then()
+        .then(res => {
+          this.searchInput = res.address
+          let loc = [res.lat, res.lng]
+          this.$store.dispatch(LOAD_EVENTS_BY_LOC, { loc })
+          .then(events => {
+            this.$emit('events-changed')
+          })
+          .catch(err => {
+            console.log('err in load events', err);
+          });
+        })
         .catch(err => {
           console.log('err in load new loc');
         });

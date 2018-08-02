@@ -32,7 +32,7 @@ export default new Vuex.Store({
       state.searchedLoc = pos;
     },
     [SET_USER](state, { user }) {
-      state.user = user;
+      return state.user = user;
       // console.log('SET_USER', state.user);
     }
   },
@@ -46,7 +46,10 @@ export default new Vuex.Store({
     },
     loggedinUser(state) {
       return state.user;
-    }
+    },
+    searchedLoc(state) {
+      return state.searchedLoc;
+    },
   },
   actions: {
     [LOAD_CURR_LOC](context) {
@@ -67,18 +70,15 @@ export default new Vuex.Store({
         });
     },
     [SEARCHED_LOC](context, { searchInput }) {
-      // console.log('store got:', searchInput);
-
-      locService.getPositionByName(searchInput).then(pos => {
-        // console.log('pos', pos);
+      return locService.getPositionByName(searchInput).then(pos => {
         context.commit({
           type: SEARCHED_LOC,
           pos
         });
+        return pos
       });
     },
     [LOGIN](context, { user }) {
-      debugger;
       return userService
         .login(user)
         .then(user => {
@@ -107,7 +107,7 @@ export default new Vuex.Store({
     },
     [UPDATE_USER](context, { user }) {
       // console.log('update', user);
-      return userService.update(user).then();
+      return userService.update(user);
     },
     [ADD_USER](context, { user }) {
       return _getAppLoc().then(loc => {

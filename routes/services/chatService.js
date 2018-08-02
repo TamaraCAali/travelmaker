@@ -37,6 +37,18 @@ function add(chat) {
         })
 }
 
+function updateByRoom(chat) {
+    // chat._id = new ObjectId(chat._id)
+    return mongoService.connect()
+
+        .then(db => {
+            const collection = db.collection('chat');
+            return collection.updateOne({ 'room': chat.room }, { $set: chat })
+                .then(result => {
+                    return chat;
+                })
+        })
+}
 function update(chat) {
     chat._id = new ObjectId(chat._id)
     return mongoService.connect()

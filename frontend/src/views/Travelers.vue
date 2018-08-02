@@ -29,11 +29,10 @@ export default {
   },
   methods: {
     loadUser() {
-      debugger;
       this.user = this.$store.getters.loggedinUser;
       locService.getAppLoc().then(currLoc => {
         this.user.loc = currLoc;
-        console.log('user', this.user);
+        // console.log('user', this.user);
         this.loadUsers(this.user);
       });
     },
@@ -41,7 +40,7 @@ export default {
       this.$store
         .dispatch(LOAD_USERS, { user })
         .then(users => {
-          console.log('users', users);
+          // console.log('users', users);
           this.users = users;
         })
         .catch(err => {
