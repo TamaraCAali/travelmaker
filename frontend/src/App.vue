@@ -1,6 +1,7 @@
 <template>
   <div id="app">
-    <nav v-show="!userToChat">
+    <nav>
+    <!-- v-show="!userToChat" -->
       <div class="logo">
         <i class="fas fa-walking"></i>
         <i class="fas fa-search"></i>
@@ -14,12 +15,16 @@
           <img class="login-img" :src="userUrl"></router-link>
         </div>
 
-          <NotificationMenu v-if="!userToChat"/>
+          <!-- <NotificationMenu v-if="!userToChat"/> -->
           
     </nav>
     <user-msg></user-msg>
-    <router-view v-show="!userToChat"/>
-    <ChatWindow v-if="userToChat" :otherUser="userToChat" />
+    <router-view />
+    <!-- v-show="!userToChat" -->
+    <ChatWindow
+      v-if="userToChat" 
+      :otherUser="userToChat" 
+    />
   </div>
 
 </template>
