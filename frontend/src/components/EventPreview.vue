@@ -27,7 +27,7 @@ export default {
   },
   computed: {
     date: function() {
-      return moment(this.event.startTime).format('MMM Do YY');
+      return moment(this.event.startTime).format('MMM Do');
     },
     dist: function() {
       const userLoc = this.$store.getters.getCurrLoc;
@@ -47,7 +47,7 @@ export default {
   },
   methods: {
     openEventDetails() {
-      this.$router.push(`event/${this.event._id}`);
+      this.$router.push(`/event/${this.event._id}`);
     }
   }
 };

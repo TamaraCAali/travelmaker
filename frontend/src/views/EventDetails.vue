@@ -48,7 +48,7 @@
 
       <div class="container">
         <div class="flex details-container">
-        <div>
+        <div class="event-dest-container">
       <div>
         
         <div class="attends-container" @click="showAttendsList = true">
@@ -317,8 +317,8 @@ export default {
   z-index: 2;
   background: linear-gradient(
     rgba(0, 0, 0, 0),
-    rgba(0, 0, 0, 0.7),
-    rgba(0, 0, 0, 0.9)
+    rgba(0, 0, 0, 0.33),
+    rgba(0, 0, 0, 0.39)
   );
 }
 
@@ -358,6 +358,11 @@ export default {
 .event-time p {
   padding: 2px;
   margin: 0;
+}
+
+.event-dest-container {
+  width: 90%;
+  margin: 0 10px;
 }
 
 .attends-container {

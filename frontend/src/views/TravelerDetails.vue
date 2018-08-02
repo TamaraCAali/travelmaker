@@ -44,7 +44,7 @@
                 v-for="event in userEvents"
                 :key="event._id"
                 :event="event" 
-                v-on:selected="openSelectedEvent(event)"></EventPreview>
+                ></EventPreview>
             </div>
 
         </div>
@@ -85,9 +85,6 @@ export default {
     });
   },
   methods: {
-    openSelectedEvent(event) {
-      this.$router.replace(`/event/${event._id}`);
-    },
     toggleChat() {
       const loggedUser = this.$store.getters.getUser;
       if (loggedUser._id) {
