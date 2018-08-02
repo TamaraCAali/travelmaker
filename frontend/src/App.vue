@@ -1,6 +1,7 @@
 <template>
   <div id="app">
-    <nav v-show="!userToChat">
+    <nav>
+    <!-- v-show="!userToChat" -->
       <div class="logo">
         <i class="fas fa-walking"></i>
         <i class="fas fa-search"></i>
@@ -13,13 +14,17 @@
           <router-link class="router-link" to="/user/profile"><i class="fas fa-cog"></i><span class="span-icon"></span>
           <img class="login-img" :src="userUrl"></router-link>
         </div>
-        <!-- <didi-sandbox> -->
-          <!-- <NotificationMenu/> -->
-        <!-- </didi-sandbox> -->
+
+          <!-- <NotificationMenu v-if="!userToChat"/> -->
+          
     </nav>
     <user-msg></user-msg>
-    <router-view v-show="!userToChat"/>
-    <ChatWindow v-if="userToChat" :otherUser="userToChat" />
+    <router-view />
+    <!-- v-show="!userToChat" -->
+    <ChatWindow
+      v-if="userToChat" 
+      :otherUser="userToChat" 
+    />
   </div>
 
 </template>

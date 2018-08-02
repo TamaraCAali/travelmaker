@@ -53,7 +53,8 @@
       </ol>
 
         <form action="">
-          <input class="textarea" type="text" v-model="newMsgTxt" placeholder="Type here!"/><div class="emojis"></div>
+          <input class="textarea " type="text" v-model="newMsgTxt" placeholder="Type here!"/>
+          <div class="emojis"></div>
           <button @click.prevent="addNewMsg" v-show="false">Send</button>
         </form>
 
@@ -142,7 +143,9 @@ export default {
       this.otherNtfs.push(objMsg);
       let otherUserUpdated = { ...this.otherUser };
       otherUserUpdated.chatNtfsMap[this.selfUser._id] = this.otherNtfs;
-      userService.updateOtherUser(otherUserUpdated);
+      userService
+        .updateOtherUser(otherUserUpdated)
+        .then(_ => console.log('user Updated'));
     },
     addNewMsg() {
       let objMsg = {
@@ -194,9 +197,6 @@ export default {
       };
       this.$socket.emit('assignPushNtf', pushNtf);
       this.newMsgTxt = '';
-      // TODO: send notification to otherUser here, to his own unique ntfs channel
-      //       every user is automatically connect to itself's user._id socket
-      //       maybe 'ntfs_<user._id>'
     },
     backClicked() {
       eventBusService.$emit(TOGGLE_CHAT, null);
@@ -215,9 +215,10 @@ export default {
   },
   destroyed() {
     //update the selfUser chatNtfsMap in this room as read.
+    console.log('Chat Destroyed.', this.chat);
     this.clearSelfNtfsMap();
-    console.log(this.chat);
     chatService.update(this.chat);
+
     // Possible senario - leaving the room when destroyed, and then we
     // know when to send push-Notification:
     // another possibility is to create a room with the otherUser room and
@@ -238,7 +239,7 @@ export default {
         this.$refs.bottom.scrollIntoView();
         chatService
           .update(this.chat)
-          .then(chat => console.log( chat.room,'Updated!'));
+          .then(chat => console.log(chat.room, 'Updated!'));
       }
       // if (msg.creator._id === this.otherUser._id) {
       //   let title = 'TravelMaker';
@@ -627,5 +628,31 @@ input.textarea {
 }
 .emojis:active {
   opacity: 0.9;
+}
+
+@media only screen and (min-width: 700px){
+  .menu,
+  .chat,
+  .chat-window .textarea {
+    width: 35vw;
+  }
+  .menu {
+    top: 50px;
+  }
+  .chat {
+    z-index: 79;
+    position: fixed;
+    top:40px;
+    bottom: 0;
+    right: 0;
+    left: 0; 
+    background-color: white;
+    // border: 2px solid black;
+    // padding: 0;
+    // margin: 0;
+    // position: fixed;
+    // margin-top: 50vh;
+    // padding: 50px 0 0 0;
+  }
 }
 </style>
