@@ -134,7 +134,6 @@ export default {
     eventService.getById(idFromParams).then(res => {
       console.log('got event:', res);
       this.event = JSON.parse(JSON.stringify(res));
-      console.log('this.event', this.event);
       this.initMap();
       this.getAttendingUsers();
     });
@@ -233,7 +232,7 @@ export default {
             user.cmntNtfsMap[this.$route.params.eventId]=[]
           }
           user.cmntNtfsMap[this.$route.params.eventId].push(cmnt);
-          // userService.updateOtherUser(user);
+          userService.updateOtherUser(user);
 
           let pushNtf = {
             ntfRoom: 'ntf-' + user._id,
