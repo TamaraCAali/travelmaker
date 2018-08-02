@@ -1,6 +1,6 @@
 <template>
   <div class="event-list">
-    <EventPreview v-for="event in events" :key="event._id" :event="event" v-on:selected="openSelectedEvent"></EventPreview>
+    <EventPreview v-for="event in events" :key="event._id" :event="event"></EventPreview>
   </div>
 </template>
 
@@ -15,18 +15,14 @@ export default {
   props: {
     events: Array
   },
-  methods: {
-    openSelectedEvent(event) {
-      this.$emit('selected', event);
-    }
-  }
+  methods: {}
 };
 </script>
 
 <style scoped lang="scss">
 .event-list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-evenly;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 10px;
 }
 </style>

@@ -4,32 +4,53 @@
       Loading Event...
     </div>
     <template v-else>
-      <img class="event-img" :src="event.img"/>
-      <div class="event-header">
-        <i v-if="userIsAdmin"
-           @click="goEditEvent" 
-           class="edit-btn far fa-edit fa-2x"></i>
-        <h2 class="event-name">{{event.name}}</h2>
-        <div class="event-time">
-          <p>
-            {{event.startTime | formatDate}} <br/>
-            {{event.startTime | formatHour}}
-            <template v-if="onSameDay">
-              - {{event.endTime | formatHour}}
-            </template>
-          </p>
-          <template v-if="!onSameDay">
-            -
-            <p>
-              {{event.endTime | formatDate}} <br/>
-              {{event.endTime | formatHour}}
-            </p>
-          </template>
-          
-        </div>
+      <div class="event-img screen" :style="'background-image: url('+event.img+')'">
+        <div class="event-header">
+          <div class="flex direction-column">
+            <h1>{{event.name}}</h1>
+            At: {{event.loc.title}}</div>
+                  <div class="btns-container">
+                        <div @click="toggleEventAttendence()">
+                          <template v-if="!userIsAttending">
+                            <i class="far fa-check-circle fa-2x"></i><br/>
+                          </template>
+                          <template v-else>
+                            <i class="far fa-times-circle fa-2x"></i><br/>
+                          </template>
+                        </div>
+                        <div @click="showCopyUrlMsg">
+                            <i class="far fa-copy fa-2x" v-clipboard:copy="eventUrl"></i> <br/>
+                        </div>
+                        <i v-if="userIsAdmin"
+                              @click="goEditEvent" 
+                              class="edit-btn far fa-edit fa-2x"></i>
       </div>
-      <div class="details-container">
-        At: {{event.loc.title}}
+             
+            <div class="event-time">
+              <p>
+                {{event.startTime | formatDate}} <br/>
+                {{event.startTime | formatHour}}
+                <template v-if="onSameDay"> 
+                  - {{event.endTime | formatHour}}
+                </template>
+              </p>
+              <template v-if="!onSameDay"> 
+                -
+                <p>
+                  {{event.endTime | formatDate}} <br/>
+                  {{event.endTime | formatHour}}
+                </p>
+              </template>
+              
+            </div>
+      </div>
+      </div>
+
+      <div class="container">
+        <div class="flex details-container">
+        <div>
+      <div>
+        
         <div class="attends-container" @click="showAttendsList = true">
           <i class="fas fa-user-friends"></i>
           {{event.attends.length}} people attending
@@ -42,22 +63,7 @@
           :usersIds="event.attends">
         </attends-list>
       </div>
-      <div class="btns-container">
-        <div @click="toggleEventAttendence()">
-          <template v-if="!userIsAttending">
-            <i class="far fa-check-circle fa-2x"></i><br/>
-            Join
-          </template>
-          <template v-else>
-            <i class="far fa-times-circle fa-2x"></i><br/>
-            Leave
-          </template>
-        </div>
-        <div @click="showCopyUrlMsg">
-            <i class="far fa-copy fa-2x" v-clipboard:copy="eventUrl"></i> <br/>
-            Copy Link
-        </div>
-      </div>
+
       <p>
       {{event.desc}}
       </p>
@@ -65,11 +71,13 @@
         <i class="fas fa-walking"></i>
         {{eventLvl}}
       </div>
-      <div v-if="event" class="map" ref="map"></div>
-      <div class="tags-container">
+            <div class="tags-container">
         Tags: 
         <el-tag v-for="tag in event.tags" :key="tag">{{tag}}</el-tag>
       </div>
+      </div>
+      <div v-if="event" class="map" ref="map"></div>
+</div>
       <h3>Comments:</h3>
       <ul class="comments clean-list">
         <li class="comment" v-for="comment in event.comments" :key="comment.at">
@@ -86,6 +94,7 @@
             />
         </li>
       </ul>
+      </div>
     </template>
   </div>
 </template>
@@ -122,8 +131,8 @@ export default {
     eventService.getById(idFromParams).then(res => {
       console.log('got event:', res);
       this.event = JSON.parse(JSON.stringify(res));
-      this.initMap()
-      this.getAttendingUsers()
+      this.initMap();
+      this.getAttendingUsers();
     });
     this.user = this.$store.getters.getUser;
     // console.log('user:', this.user);
@@ -165,16 +174,16 @@ export default {
       // if (!this.event || !this.event.loc) return
       var map = new google.maps.Map(this.$refs.map, {
         zoom: 4,
-        center: { 
-                lat: this.event.loc.coordinates[0],
-                lng: this.event.loc.coordinates[1]
-                }
+        center: {
+          lat: this.event.loc.coordinates[0],
+          lng: this.event.loc.coordinates[1]
+        }
       });
       var marker = new google.maps.Marker({
-        position: { 
-                  lat: this.event.loc.coordinates[0],
-                  lng: this.event.loc.coordinates[1]
-                  },
+        position: {
+          lat: this.event.loc.coordinates[0],
+          lng: this.event.loc.coordinates[1]
+        },
         map: map
       });
     },
@@ -187,20 +196,21 @@ export default {
         creatorImg: this.user.img,
         txt: this.newCommentTxt,
         at: Date.now()
-      }
-      this.event.comments.push(newComment)
+      };
+      this.event.comments.push(newComment);
       eventService.update(this.event);
       console.log('saving comment:', newComment);
-      this.newCommentTxt = ''
+      this.newCommentTxt = '';
     },
     getAttendingUsers() {
-      userService.getByIds(this.event.attends)
-      .then(res => {
-        this.attendingUsers = res.data;
-      })
-      .catch(err => {
-        console.log('Err:', err);
-      })
+      userService
+        .getByIds(this.event.attends)
+        .then(res => {
+          this.attendingUsers = res.data;
+        })
+        .catch(err => {
+          console.log('Err:', err);
+        });
     }
   },
   computed: {
@@ -231,12 +241,14 @@ export default {
       // return this.event.creatorId === this.user._id
     },
     onSameDay() {
-      return moment(+this.event.startTime).startOf('day')['_d'] + '' ==
-             moment(+this.event.endTime).startOf('day')['_d'] + '';
+      return (
+        moment(+this.event.startTime).startOf('day')['_d'] + '' ==
+        moment(+this.event.endTime).startOf('day')['_d'] + ''
+      );
     },
     newCommentPlaceholder() {
-      if (this.user._id) return 'Add a comment'
-      else return 'Please log in to add a comment'
+      if (this.user._id) return 'Add a comment';
+      else return 'Please log in to add a comment';
     }
   },
   watch: {
@@ -253,13 +265,29 @@ export default {
       return moment(val).format('HH:mm');
     },
     commentTime(val) {
-      return moment(val).format('DD/MM/YYYY HH:mm')
+      return moment(val).format('DD/MM/YYYY HH:mm');
     }
   }
 };
 </script>
 
 <style scoped>
+.screen {
+  position: relative;
+}
+.screen::before {
+  content: '';
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  z-index: 80;
+  background: linear-gradient(
+    rgba(0, 0, 0, 0),
+    rgba(0, 0, 0, 0.3),
+    rgba(0, 0, 0, 0.9)
+  );
+}
+
 .people-icon {
   width: 14px;
 }
@@ -268,47 +296,45 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: beige;
-  box-shadow: 0 0 5px #00000063;
-  margin: 10px;
-  padding: 10px;
   transition: all 0.3s;
 }
 
 .event-img {
   width: 100%;
-  height: 250px;
+  height: 330px;
   object-fit: cover;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background-repeat: no-repeat;
+  background-size: cover;
+  transition: all 1s ease;
+  background-position: center, center;
+  transition: all 1s ease;
 }
 
 .event-header {
-  margin: 0 auto;
   display: flex;
-}
+  justify-content: space-between;
+  color: #ffffffd1;
+  z-index: 100;
+  padding: 0 5px;
+  margin: 0 0 10px 10px;
 
-.event-name {
-  margin: auto;
+  align-items: center;
 }
-.edit-btn {
-  margin: auto 1em;
-  cursor: pointer;
+.event-header h1 {
+  margin: 0;
 }
 
 .event-time {
-  width: 11em;
-  padding: 0 1em;
-  text-align: center;
   display: flex;
   align-items: center;
 }
 
 .event-time p {
-  padding: 2px
-}
-
-.details-container {
-  align-self: flex-start;
-  padding: 0 10px;
+  padding: 2px;
+  margin: 0;
 }
 
 .attends-container {
@@ -328,20 +354,16 @@ export default {
 
 .btns-container {
   display: flex;
-  align-items: center;
-  margin: 0 1em;
-}
-
-.btns-container div {
-  margin: 10px;
-  text-align: center;
+  width: 100px;
+  justify-content: space-between;
   cursor: pointer;
+  font-size: 0.6em;
+  margin: 10px 0;
 }
 
-.tags-container {
-  margin: 1em;
+.details-container {
+  margin: 10px 0 0 0;
 }
-
 .tags-container span {
   margin: 0.5em;
 }
@@ -349,7 +371,6 @@ export default {
 .map {
   width: 100%;
   height: 250px;
-  margin: 10px;
 }
 
 .comments {
@@ -361,7 +382,7 @@ export default {
   align-items: center;
 }
 
-.comment span span{
+.comment span span {
   font-size: 10px;
 }
 
@@ -382,5 +403,24 @@ export default {
   padding: 0 15px;
   margin: 0 1em;
   width: 100%;
+}
+
+@media screen and (max-width: 850px) {
+  .details-container {
+    flex-direction: column;
+  }
+}
+
+@media screen and (max-width: 750px) {
+  .event-header {
+    flex-direction: column;
+    align-items: end;
+  }
+}
+
+@media only screen and (max-width: 580px) {
+  .container {
+    padding: 0 20px;
+  }
 }
 </style>

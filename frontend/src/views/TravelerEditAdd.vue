@@ -103,7 +103,9 @@ export default {
         activity: {
           events: [],
           chatRooms: []
-        }
+        },
+        chatNtfsMap: {},
+        commentNtfsMap: {}
       }
     };
   },

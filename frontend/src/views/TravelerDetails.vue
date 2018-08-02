@@ -1,10 +1,10 @@
 <template>
   <section class="traveler-details">
     <div class="user-details" v-if="user" v-show="!isChatMode">
-        <div>
+        <div class="user-img-cover screen">
             <img class="user-img" :src=" `${user.img}`" alt="">
         </div>
-        <div class="user-pre-details">
+        <div class="user-pre-details container">
             <div class="name">
                 <h2>{{user.name.first}} {{user.name.last}}, {{user.age}}
                 </h2>
@@ -60,9 +60,7 @@ import eventService from '../services/eventService';
 import EventPreview from '@/components/EventPreview.vue';
 import ChatWindow from '@/components/ChatWindow.vue';
 import langs from '@/components/travelers/langs.vue';
-import eventBusService, {
-  TOGGLE_CHAT
-} from '@/services/eventBusService';
+import eventBusService, { TOGGLE_CHAT } from '@/services/eventBusService';
 
 export default {
   name: 'TravelerDetails',
@@ -120,21 +118,36 @@ export default {
 </script>
 
 <style scoped lang="scss">
-h3 {
-  text-align: center;
-}
-
-.user-details {
-  margin: 40px 0 0 0;
+.user-img-cover {
+  height: 350px;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-image: url('../assets/img/cover-img.jpg');
 }
 
 .user-img {
-  width: 100%;
-  height: 250px;
-  object-fit: cover;
+  width: 200px;
+  position: relative;
+  top: 210px;
+  left: 73%;
+  z-index: 4;
 }
-.user-pre-details {
-  padding: 20px;
+
+.screen {
+  position: relative;
+}
+.screen::before {
+  content: '';
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  z-index: 3;
+  background: linear-gradient(
+    rgba(0, 0, 0, 0),
+    rgba(213, 205, 205, 0.27),
+    rgba(255, 248, 248, 0.66)
+  );
 }
 
 .title {
@@ -142,8 +155,7 @@ h3 {
 }
 .name {
   display: flex;
-  justify-content: space-between;
-  // align-items: flex-end;
+  align-items: center;
 }
 .chat-icon {
   border: none;
@@ -151,6 +163,7 @@ h3 {
   background-color: transparent;
   cursor: pointer;
   font-size: 1.35rem;
+  padding: 0 0 0 30px;
 }
 .fa-comments:before {
   content: '\f086';
@@ -160,9 +173,36 @@ h3 {
   font-weight: bold;
 }
 .user-events {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-evenly;
-  background-color: #f5f5dc;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+@media screen and (max-width: 850px) {
+  .user-img {
+    left: 70%;
+  }
+}
+
+@media screen and (max-width: 750px) {
+  .user-img {
+    left: 67%;
+  }
+}
+@media screen and (max-width: 650px) {
+  .user-img {
+    left: 58%;
+  }
+}
+@media screen and (max-width: 550px) {
+  .user-img {
+    left: 52%;
+    top: 150px;
+  }
+}
+@media screen and (max-width: 450px) {
+  .user-img {
+    left: 33%;
+  }
 }
 </style>

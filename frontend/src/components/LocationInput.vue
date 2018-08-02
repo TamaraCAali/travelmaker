@@ -1,7 +1,7 @@
 <template>
   <div class="curr-loc">
-    <div class="search-input"><i class="fas fa-map-marker-alt"></i>
-    <span>What's good near </span>
+    <div class="search-input">
+    <h1 class="title">What's good near </h1><i class="fas fa-map-marker-alt"></i>
     <input  type="text" v-model="searchInput" :placeholder="currLocName" @keydown.enter="changeLoc">
     </div>
   </div>
@@ -56,6 +56,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.title {
+  display: inline-block;
+  margin: 0 1px 0 0;
+  color: #41b883;
+}
 .search-input {
   margin: 10px 0;
   text-align: center;
@@ -65,7 +70,8 @@ export default {
   background-color: transparent;
   font-size: 1em;
   border-bottom: 1px solid lightgray;
-  color: gray;
+  color: #35495e;
+  text-align: center;
 }
 .fa-map-marker-alt:before {
   padding: 5px;

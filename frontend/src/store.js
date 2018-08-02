@@ -160,7 +160,9 @@ function _loadUser() {
       activity: {
         events: [],
         chatRooms: []
-      }
+      },
+      chatNtfsMap: {},
+      commentNtfsMap: {}
     };
 }
 

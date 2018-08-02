@@ -20,6 +20,49 @@ body {
   color: #35495e;
   background-color: white;
 }
+/* --------------------container---------------- */
+
+.container {
+  max-width: 980px;
+  margin: 0 auto 50px auto;
+}
+
+@media only screen and (max-width: 1125px) {
+  .container {
+    max-width: 880px;
+  }
+}
+
+@media only screen and (max-width: 1060px) {
+  .container {
+    max-width: 780px;
+  }
+}
+
+@media only screen and (max-width: 915px) {
+  .container {
+    max-width: 680px;
+  }
+}
+
+@media only screen and (max-width: 820px) {
+  .container {
+    max-width: 600px;
+  }
+}
+
+@media only screen and (max-width: 720px) {
+  .container {
+    max-width: 500px;
+  }
+}
+
+@media only screen and (max-width: 580px) {
+  .container {
+    padding: 0 20px 20px 20px;
+  }
+}
+/* --------------------container---------------- */
 
 h2 {
   padding: 0;
@@ -64,6 +107,9 @@ h2 {
 }
 .justify-center {
   justify-content: center;
+}
+.direction-column {
+  flex-direction: column;
 }
 input {
   padding: 5px;
