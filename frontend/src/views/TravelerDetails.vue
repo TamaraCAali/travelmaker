@@ -86,7 +86,7 @@ export default {
   },
   methods: {
     openSelectedEvent(event) {
-      this.$router.push(`/event/${event._id}`);
+      this.$router.replace(`/event/${event._id}`);
     },
     toggleChat() {
       const loggedUser = this.$store.getters.getUser;
