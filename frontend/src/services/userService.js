@@ -16,6 +16,7 @@ export default {
   add,
   remove,
   update,
+  updateOtherUser,
   getById,
   getByIds,
   login,
@@ -61,6 +62,15 @@ function update(user) {
 
   _setLoggedinUser(user);
 
+  return axios
+    .put(`${USER_URL}/${user._id}`, user)
+    .then(res => res.data)
+    .catch(err => {
+      console.warn(err);
+      return Promise.reject(err);
+    });
+}
+function updateOtherUser(user) {
   return axios
     .put(`${USER_URL}/${user._id}`, user)
     .then(res => res.data)

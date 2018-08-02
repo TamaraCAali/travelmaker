@@ -107,7 +107,7 @@ export default new Vuex.Store({
     },
     [UPDATE_USER](context, { user }) {
       // console.log('update', user);
-      return userService.update(user).then();
+      return userService.update(user);
     },
     [ADD_USER](context, { user }) {
       return _getAppLoc().then(loc => {

@@ -72,6 +72,7 @@
 
 <script>
 import chatService from '@/services/chatService';
+import userService from '@/services/userService';
 import moment from 'moment';
 import store, { UPDATE_USER } from '@/store';
 import eventBusService, {
@@ -141,7 +142,7 @@ export default {
       this.otherNtfs.push(objMsg);
       let otherUserUpdated = { ...this.otherUser };
       otherUserUpdated.chatNtfsMap[this.selfUser._id] = this.otherNtfs;
-      this.$store.dispatch({ type: UPDATE_USER, user: otherUserUpdated });
+      userService.updateOtherUser(otherUserUpdated);
     },
     addNewMsg() {
       let objMsg = {
@@ -160,7 +161,6 @@ export default {
         // isSeen: false
       };
       // console.log('this.newMsg in client', objMsg);
-
       this.$socket.emit('assignMsg', objMsg);
       //DB notification
       this.updateOtherUserNtfsMap(objMsg);
