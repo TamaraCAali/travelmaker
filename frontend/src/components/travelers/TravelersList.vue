@@ -6,7 +6,7 @@
             v-for="user in users" 
             :key="user._id" 
             :user="user" 
-            :selected="openSelectedUsers"></TravelersPreview>
+            ></TravelersPreview>
         </div>
         <!-- <ChatWindow 
           v-if="userToChat"
@@ -18,7 +18,6 @@
 <script>
 import TravelersPreview from '@/components/travelers/TravelersPreview.vue';
 import ChatWindow from '@/components/ChatWindow.vue';
-
 
 export default {
   name: 'TravelersList',
@@ -35,24 +34,38 @@ export default {
       isChatMode: false
     };
   },
-  methods: {
-    openSelectedUsers(user) {
-      this.$emit('selected', user);
-    }
-  }
+  methods: {}
 };
 </script>
 
 <style scoped lang="scss">
 h3 {
-  text-align: center;
-  font-size: 1.3rem;
-  margin: 2em 0 0.5em 0;
+  font-size: 2rem;
+  margin: 1.7em 0 0.5em 0;
+  color: #41b883;
 }
 
 .list-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-evenly;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+@media only screen and (max-width: 580px) {
+  h3 {
+    margin: 1.3em 0 0.5em 0;
+  }
+}
+@media only screen and (max-width: 410px) {
+  h3 {
+    font-size: 1.6em;
+    text-align: center;
+  }
+}
+
+@media only screen and (max-width: 340px) {
+  h3 {
+    font-size: 1.3em;
+  }
 }
 </style>
