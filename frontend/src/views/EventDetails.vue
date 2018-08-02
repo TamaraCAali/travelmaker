@@ -134,6 +134,7 @@ export default {
     eventService.getById(idFromParams).then(res => {
       console.log('got event:', res);
       this.event = JSON.parse(JSON.stringify(res));
+      console.log('this.event', this.event);
       this.initMap();
       this.getAttendingUsers();
     });
@@ -198,15 +199,12 @@ export default {
         creatorId: this.user._id,
         creatorName: this.user.name.first + ' ' + this.user.name.last,
         creatorImg: this.user.img,
-        event:{
-          _id: this.event._id
-        },
         txt: this.newCommentTxt,
         at: Date.now()
       };
       this.event.comments.push(newComment);
-      
-      this.sendNotification(newComment)
+
+      this.sendNotification(newComment);
 
       eventService.update(this.event);
       console.log('saving comment:', newComment);
@@ -223,16 +221,19 @@ export default {
         });
     },
     clearSelfNtfsMap() {
-      if (this.user.cmntNtfsMap[this.event._id]) {
-        delete this.user.cmntNtfsMap[this.event._id];
+      if (this.user.cmntNtfsMap[this.$route.params.eventId]) {
+        delete this.user.cmntNtfsMap[this.$route.params.eventId];
         this.$store.dispatch({ type: UPDATE_USER, user: this.user });
       }
     },
     sendNotification(cmnt) {
       let otherUsersUpdated = this.attendingUsers.map(user => {
         if (user._id !== cmnt.creatorId) {
-          user.cmntNtfsMap[this.event._id].push(cmnt);
-          userService.updateOtherUser(user);
+          if (!user.cmntNtfsMap[this.$route.params.eventId]) {
+            user.cmntNtfsMap[this.$route.params.eventId]=[]
+          }
+          user.cmntNtfsMap[this.$route.params.eventId].push(cmnt);
+          // userService.updateOtherUser(user);
 
           let pushNtf = {
             ntfRoom: 'ntf-' + user._id,
@@ -255,7 +256,7 @@ export default {
       // optional userService.updateByIds(otherUsersUpdated)
     }
   },
-  sockets:{},
+  sockets: {},
   computed: {
     eventLvl() {
       if (this.event.level === 0) {
