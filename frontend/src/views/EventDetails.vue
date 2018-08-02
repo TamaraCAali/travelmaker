@@ -323,7 +323,7 @@ export default {
   position: absolute;
   height: 100%;
   width: 100%;
-  z-index: 80;
+  z-index: 4;
   background: linear-gradient(
     rgba(0, 0, 0, 0),
     rgba(0, 0, 0, 0.3),
@@ -380,7 +380,7 @@ export default {
   display: flex;
   justify-content: space-between;
   color: #ffffffd1;
-  z-index: 100;
+  z-index: 5;
   padding: 0 5px;
   margin: 0 0 10px 10px;
 
