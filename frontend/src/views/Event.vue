@@ -1,22 +1,34 @@
 <template>
   <div class="event">
-    <div class="events-header">
-      <div class="new-event-container" @click="$router.push('/event/edit/newEvent')">
-        <div class="new-event">
-          <i class="far fa-plus-square fa-2x"></i>
-            New event
+    <el-carousel indicator-position="none" :interval="6000">
+      <el-carousel-item v-for="item in titles" :key="item">
+        <h1 class="el-carousel-titel-h1">{{item}}</h1>
+      </el-carousel-item>
+    </el-carousel>
+    <!-- <div class="screen"></ div> -->
+    <div class="container">
+      <div class="events-header">
+        <div  class="new-add-container"  @click="$router.push('/event/edit/newEvent')">
+          <div class="new-event">
+            <i class="far fa-plus-square fa-2x"></i>
+            add event
+          </div>
         </div>
-      </div>
       <LocationInput v-if="user.loc" @events-changed="getEvents"></LocationInput>
       <div class="sliders-btn-container" @click="showEventsFilter = !showEventsFilter">
         <i class="fas fa-sliders-h"></i>
       </div>
     </div>
+   
     <events-filter v-if="showEventsFilter" 
       @events-changed="getEvents" 
       @just-radius-changed="loadEvent(user)">
     </events-filter>
-    <EventList v-if="events" :events="events" v-on:selected="openSelectedEvent"></EventList>
+    <hr>
+
+    <EventList v-if="events"  :events="events" ></EventList>
+
+    </div>
   </div>
 </template>
 
@@ -41,17 +53,19 @@ export default {
     return {
       showEventsFilter: false,
       user: null,
-      events: null
+      events: null,
+      titles: [
+        'Traveling together is easier than ever!',
+        'Find events in your area',
+        'Meet new friends and travel together',
+        'Get the most out of your trip'
+      ]
     };
   },
   created() {
     this.loadUser();
   },
-  computed: {
-    // events() {
-    //   return this.$store.getters.eventForDisplay;
-    // }
-  },
+  computed: {},
   methods: {
     loadUser() {
       this.user = this.$store.getters.loggedinUser;
@@ -73,11 +87,9 @@ export default {
           console.log('err in load events', err);
         });
     },
-    openSelectedEvent(event) {
-      this.$router.push(`event/${event._id}`);
-    },
+
     onNewEvent() {
-      if (this.user._id) this.$router.push('/event/edit/newEvent')
+      if (this.user._id) this.$router.push('/event/edit/newEvent');
       else {
         this.$message.error('Please login to create an event');
         this.$router.push('/login');
@@ -94,32 +106,32 @@ export default {
 </script>
 
 <style>
+.enent {
+  display: flex;
+  flex-direction: column;
+}
 .events-header {
   display: flex;
-  justify-content: center;
-  position: relative;
-  padding: 2em 0 0 1em;
-}
-
-.new-event-container {
-  /* position: relative; */
-  position: absolute;
-  left: 10px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
 }
 
 .new-event {
   cursor: pointer;
-  padding: 5px 8px;
-  margin: 0 2em;
-  border-radius: 4px;
-  background-color: #f5f5dc;
+  padding: 10px 20px;
+  border-radius: 25px;
+  background-color: #41b883;
   display: flex;
   justify-content: center;
   align-items: center;
   transition: 0.2s;
+  color: white;
+  width: 170px;
+  text-transform: uppercase;
 }
 .new-event:hover {
-  background-color: #e0e0ca;
+  background-color: #326d53;
 }
 
 .new-event i {
@@ -128,6 +140,65 @@ export default {
 }
 .new-event:hover i {
   margin-right: 10px;
+}
+
+.el-carousel {
+  overflow: hidden;
+  height: calc(100vh - 30vh);
+}
+.el-carousel .el-carousel__container {
+  height: 100%;
+}
+
+.el-carousel-titel-h1 {
+  position: absolute;
+  bottom: 1em;
+  color: white;
+  font-size: 3em;
+  padding: 10px;
+}
+
+.el-carousel__item::before {
+  content: "";
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background-image: linear-gradient(
+    rgba(0, 0, 0, 0),
+    rgba(0, 0, 0, 0.2),
+    rgba(0, 0, 0, 0.9));
+}
+
+.el-carousel__item:nth-child(4n) {
+  background-color: #99a9bf;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-image: url('../assets/img/homePage.jpg');
+}
+
+.el-carousel__item:nth-child(4n+1) {
+  background-color: #99a9bf;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-image: url('../assets/img/groups-hero.jpg');
+}
+.el-carousel__item:nth-child(4n+2) {
+  background-color: #99a9bf;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-image: url('../assets/img/group_travel.jpg');
+}
+.el-carousel__item:nth-child(4n+3) {
+  background-color: #99a9bf;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-image: url('../assets/img/family.jpg');
 }
 
 .sliders-btn-container {
@@ -146,21 +217,20 @@ export default {
     margin: 0;
   }
 
-  .new-event-container {
-    position: static;
-  }
-
-  .new-event {
-    position: static;
-  }
-
   .new-event:hover i {
     margin-right: 5px;
   }
 }
+
 @media screen and (max-width: 570px) {
+  .new-event {
+    text-align: center;
+  }
   .new-event:hover i {
     margin-right: 10px;
+  }
+  .new-add-container {
+    margin: 0 auto;
   }
 }
 </style>

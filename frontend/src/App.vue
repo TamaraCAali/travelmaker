@@ -1,27 +1,30 @@
 <template>
   <div id="app">
-    <nav v-show="!userToChat">
-      <div>
-        <router-link class="router-link" to="/login"><i class="fas fa-sign-in-alt"></i> <span @click="logoutUser" class="span-icon"> {{login}}</span></router-link> |
-        <router-link class="router-link" to="/"><i class="fas fa-calendar-alt"></i> <span class="span-icon"> events</span></router-link> |
-        <router-link class="router-link" to="/travelers"><i class="fas fa-user-friends"></i> <span class="span-icon"> travelers</span></router-link>|
-      </div>
+    <nav>
+    <!-- v-show="!userToChat" -->
       <div class="logo">
         <i class="fas fa-walking"></i>
         <i class="fas fa-search"></i>
         TravelMaker
         </div>
-        <div>
-          <router-link class="router-link" to="/user/edit/:userId"><i class="fas fa-cog"></i><span class="span-icon"></span>
+      <div class="links-nav">
+        <router-link class="router-link" to="/login"><i class="fas fa-sign-in-alt"></i> <span @click="logoutUser" class="span-icon"> {{login}}</span></router-link> |
+        <router-link class="router-link" to="/"><i class="fas fa-calendar-alt"></i> <span class="span-icon"> events</span></router-link> |
+        <router-link class="router-link" to="/travelers"><i class="fas fa-user-friends"></i> <span class="span-icon"> travelers</span></router-link>|
+          <router-link class="router-link" to="/user/profile"><i class="fas fa-cog"></i><span class="span-icon"></span>
           <img class="login-img" :src="userUrl"></router-link>
         </div>
-        <!-- <didi-sandbox> -->
-          <!-- <NotificationMenu/> -->
-        <!-- </didi-sandbox> -->
+
+          <!-- <NotificationMenu v-if="!userToChat"/> -->
+          
     </nav>
     <user-msg></user-msg>
-    <router-view v-show="!userToChat"/>
-    <ChatWindow v-if="userToChat" :otherUser="userToChat" />
+    <router-view />
+    <!-- v-show="!userToChat" -->
+    <ChatWindow
+      v-if="userToChat" 
+      :otherUser="userToChat" 
+    />
   </div>
 
 </template>
@@ -94,7 +97,7 @@ export default {
   },
   sockets: {
     renderPushNtf(pushNtf) {
-      console.log('renderPushNtf', pushNtf)
+      console.log('renderPushNtf', pushNtf);
       eventBusService.$emit(PUSH_NOTIFICATION, pushNtf);
     }
   },
@@ -117,70 +120,67 @@ export default {
 
 <style  lang="scss">
 nav {
+  padding: 0 5px;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
   color: #41b883;
   position: fixed;
-  opacity: 0.8;
   z-index: 10;
-  background-color: whitesmoke;
+  background-color: #f5f5f5b0;
   top: 0;
   left: 0;
   width: 100%;
+  z-index: 100;
 }
-.router-link i {
+
+.router-link {
   color: #35495e;
+  margin: 0 1px;
+  font-size: 1em;
+  transition: all 0.3s;
+  padding: 5px;
+}
+
+.router-link:hover {
+  color: #41b883;
+}
+
+.router-link-exact-active {
+  font-size: 1.2em;
+  color: #41b883;
 }
 
 .fa-search:before {
-  color: #35495e;
+  color: #41b883;
 }
 
 .logo {
   font-family: Pacifico;
-  font-size: 1.4em;
+  font-size: 1.6em;
 }
 
 .logo i {
-  color: #35495e;
+  color: #41b883;
 }
 
 .logo .fa-walking {
-  font-size: 0.4em;
+  font-size: 0.5em;
   position: relative;
-  bottom: 7px;
-  left: 12px;
+  bottom: 9px;
+  left: 16px;
 }
 
 .logo .fa-search {
   // outline: 1px solid blue;
   // margin: 0 2px;
+  font-size: 30px;
   transition: 0.5s ease-in-out;
 }
 
 .logo:hover .fa-search {
   transform-origin: 37% 33%;
   transform: rotate(-360deg);
-}
-
-.router-link {
-  font-size: 1.2em;
-  transition: all 0.3s;
-}
-
-.router-link:hover {
-  font-size: 1.5em;
-  color: #41b883;
-}
-.router-link:active {
-  font-weight: bold;
-  font-size: 1.5em;
-  color: #41b883;
-}
-
-.router-link:visited {
-  color: #35495e;
 }
 
 .login-img {
@@ -191,9 +191,30 @@ nav {
   text-transform: capitalize;
 }
 
-@media only screen and (max-width: 420px) {
+.links-nav {
+  display: flex;
+  align-items: center;
+}
+
+@media only screen and (max-width: 630px) {
   .span-icon {
     display: none;
+  }
+}
+
+@media only screen and (max-width: 440px) {
+  .links-nav {
+    position: fixed;
+    bottom: 0;
+    opacity: 0.85;
+    width: 100%;
+    background-color: #ccc;
+    display: flex;
+    justify-content: space-around;
+    z-index: 10;
+  }
+  nav {
+    padding: 0;
   }
 }
 </style>

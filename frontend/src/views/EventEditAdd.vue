@@ -16,11 +16,12 @@
           </el-upload>
         </div>
       </div>
-      <div class="event-header">
+      <div class="container">
+      <div class="event-header margin-10">
         <h2>
           <el-input placeholder="Please input" v-model="event.name"></el-input>
         </h2>
-        <div class="times-container">
+        <div class="times-container margin-10">
           <div class="event-time">
             <div>
               <span>Start date:</span><input type="date" v-model="eventStartDate"/>
@@ -42,18 +43,18 @@
           <datetime type="datetime" v-model="event.date"></datetime>
         </h2> -->
       </div>
-      <div class="event-loc">
+      <div class="event-loc margin-10">
         At: <el-input v-model="eventAddress" @change="eventLocChanged = true"></el-input>
       </div>
-      <p class="event-description">
+      <div class="event-description margin-10">
         <el-input
           type="textarea"
           autosize
           placeholder="Enter event description"
           v-model="event.desc">
         </el-input>
-      </p>
-      <div class="difficulty-lvl-container">
+      </div>
+      <div class="difficulty-lvl-container margin-10">
         <i v-if="showLvlInput" class="el-icon-remove-outline" @click="toggleEventLvl"></i>
         <i v-else class="el-icon-circle-plus-outline" @click="toggleEventLvl"></i>
         <i class="fas fa-walking"></i>
@@ -65,8 +66,7 @@
           <option value="4">Difficult trek</option>
         </select>
       </div>
-      <div v-if="event" class="map" ref="map"></div>
-      <div class="tags-container">
+            <div class="tags-container">
         <el-tag :key="tag" v-for="tag in dynamicTags" closable
           :disable-transitions="false" @close="handleClose(tag)">
           {{tag}}
@@ -76,7 +76,10 @@
         </el-input>
         <el-button class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
       </div>
-      <el-button @click="validateAndSave">Save event</el-button>
+      <div v-if="event" class="map" ref="map"></div>
+
+      <button class="btn-submit" @click="validateAndSave">Save event</button>
+      </div>
     </template>
   </div>
 </template>
@@ -118,27 +121,24 @@ export default {
     let idFromParams = this.$route.params.eventId;
     if (idFromParams === 'newEvent') {
       console.log('new event!');
-      let emptyEvent = eventService.getEmptyEvent()
-      this.event = JSON.parse(JSON.stringify(emptyEvent))
-      this.event.creatorId = this.user._id
-    }
-    else {
-      eventService.getById(idFromParams)
-      .then(res => {
+      let emptyEvent = eventService.getEmptyEvent();
+      this.event = JSON.parse(JSON.stringify(emptyEvent));
+      this.event.creatorId = this.user._id;
+    } else {
+      eventService.getById(idFromParams).then(res => {
         console.log('got event:', res);
-        res.date = moment(res.date).format()
+        res.date = moment(res.date).format();
         this.event = JSON.parse(JSON.stringify(res));
         this.initMap();
-        if (!this.event.level) this.showLvlInput = false
-        this.eventStartDate = moment(this.event.startTime).format('YYYY-MM-DD')
-        this.eventStartTime = moment(this.event.startTime).format('HH:mm')
-        this.eventEndDate = moment(this.event.endTime).format('YYYY-MM-DD')
-        this.eventEndTime = moment(this.event.endTime).format('HH:mm')
-        this.eventAddress = this.event.loc.title
-        this.dynamicTags = this.event.tags
+        if (!this.event.level) this.showLvlInput = false;
+        this.eventStartDate = moment(this.event.startTime).format('YYYY-MM-DD');
+        this.eventStartTime = moment(this.event.startTime).format('HH:mm');
+        this.eventEndDate = moment(this.event.endTime).format('YYYY-MM-DD');
+        this.eventEndTime = moment(this.event.endTime).format('HH:mm');
+        this.eventAddress = this.event.loc.title;
+        this.dynamicTags = this.event.tags;
       });
     }
-    
   },
   methods: {
     mouseOnImg() {
@@ -148,36 +148,36 @@ export default {
       this.showUploadIcon = false;
     },
     toggleEventLvl() {
-      this.showLvlInput = !this.showLvlInput
+      this.showLvlInput = !this.showLvlInput;
     },
     initMap() {
       // if (!this.event || !this.event.loc) return
       var map = new google.maps.Map(this.$refs.map, {
         zoom: 4,
-        center: { 
-                lat: this.event.loc.coordinates[0],
-                lng: this.event.loc.coordinates[1]
-                }
+        center: {
+          lat: this.event.loc.coordinates[0],
+          lng: this.event.loc.coordinates[1]
+        }
       });
       var marker = new google.maps.Marker({
-        position: { 
-                  lat: this.event.loc.coordinates[0],
-                  lng: this.event.loc.coordinates[1]
-                  },
+        position: {
+          lat: this.event.loc.coordinates[0],
+          lng: this.event.loc.coordinates[1]
+        },
         map: map
       });
     },
     handleAvatarSuccess(res, file) {
-      this.originalImg = this.event.img
+      this.originalImg = this.event.img;
       console.log('saved originalImg', this.originalImg);
-      
+
       this.event.img = URL.createObjectURL(file.raw);
       let reader = new FileReader();
-      reader.readAsDataURL(file.raw); 
+      reader.readAsDataURL(file.raw);
       reader.onload = () => {
-          this.base64Img = reader.result;                
-          console.log('this.base64Img', this.base64Img);
-      }
+        this.base64Img = reader.result;
+        console.log('this.base64Img', this.base64Img);
+      };
     },
     beforeAvatarUpload(file) {
       const isJPG = file.type === 'image/jpeg';
@@ -192,17 +192,16 @@ export default {
       return isJPG && isLt2M;
     },
     getLocByName() {
-      return locService.getPositionByName(this.eventAddress)
-        .then(res => {
-          this.eventAddress = res.address
-          this.event.loc = {
-            coordinates: [res.lat, res.lng],
-            type: "Point",
-            title: res.address
-          }
-          
-          this.initMap();
-        })
+      return locService.getPositionByName(this.eventAddress).then(res => {
+        this.eventAddress = res.address;
+        this.event.loc = {
+          coordinates: [res.lat, res.lng],
+          type: 'Point',
+          title: res.address
+        };
+
+        this.initMap();
+      });
     },
     handleClose(tag) {
       this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
@@ -226,53 +225,54 @@ export default {
         var formData = new FormData();
         formData.append('file', this.base64Img);
         console.log('formData', formData);
-        
-        let fakeEv = {preventDefault: function() {return}}
 
-        return cloudinaryService.uploadImg(formData, fakeEv)
-                .then(res => {
-                  this.event.img = res.url;
-                })
-      }
-      else {
-        return Promise.resolve()
+        let fakeEv = {
+          preventDefault: function() {
+            return;
+          }
+        };
+
+        return cloudinaryService.uploadImg(formData, fakeEv).then(res => {
+          this.event.img = res.url;
+        });
+      } else {
+        return Promise.resolve();
       }
     },
     validateAndSave() {
       if (this.eventLocChanged) {
         this.getLocByName()
-        .then(() => {
-          this.saveEvent()
-        })
-        .catch(err => {
-          this.$message.error('Can\'t find the address entered');
-        })
-      }
-      else {
-        this.saveEvent()
+          .then(() => {
+            this.saveEvent();
+          })
+          .catch(err => {
+            this.$message.error("Can't find the address entered");
+          });
+      } else {
+        this.saveEvent();
       }
     },
     saveEvent() {
-      this.event.startTime = +moment(this.eventStartDate + ' ' + this.eventStartTime).format('x');
-      this.event.endTime = +moment(this.eventEndDate + ' ' + this.eventEndTime).format('x');
-      this.event.tags = this.dynamicTags
+      this.event.startTime = +moment(
+        this.eventStartDate + ' ' + this.eventStartTime
+      ).format('x');
+      this.event.endTime = +moment(
+        this.eventEndDate + ' ' + this.eventEndTime
+      ).format('x');
+      this.event.tags = this.dynamicTags;
 
-      this.uploadImg()
-      .then(() => {
+      this.uploadImg().then(() => {
         console.log('saving event:', this.event);
         if (this.event._id) {
-            eventService.update(this.event)
-          .then(() => {
+          eventService.update(this.event).then(() => {
             this.$router.push(`/event/${this.event._id}`);
-          })
-        }
-        else {
-          eventService.add(this.event)
-          .then(() => {
+          });
+        } else {
+          eventService.add(this.event).then(() => {
             this.$router.push(`/event/${this.event._id}`);
-          })
+          });
         }
-      })
+      });
     }
   },
   computed: {
@@ -303,11 +303,10 @@ export default {
       // return this.event.creatorId === this.user._id
     },
     eventEstTime() {
-      return this.event.endTime
-    },
+      return this.event.endTime;
+    }
   },
-  watch: {
-  },
+  watch: {},
   filters: {
     stringifyEstTime(val) {
       if (+val < 60) {
@@ -353,10 +352,6 @@ input {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: beige;
-  box-shadow: 0 0 5px #00000063;
-  margin: 10px;
-  padding: 10px;
   transition: all 0.3s;
 }
 
@@ -378,7 +373,7 @@ input {
   height: 250px;
   text-align: center;
   vertical-align: middle;
-  line-height: 250px;   
+  line-height: 250px;
   background-color: rgba(255, 255, 255, 0.3);
   opacity: 0.8;
 }
@@ -397,11 +392,11 @@ input {
   overflow: hidden;
 }
 .event-img-uploader .el-upload:hover {
-  border-color: #409EFF;
+  border-color: #409eff;
 }
 .avatar-uploader-icon {
   font-size: 3em;
-  color:  rgba(0, 0, 0, 0.8);
+  color: rgba(0, 0, 0, 0.8);
   width: 178px;
   height: 178px;
   line-height: 178px;
@@ -413,12 +408,12 @@ input {
   object-fit: cover;
 }
 .event-header {
-  padding: 1em;
-  margin: 0 auto;
   display: flex;
   flex-direction: column;
 }
-
+.margin-10 {
+  margin: 10px 0 0 0;
+}
 .edit-btn {
   margin: auto 1em;
   cursor: pointer;
@@ -441,7 +436,6 @@ input {
 .times-container {
   display: flex;
   flex-wrap: wrap;
-  margin: 0.5em;
 }
 
 .times-container span {
@@ -449,22 +443,20 @@ input {
 }
 
 .event-time {
-  /* width: 4em; */
   text-align: center;
-  margin: 0.5em;
 }
 
 .event-time div {
- display: flex;
+  display: flex;
   width: fit-content;
   justify-content: space-between;
 }
 
-.event-time div span{
+.event-time div span {
   width: 6em;
 }
 
-.event-time div input{
+.event-time div input {
   align-self: flex-end;
 }
 
@@ -473,17 +465,12 @@ input {
   display: flex;
   align-items: center;
   padding: 0 10px;
-  width: 100%
+  width: 100%;
 }
 
 .event-loc .el-input input {
   width: 100%;
   font-family: inherit;
-}
-
-.event-description {
-  width: 90%;
-  height: 5em;
 }
 
 .difficulty-lvl-container {
@@ -496,7 +483,7 @@ input {
 }
 
 .tags-container {
- margin: 1em;
+  margin: 1em;
 }
 
 .tags-container span {
@@ -519,8 +506,29 @@ input {
 }
 
 .map {
-  width: 100%;
   height: 150px;
   margin: 10px;
+}
+
+.btn-submit {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 20px;
+  margin: 0 auto;
+  min-width: 110px;
+  height: 50px;
+  background-color: #41b883;
+  border: none;
+  border-radius: 25px;
+  font-size: 14px;
+  color: #fff;
+  line-height: 1.2;
+  text-transform: uppercase;
+  transition: all 0.4s;
+  box-shadow: 0 10px 30px 0px rgba(65, 184, 131, 0.5);
+}
+.btn-submit:hover {
+  background-color: #438467;
 }
 </style>

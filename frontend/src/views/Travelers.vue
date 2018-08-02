@@ -1,6 +1,7 @@
 <template>
-  <div class="travelers">
-    <TravelersList v-if="users" :users="users" v-on:selected="openSelectedUsers"></TravelersList>
+  <div class="travelers container">
+    
+    <TravelersList v-if="users" :users="users"></TravelersList>
   </div>
 </template>
 
@@ -45,10 +46,6 @@ export default {
         .catch(err => {
           console.log('err in load users');
         });
-    },
-    openSelectedUsers(user) {
-      console.log(user, `user/${user._id}`);
-      this.$router.push(`user/${user._id}`);
     }
   }
 };

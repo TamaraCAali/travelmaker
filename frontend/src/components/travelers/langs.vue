@@ -16,17 +16,15 @@ export default {
 
 <style scoped lang="scss">
 p {
-  border: solid 1px #35495e;
   border-radius: 50%;
-  padding: 5px;
-  margin: 0 5px 0 5px;
-  font-size: 0.7em;
+  margin: 0 5px 0 0px;
+  font-size: 0.8em;
   font-weight: bold;
-  background-color: #41b88361;
-  display: inline-block;
-  width: 30px;
-  height: 26px;
-  text-align: center;
-  font-weight: bold;
+  background-color: #59bc8aad;
+  width: 25px;
+  height: 25px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>

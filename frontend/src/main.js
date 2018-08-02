@@ -21,7 +21,6 @@ const SOCKET_URL =
   process.env.NODE_ENV !== 'development'
     ? '/'
     : '//localhost:3000';
-console.log('SOCKETURL', SOCKET_URL)
 Vue.use(VueSocketio, SOCKET_URL);
 
 import VueClipboard from 'vue-clipboard2'
@@ -40,7 +39,7 @@ new Vue({
   render: h => h(App),
   created() {
     this.applyNotifications();
-    this.displayNotification();
+    // this.displayNotification();
     eventBusService.$on(PUSH_NOTIFICATION, (pushNtf) => {
       console.log('eventBusOnPushNtf', pushNtf)
       this.displayNotification(pushNtf.title, pushNtf.options);

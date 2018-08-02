@@ -35,7 +35,7 @@ function queryByRange(userLoc) {
   // console.log('inside service users', userLoc);
 
   const loc = [userLoc[1], userLoc[0]];
-  const range = 500000000000000000;
+  const range = 5000000;
   return axios.post(USER_URL + '/range', { loc, range }).then(res => res.data);
 }
 
@@ -85,8 +85,7 @@ function getById(userId) {
 }
 
 function getByIds(userIds) {
-  return axios.post(USER_URL + '/users', {userIds})
-
+  return axios.post(USER_URL + '/users', { userIds });
 }
 
 function login(user) {

@@ -1,11 +1,16 @@
 <template>
   <section class="event-preview">
       <div class="event" @click="openEventDetails">
-          <div class="event-img" :style="'background-image: url('+event.img+')'">
-            <p>{{event.name}} <span class="date">{{date}}</span> </p>
+          <div class="event-cover">
+            <div class="event-img" :style="'background-image: url('+event.img+')'">
+            </div>
+            <p>{{event.name}} <br/>
+              <span  class="date">{{date}}</span> 
+            </p>
           </div>
           <div class="event-pre-details">
-            <p>{{title}}...<span class="bold"> {{dist}} away</span></p>
+            <p>{{title}}...</p>
+            <p><span class="bold"> </span>{{dist}} away</p>
             <p><i class="fas fa-user-friends"></i> {{event.attends.length}} attending</p>
           </div>
       </div>
@@ -22,7 +27,7 @@ export default {
   },
   computed: {
     date: function() {
-      return moment(this.event.startTime).format('MMM Do YY');
+      return moment(this.event.startTime).format('MMM Do');
     },
     dist: function() {
       const userLoc = this.$store.getters.getCurrLoc;
@@ -37,12 +42,12 @@ export default {
       }
     },
     title: function() {
-      return this.event.loc.title.substr(0, 30);
+      return this.event.loc.title.substr(0, 40);
     }
   },
   methods: {
     openEventDetails() {
-      this.$emit('selected', this.event);
+      this.$router.push(`/event/${this.event._id}`);
     }
   }
 };
@@ -50,73 +55,58 @@ export default {
 
 <style scoped lang="scss">
 .event-preview {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  width: 250px;
+  width: 100%;
+  border: 1px solid #ccc;
 }
 .event {
   width: 100%;
-  box-shadow: 0 0 5px #00000063;
-  margin: 5px;
+  box-shadow: 0 0 0px #00000063;
   transition: all 0.3s;
   cursor: pointer;
+  padding: 0 0 5px 0;
 }
-.event-img {
+
+.event-cover {
+  position: relative;
+  height: 150px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  height: 150px;
+  overflow: hidden;
+  transition: all 1s ease;
+}
+
+.event-img {
+  height: 100%;
   background-repeat: no-repeat;
   background-size: cover;
-  padding: 10px;
-  transition: all 1s ease;
-  opacity: 0.8;
-  background-position: center;
+  background-position: center, center;
+  transition: all 0.8s ease;
 }
-.event-img:hover {
-  opacity: 1;
-  transition: 1s ease;
+
+.event-cover:hover .event-img {
+  transform: scale(1.08)
 }
 .event-pre-details {
-  padding: 5px 10px;
+  padding: 5px 0 0 0;
   font-size: 0.8em;
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
 }
 .event p {
+  padding: 3px 5px;
   margin: 0;
-  padding: 2px;
 }
-.event-img p {
-  box-shadow: 0 0 5px whitesmoke;
+.event-cover p {
+  position: absolute;
+  width: 100%;
   color: whitesmoke;
-  padding: 3px;
-  font-weight: bold;
-  background-color: #607d8b5e;
-}
-.date {
-  float: right;
+  padding: 3px 5px;
+  background-color: #607d8ba8;
+  font-size: 13px;
 }
 .bold {
   font-weight: bold;
-}
-
-@media only screen and (max-width: 920px) {
-  .event-preview {
-    width: 32%;
-  }
-}
-
-@media only screen and (max-width: 760px) {
-  .event-preview {
-    width: 45%;
-  }
-}
-
-@media only screen and (max-width: 500px) {
-  .event-preview {
-    width: 96%;
-  }
 }
 </style>
