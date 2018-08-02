@@ -3,14 +3,13 @@ module.exports = io => {
     // handle incoming connections from clients
     io.on('connection', (socket) => {
         socket.on('joinRoom', room => {
-            console.log('joined room', room);
             socket.join(room)
-            setTimeout(() => console.log({ socket }), 1000)
+            setTimeout(() => console.log('join room ', room, socket.rooms), 1000)
         })
         socket.on('leaveRoom', room => {
-            console.log('room ' + room + 'was left.')
+            // console.log('room ' + room + 'was left.')
             socket.leave(room)
-            setTimeout(() => console.log('room left' ,{socket }), 1000)
+            setTimeout(() => console.log('room left', socket.rooms), 1000)
 
         })
         // once a client has connected, we expect to get a ping from them saying what room they want to join
@@ -33,9 +32,12 @@ module.exports = io => {
             io.sockets.in(newMsg.room).emit('renderMsg', newMsg)
         });
         socket.on('assignPushNtf', pushNtf => {
-            // if(!socket.rooms[pushNtf.chatRoom]){
-                setTimeout(()=>console.log('socket before rendering pushNtf'),1000)
-                io.sockets.in(pushNtf.ntfRoom).emit('renderPushNtf', {socket});
+            io.sockets.in(pushNtf.ntfRoom).emit('renderPushNtf', pushNtf);
+            // setTimeout(() => console.log('socket before rendering pushNtf', socket.rooms), 1000)
+            // if (!socket.rooms[pushNtf.chatRoom]) {
+            //     setTimeout(() => console.log('socket before rendering pushNtf', socket.rooms), 1000)
+            //     setTimeout(() => console.log('pushNtf', pushNtf), 1000)
+            //     io.sockets.in(pushNtf.ntfRoom).emit('renderPushNtf', pushNtf);
             // }
         });
 
