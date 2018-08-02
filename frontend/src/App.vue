@@ -13,9 +13,9 @@
           <router-link class="router-link" to="/user/edit/:userId"><i class="fas fa-cog"></i><span class="span-icon"></span>
           <img class="login-img" :src="userUrl"></router-link>
         </div>
-        <!-- <didi-sandbox> -->
-          <!-- <NotificationMenu/> -->
-        <!-- </didi-sandbox> -->
+
+          <NotificationMenu v-if="!userToChat"/>
+          
     </nav>
     <user-msg></user-msg>
     <router-view v-show="!userToChat"/>

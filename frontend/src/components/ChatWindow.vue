@@ -194,9 +194,6 @@ export default {
       };
       this.$socket.emit('assignPushNtf', pushNtf);
       this.newMsgTxt = '';
-      // TODO: send notification to otherUser here, to his own unique ntfs channel
-      //       every user is automatically connect to itself's user._id socket
-      //       maybe 'ntfs_<user._id>'
     },
     backClicked() {
       eventBusService.$emit(TOGGLE_CHAT, null);
@@ -215,9 +212,10 @@ export default {
   },
   destroyed() {
     //update the selfUser chatNtfsMap in this room as read.
+    console.log('Chat Destroyed.', this.chat)
     this.clearSelfNtfsMap();
-    console.log(this.chat);
     chatService.update(this.chat);
+
     // Possible senario - leaving the room when destroyed, and then we
     // know when to send push-Notification:
     // another possibility is to create a room with the otherUser room and

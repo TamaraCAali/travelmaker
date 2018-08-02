@@ -106,8 +106,11 @@ export default new Vuex.Store({
       context.commit({ type: SET_USER, user: _loadUser() });
     },
     [UPDATE_USER](context, { user }) {
-      // console.log('update', user);
-      return userService.update(user);
+      // console.log('update self user', user);
+      return userService.update(user)
+        .then(() =>
+          context.commit({ type: SET_USER, user })
+        )
     },
     [ADD_USER](context, { user }) {
       return _getAppLoc().then(loc => {
@@ -137,7 +140,8 @@ export default new Vuex.Store({
 });
 
 function _loadUser() {
-  if (userService.getLoggedInUser()) return userService.getLoggedInUser();
+  let user = userService.getLoggedInUser()
+  if (user) return user;
   else
     return {
       password: '',
