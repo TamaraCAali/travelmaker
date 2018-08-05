@@ -64,6 +64,7 @@ export default {
   transition: all 0.3s;
   cursor: pointer;
   padding: 0 0 5px 0;
+  height: 245px;
 }
 
 .event-cover {
@@ -85,7 +86,7 @@ export default {
 }
 
 .event-cover:hover .event-img {
-  transform: scale(1.08)
+  transform: scale(1.08);
 }
 .event-pre-details {
   padding: 5px 0 0 0;

@@ -69,6 +69,7 @@ export default {
   transition: all 0.3s;
   cursor: pointer;
   margin: 0 0 5px 0;
+  height: 245px;
 }
 
 .user-img {
