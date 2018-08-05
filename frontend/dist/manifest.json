@@ -3,7 +3,7 @@
   "short_name": "travelmaker",
   "icons": [
     {
-      "src": "../src/assets/img/travelMaker-icon192x192.svg",
+      "src": "../src/assets/img/travelMaker-192x192.svg",
       "sizes": "192x192",
       "type": "image/svg"
     },
