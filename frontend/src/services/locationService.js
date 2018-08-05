@@ -1,4 +1,6 @@
-const API_KEY = 'AIzaSyAGe5rJsXIvHdSmy3Sm3PIdj1Tsn1g77nE';
+import { log } from 'util';
+
+const API_KEY = 'AIzaSyArwZLwu8qpwO8J1vkedj-qYnK7mdLmhYE';
 const axios = require('axios');
 
 export default {
@@ -13,7 +15,9 @@ function getAddressFromLoc(loc) {
   // console.log('service got loc:', loc);
   return axios
     .get(
-      `https://maps.googleapis.com/maps/api/geocode/json?latlng=${loc[0]},${loc[1]}&key=${API_KEY}`,
+      `https://maps.googleapis.com/maps/api/geocode/json?latlng=${loc[0]},${
+        loc[1]
+      }&key=${API_KEY}`,
       {
         withCredentials: false
       }
@@ -21,7 +25,8 @@ function getAddressFromLoc(loc) {
     .then(res => {
       // console.log('service got res:', res);
       return res.data.results[0].formatted_address;
-    });
+    })
+    .catch(err => 'no location name access');
 }
 
 function getPosition() {
