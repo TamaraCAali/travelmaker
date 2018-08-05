@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.4.1/workbox-sw.js");
 
 importScripts(
-  "/precache-manifest.23491894d26a5e162d287028f0096eca.js"
+  "/precache-manifest.f32aeec8e991e8afc00fd00275df6c5b.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "travelmaker"});

@@ -1,11 +1,11 @@
 self.__precacheManifest = [
   {
-    "revision": "324944d6dae53ea48a648b1d44ec78c3",
-    "url": "/fonts/Pacifico-Regular.324944d6.ttf"
+    "revision": "ac039aee4ec69579a64cdd63ed4db625",
+    "url": "/fonts/MavenPro-Regular.ac039aee.ttf"
   },
   {
-    "revision": "96b322e7cd4c91feeab8",
-    "url": "/css/app.98bc21fb.css"
+    "revision": "21c75ef8a0404eaa213b",
+    "url": "/css/app.954c9b0a.css"
   },
   {
     "revision": "b57de538ad179852bb05",
@@ -32,12 +32,16 @@ self.__precacheManifest = [
     "url": "/fonts/element-icons.2fad952a.woff"
   },
   {
-    "revision": "ac039aee4ec69579a64cdd63ed4db625",
-    "url": "/fonts/MavenPro-Regular.ac039aee.ttf"
+    "revision": "79784f21a474e79737cf39bdda7ff778",
+    "url": "/fonts/BreeSerif-Regular.79784f21.ttf"
   },
   {
-    "revision": "96b322e7cd4c91feeab8",
-    "url": "/js/app.96b322e7.js"
+    "revision": "21c75ef8a0404eaa213b",
+    "url": "/js/app.21c75ef8.js"
+  },
+  {
+    "revision": "324944d6dae53ea48a648b1d44ec78c3",
+    "url": "/fonts/Pacifico-Regular.324944d6.ttf"
   },
   {
     "revision": "48da52b82c18c9824a67bd36a44171cb",
@@ -56,7 +60,7 @@ self.__precacheManifest = [
     "url": "/img/groups-hero.21ed4f86.jpg"
   },
   {
-    "revision": "833b8655aa651b3ae79bc33d85a2c31d",
+    "revision": "db60366d057aa69731b09e1897fb70e8",
     "url": "/index.html"
   },
   {

@@ -120,8 +120,8 @@ function fbLogin(user) {
       newUser.isActive = true;
       newUser.age = null;
       newUser.name = {
-        first: user.name,
-        last: user.name
+        first: '',
+        last: ''
       };
       newUser.email = '';
       newUser.about = {
@@ -134,6 +134,8 @@ function fbLogin(user) {
         events: [],
         chatRooms: []
       };
+      newUser.chatNtfsMap = {};
+      newUser.cmntNtfsMap = {};
       return _getAppLoc().then(loc => {
         newUser.loc = loc;
         return add(newUser).then(user => {
