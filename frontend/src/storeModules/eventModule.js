@@ -3,7 +3,8 @@ export const LOAD_EVENTS_BY_LOC = 'event/loadByLoc'
 export const LOAD_EVENTS = 'event/load';
 export const LOAD_EVENT = 'event/loadById';
 export const REMOVE_EVENT = 'event/remove';
-export const SET_RADIUS = 'event/set-radius'
+export const SET_RADIUS = 'event/set-radius';
+export const SET_FILTER = 'event/set-filter'
 // export const REMOVE_USER = 'user/removeUser'
 
 // Getters
@@ -26,14 +27,25 @@ export default {
     },
     [SET_RADIUS](state, { radius }) {
       state.radius = radius;
+    },
+    [SET_FILTER](state, { filterBy }) {
+      state.filterBy = filterBy;
     }
   },
   getters: {
     eventForDisplay(state) {
-      return state.events;
-      // return state.events.filter(event =>
-      //   event.name.toLowerCase().includes(state.filterBy.txt.toLowerCase())
-      // );
+      let events = state.events;
+      // console.log('store all events:', events);
+      
+      if (state.filterBy && state.filterBy.txt) {
+        events = events.filter(event =>
+          event.name.toLowerCase().includes(state.filterBy.txt.toLowerCase()) ||
+          event.desc.toLowerCase().includes(state.filterBy.txt.toLowerCase()) ||
+          event.tags.some(item => item.toLowerCase().includes(state.filterBy.txt.toLowerCase()))
+        );
+      }
+      // console.log('store events4display:', events);
+      return events
     },
     eventsRadius(state) {
       return state.radius
@@ -73,6 +85,12 @@ export default {
       return context.commit({
         type: SET_RADIUS,
         radius
+      });
+    },
+    [SET_FILTER](context, { filterBy }) {
+      return context.commit({
+        type: SET_FILTER,
+        filterBy
       });
     },
   }

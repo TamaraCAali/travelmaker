@@ -37,6 +37,7 @@
 import locService from '@/services/locationService.js';
 import EventBusService, { LOGIN } from '../services/eventBusService.js';
 import { LOAD_EVENTS } from '../storeModules/eventModule.js';
+import { SET_FILTER } from '../storeModules/eventModule.js';
 import { UPDATE_USER } from '../store.js';
 
 import EventList from '@/components/EventList.vue';
@@ -64,6 +65,7 @@ export default {
     };
   },
   created() {
+    this.$store.dispatch(SET_FILTER, {filterBy: null})
     this.loadUser();
   },
   computed: {},
@@ -83,9 +85,9 @@ export default {
     loadEvent(user) {
       this.$store
         .dispatch(LOAD_EVENTS, { user })
-        .then(events => {
-          console.log('events', events);
-          this.events = events;
+        .then(() => {
+          this.events = this.$store.getters.eventForDisplay;
+          console.log('events cmp got events', this.events);
         })
         .catch(err => {
           console.log('err in load events', err);
@@ -99,11 +101,12 @@ export default {
         this.$router.push('/login');
       }
     },
-    getEvents() {
+    getEvents() {      
       this.events = this.$store.getters.eventForDisplay;
       if (!this.events[0]) {
         this.$message.error('No events in that area');
       }
+      console.log('events cmp got events', this.events);
     }
   }
 };
