@@ -1,4 +1,5 @@
-const API_KEY = 'AIzaSyAGe5rJsXIvHdSmy3Sm3PIdj1Tsn1g77nE';
+// const API_KEY = 'AIzaSyAGe5rJsXIvHdSmy3Sm3PIdj1Tsn1g77nE';
+const API_KEY = 'AIzaSyArwZLwu8qpwO8J1vkedj-qYnK7mdLmhYE';
 const axios = require('axios');
 
 export default {
