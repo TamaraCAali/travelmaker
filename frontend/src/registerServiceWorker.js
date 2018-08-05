@@ -11,27 +11,27 @@ if (process.env.NODE_ENV === 'production') {
       );
     },
     registered(registration) {
-      console.log(self);
-      console.log({ registration });
-      console.log(navigator.serviceWorker);
-      window.navigator.serviceWorker.addEventListener(
-        'notificationclick',
-        function(e) {
-          console.log('in??');
-          var notification = e.notification;
-          var primaryKey = notification.data.primaryKey;
-          var action = e.action;
-          console.log({ action });
-          if (action === 'close') {
-            notification.close();
-          } else {
-            clients.openWindow('http://www.example.com');
-            notification.close();
-          }
-        }
-      );
-      console.log(navigator.serviceWorker);
-      console.log('Service worker has been registered.');
+      // console.log(self);
+      // console.log({ registration });
+      // console.log(navigator.serviceWorker);
+      // window.navigator.serviceWorker.addEventListener(
+      //   'notificationclick',
+      //   function(e) {
+      //     console.log('in??');
+      //     var notification = e.notification;
+      //     var primaryKey = notification.data.primaryKey;
+      //     var action = e.action;
+      //     console.log({ action });
+      //     if (action === 'close') {
+      //       notification.close();
+      //     } else {
+      //       clients.openWindow('http://www.example.com');
+      //       notification.close();
+      //     }
+      //   }
+      // );
+      // console.log(navigator.serviceWorker);
+      // console.log('Service worker has been registered.');
     },
 
     cached() {

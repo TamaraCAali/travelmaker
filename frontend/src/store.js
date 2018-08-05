@@ -181,7 +181,7 @@ function _loadUser() {
         chatRooms: []
       },
       chatNtfsMap: {},
-      commentNtfsMap: {}
+      cmntNtfsMap: {}
     };
 }
 
