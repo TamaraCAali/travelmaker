@@ -16,7 +16,7 @@
         </div>
       <LocationInput v-if="user.loc" @events-changed="getEvents"></LocationInput>
       <div class="sliders-btn-container" @click="showEventsFilter = !showEventsFilter"> 
-        <i class="far fa-compass"></i><div class="raduis-title">change radius range</div>
+        <i class="fas fa-sliders-h"></i><div class="raduis-title">search options</div>
       </div>
     </div>
    
@@ -25,8 +25,36 @@
       @just-radius-changed="loadEvent(user)">
     </events-filter>
     <hr>
+    <EventListCarousel v-if="events" :events="events" >
+      <template slot="header">
+        <h3>Events Today and Tomorrow</h3>
+      </template>
+    </EventListCarousel>
 
-    <EventList v-if="events"  :events="events" ></EventList>
+    <EventListCarousel v-if="events" :events="events" >
+      <template slot="header">
+        <h3>1 day trips</h3>
+      </template>
+    </EventListCarousel>
+
+    <EventListCarousel v-if="events" :events="events" >
+      <template slot="header">
+        <h3>Events longer then 2 days</h3>
+      </template>
+    </EventListCarousel>
+
+    <TraveleerListCarousel v-if="users" :users="users">
+      <template slot="header">
+        <h3>Users around you</h3>
+      </template>
+    </TraveleerListCarousel>
+    
+    <EventList v-if="events" :events="events">
+      <template slot="header">
+        <h3>All events near you</h3>
+      </template>
+    </EventList>
+
 
     </div>
   </div>
@@ -39,23 +67,32 @@ import EventBusService, { LOGIN } from '../services/eventBusService.js';
 import { LOAD_EVENTS } from '../storeModules/eventModule.js';
 import { SET_FILTER } from '../storeModules/eventModule.js';
 import { UPDATE_USER } from '../store.js';
+import { LOAD_USERS } from '../storeModules/userModule.js';
 
 import EventList from '@/components/EventList.vue';
+import EventListCarousel from '@/components/EventListCarousel.vue';
+
 import LocationInput from '@/components/LocationInput.vue';
 import eventsFilter from '@/components/EventsFilter.vue';
+import TravelersList from '@/components/travelers/TravelersList.vue';
+import TraveleerListCarousel from '@/components/travelers/TraveleerListCarousel.vue';
 
 export default {
   name: 'Event',
   components: {
     LocationInput,
     EventList,
-    eventsFilter
+    eventsFilter,
+    TravelersList,
+    EventListCarousel,
+    TraveleerListCarousel
   },
   data() {
     return {
       showEventsFilter: false,
       user: null,
       events: null,
+      users: null,
       titles: [
         'Traveling together is easier than ever!',
         'Find events in your area',
@@ -65,7 +102,7 @@ export default {
     };
   },
   created() {
-    this.$store.dispatch(SET_FILTER, {filterBy: null})
+    this.$store.dispatch(SET_FILTER, { filterBy: null });
     this.loadUser();
   },
   computed: {},
@@ -80,6 +117,7 @@ export default {
         console.log('user', this.user);
         EventBusService.$emit(LOGIN, this.user.img);
         this.loadEvent(this.user);
+        this.loadUsers(this.user);
       });
     },
     loadEvent(user) {
@@ -93,7 +131,17 @@ export default {
           console.log('err in load events', err);
         });
     },
-
+    loadUsers(user) {
+      this.$store
+        .dispatch(LOAD_USERS, { user })
+        .then(users => {
+          // console.log('users', users);
+          this.users = users;
+        })
+        .catch(err => {
+          console.log('err in load users');
+        });
+    },
     onNewEvent() {
       if (this.user._id) this.$router.push('/event/edit/newEvent');
       else {
@@ -101,7 +149,7 @@ export default {
         this.$router.push('/login');
       }
     },
-    getEvents() {      
+    getEvents() {
       this.events = this.$store.getters.eventForDisplay;
       if (!this.events[0]) {
         this.$message.error('No events in that area');
@@ -117,6 +165,7 @@ export default {
   display: flex;
   flex-direction: column;
 }
+
 .events-header {
   display: flex;
   justify-content: space-between;

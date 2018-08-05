@@ -22,11 +22,7 @@ export default {
   created() {
     this.loadUser();
   },
-  computed: {
-    // users() {
-    //   return this.$store.getters.usersForDisplay;
-    // }
-  },
+  computed: {},
   methods: {
     loadUser() {
       this.user = this.$store.getters.loggedinUser;
