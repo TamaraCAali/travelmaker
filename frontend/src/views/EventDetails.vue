@@ -129,7 +129,6 @@ export default {
     };
   },
   created() {
-    this.clearSelfNtfsMap();
     let idFromParams = this.$route.params.eventId;
     // console.log('event id sent:', idFromParams);
     eventService.getById(idFromParams).then(res => {
@@ -140,6 +139,7 @@ export default {
       this.getAttendingUsers();
     });
     this.user = this.$store.getters.getUser;
+    this.clearSelfNtfsMap();
     // console.log('user:', this.user);
   },
   methods: {
