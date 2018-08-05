@@ -3,6 +3,8 @@
       <h3>Notifications:</h3>
       <!-- <pre v-if="user.chatNtfsMap">
         {{user.chatNtfsMap}}
+        ---
+        {{user.cmntNtfsMap}}
       </pre> -->
        <div class="chat-ntfs" 
         v-for="(value, key) in user.chatNtfsMap" 
@@ -11,15 +13,15 @@
             <!-- <pre>
               {{key}}:{{value}}
             </pre> -->
-            <div>
-              You have
-              <span v-if="user.chatNtfsMap[key].length > 1">
-                {{user.chatNtfsMap[key].length}}
-                new messages
-               </span>
-               <span v-else> 1 new message</span>
-                From {{user.chatNtfsMap[key][0].creator.fullName}}.
-            </div>
+              <div @click="openChat(user.chatNtfsMap[key][0].creator._id)">
+                You have
+                <span v-if="user.chatNtfsMap[key].length > 1">
+                  {{user.chatNtfsMap[key].length}}
+                  new messages
+                </span>
+                <span v-else> 1 new message</span>
+                  From {{user.chatNtfsMap[key][0].creator.fullName}}.
+              </div>
 
         </div>
        <div class="cmnt-ntfs" 
@@ -29,20 +31,20 @@
             <!-- <pre>
               {{key}}:{{value}}
             </pre> -->
-            <router-link :to="'/event/'+ user.cmntNtfsMap[key]">
+            <a target="_blank" :href="'/#/event/'+ key">
               <div>
                   {{user.cmntNtfsMap[key][0].creatorName}}
                     commented on an event you're going to.
               </div>
-            </router-link>
+            </a>
         </div>
     </section>  
 </template>
 
 <script>
-import eventBusService, {
-  TOGGLE_CHAT,
-} from '@/services/eventBusService';
+import eventBusService, { TOGGLE_CHAT } from '@/services/eventBusService';
+import userService from '@/services/userService';
+
 export default {
   data() {
     return {
@@ -51,9 +53,18 @@ export default {
   },
   created() {
     //get user from server.
-    this.user = this.$store.getters.loggedinUser;
+    let userId = this.$store.getters.loggedinUser._id;
     // this.user.chatNtfsMap = {bobo:23}
-    console.log('Notification Menu for User: ', this.user);
+    userService.getById(userId).then(user => {
+      this.user = user;
+    });
+  },
+  methods: {
+    openChat(creatorId) {
+      userService.getById(creatorId).then(otherUser => {
+        eventBusService.$emit(TOGGLE_CHAT, otherUser);
+      });
+    }
   }
 };
 </script>
@@ -63,5 +74,8 @@ export default {
 .notification-menu {
   color: white;
   background: darkblue;
+}
+a {
+  color: white;
 }
 </style>

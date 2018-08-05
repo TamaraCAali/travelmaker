@@ -129,6 +129,7 @@ export default {
     };
   },
   created() {
+    this.clearSelfNtfsMap();
     let idFromParams = this.$route.params.eventId;
     // console.log('event id sent:', idFromParams);
     eventService.getById(idFromParams).then(res => {
@@ -227,13 +228,17 @@ export default {
       }
     },
     sendNotification(cmnt) {
+      console.log('here 1');
       let otherUsersUpdated = this.attendingUsers.map(user => {
+        console.log('here 2');
         if (user._id !== cmnt.creatorId) {
           if (!user.cmntNtfsMap[this.$route.params.eventId]) {
             user.cmntNtfsMap[this.$route.params.eventId] = [];
           }
           user.cmntNtfsMap[this.$route.params.eventId].push(cmnt);
-          // userService.updateOtherUser(user);
+          userService
+            .updateOtherUser(user)
+            .then(_ => console.log('Updated other user', user));
 
           let pushNtf = {
             ntfRoom: 'ntf-' + user._id,
