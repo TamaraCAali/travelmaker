@@ -16,7 +16,7 @@
         </div>
       <LocationInput v-if="user.loc" @events-changed="getEvents"></LocationInput>
       <div class="sliders-btn-container" @click="showEventsFilter = !showEventsFilter"> 
-        <i class="far fa-compass"></i><div class="raduis-title">change raduis range</div>
+        <i class="fas fa-sliders-h"></i>
       </div>
     </div>
    
@@ -217,9 +217,7 @@ export default {
   flex-direction: column;
   text-align: center;
 }
-.raduis-title {
-  font-size: 0.8em;
-}
+
 @media screen and (max-width: 700px) {
   .events-header {
     flex-direction: column-reverse;
