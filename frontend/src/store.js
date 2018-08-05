@@ -14,7 +14,8 @@ export const LOGIN = 'user/login';
 export const FB_LOGIN = 'user/fb-login';
 export const LOGOUT = 'user/logout';
 export const SET_USER = 'user/setUser';
-export const UPDATE_USER = 'user/updateLocUser';
+export const UPDATE_USER = 'user/updateLUser';
+export const UPDATE_LOGOUT_USER = 'user/updatelogoutr';
 export const ADD_USER = 'user/addUser';
 // export const SET_GUEST = 'user/setGuest';
 
@@ -32,7 +33,7 @@ export default new Vuex.Store({
       state.searchedLoc = pos;
     },
     [SET_USER](state, { user }) {
-      return state.user = user;
+      return (state.user = user);
       // console.log('SET_USER', state.user);
     }
   },
@@ -49,33 +50,33 @@ export default new Vuex.Store({
     },
     searchedLoc(state) {
       return state.searchedLoc;
-    },
+    }
   },
   actions: {
-    [LOAD_CURR_LOC](context) {
-      var currLoc = {};
-      currLoc.type = 'Point';
-      return locService
-        .getPosition()
-        .then(res => {
-          currLoc.coordinates = [res.coords.latitude, res.coords.longitude];
-          return locService.getAddressFromLoc(currLoc.coordinates);
-        })
-        .then(name => {
-          currLoc.name = name;
-          context.commit({
-            type: LOAD_CURR_LOC,
-            currLoc
-          });
-        });
-    },
+    // [LOAD_CURR_LOC](context) {
+    //   var currLoc = {};
+    //   currLoc.type = 'Point';
+    //   return locService
+    //     .getPosition()
+    //     .then(res => {
+    //       currLoc.coordinates = [res.coords.latitude, res.coords.longitude];
+    //       return locService.getAddressFromLoc(currLoc.coordinates);
+    //     })
+    //     .then(name => {
+    //       currLoc.name = name;
+    //       context.commit({
+    //         type: LOAD_CURR_LOC,
+    //         currLoc
+    //       });
+    //     });
+    // },
     [SEARCHED_LOC](context, { searchInput }) {
       return locService.getPositionByName(searchInput).then(pos => {
         context.commit({
           type: SEARCHED_LOC,
           pos
         });
-        return pos
+        return pos;
       });
     },
     [LOGIN](context, { user }) {
@@ -102,15 +103,29 @@ export default new Vuex.Store({
         });
     },
     [LOGOUT](context) {
+      var user = this.state.user;
+      user.isActive = false;
+      console.log('user logout', user);
+      debugger;
       userService.logout();
       context.commit({ type: SET_USER, user: _loadUser() });
+      if (user._id) {
+        this.dispatch(UPDATE_LOGOUT_USER, { user }).then(res => {
+          userService.logout();
+        });
+      }
+
+      console.log('user logout', user);
+    },
+    [UPDATE_LOGOUT_USER](context, { user }) {
+      // console.log('update self user', user);
+      return userService.update(user);
     },
     [UPDATE_USER](context, { user }) {
       // console.log('update self user', user);
-      return userService.update(user)
-        .then(() =>
-          context.commit({ type: SET_USER, user })
-        )
+      return userService
+        .update(user)
+        .then(() => context.commit({ type: SET_USER, user }));
     },
     [ADD_USER](context, { user }) {
       return _getAppLoc().then(loc => {
@@ -140,7 +155,7 @@ export default new Vuex.Store({
 });
 
 function _loadUser() {
-  let user = userService.getLoggedInUser()
+  let user = userService.getLoggedInUser();
   if (user) return user;
   else
     return {

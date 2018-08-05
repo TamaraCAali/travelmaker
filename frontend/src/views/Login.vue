@@ -12,17 +12,19 @@
           </form>
             <p>Or login with</p>
               <div class="flex justify-center" >
-                <!-- <FBLogin ></FBLogin>   -->
-                <a href="#" class="login-social-icon">
+                <FBLogin @click="fbLogin"></FBLogin>  
+                <!-- <a href="#" class="login-social-icon" title="Login with facebook">
 						      <i class="fab fa-facebook-f"></i>
-					      </a>
-                <a href="#" class="login-social-icon">
+					      </a> -->
+                <!-- <div class="g-signin2" data-onsuccess="onSignIn"></div> -->
+                <a href="#" @click="onGoogleSignIn" class="login-social-icon" title="Login with google">
                   <img src="../assets/img/icon-google.png">
                 </a>
 				      </div>
           </div>
           
       </section>
+      
 </template>
 
 <script>
@@ -103,6 +105,8 @@ export default {
     //     });
     // },
     fbLogin(user) {
+      console.log('fb login', user);
+
       this.$store
         .dispatch(FB_LOGIN, { user })
         .then(_ => {
@@ -119,6 +123,13 @@ export default {
             type: 'danger'
           });
         });
+    },
+    onGoogleSignIn(googleUser) {
+      var profile = googleUser.getBasicProfile();
+      console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+      console.log('Name: ' + profile.getName());
+      console.log('Image URL: ' + profile.getImageUrl());
+      console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
     }
   }
 };
@@ -235,5 +246,11 @@ h1 {
 .new-acount:hover {
   font-size: 1.4em;
   color: #438467;
+}
+@media only screen and (max-width: 500px) {
+  .login {
+    top: 60px;
+    padding: 20px;
+  }
 }
 </style>

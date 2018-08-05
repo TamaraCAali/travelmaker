@@ -107,25 +107,21 @@ function fbLogin(user) {
   return axios
     .post(USER_URL + '/setFbUser', user)
     .then(res => {
-      alert('stop', res, user);
       var loggedUser = res.data;
-      log('loggedUser', loggedUser);
       _setLoggedinUser(loggedUser);
       return loggedUser;
     })
     .catch(err => {
-      alert('inside catch');
       const newUser = {};
       newUser.FB_id = '' + 1 * user.id;
-      // newUser.FB_id = '2323242';
       newUser.userName = user.name;
       newUser.img = user.picture.data.url;
       newUser.password = '';
       newUser.isActive = true;
       newUser.age = null;
       newUser.name = {
-        first: '',
-        last: ''
+        first: user.name,
+        last: user.name
       };
       newUser.email = '';
       newUser.about = {
@@ -140,8 +136,12 @@ function fbLogin(user) {
       };
       return _getAppLoc().then(loc => {
         newUser.loc = loc;
-        console.log('inside err', err, newUser);
-        return add(newUser).then(usre => usre);
+        return add(newUser).then(user => {
+          debugger;
+          console.log('print new fb user', user);
+
+          return user;
+        });
       });
     });
 }

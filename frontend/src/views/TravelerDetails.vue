@@ -126,7 +126,7 @@ export default {
 .user-img {
   width: 200px;
   position: relative;
-  top: 210px;
+  top: 20%;
   left: 73%;
   z-index: 4;
 }
@@ -194,12 +194,11 @@ export default {
 @media screen and (max-width: 550px) {
   .user-img {
     left: 52%;
-    top: 150px;
   }
 }
 @media screen and (max-width: 450px) {
   .user-img {
-    left: 33%;
+    left: 25%;
   }
 }
 </style>
