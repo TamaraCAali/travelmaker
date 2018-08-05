@@ -56,4 +56,10 @@ h3 {
   text-align: center;
   margin: 35px 0 10px 0;
 }
+@media screen and (max-width: 430px) {
+  .travelers-list {
+    position: relative;
+    top: 27px;
+  }
+}
 </style>

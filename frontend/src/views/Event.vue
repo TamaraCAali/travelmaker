@@ -15,8 +15,8 @@
           </div>
         </div>
       <LocationInput v-if="user.loc" @events-changed="getEvents"></LocationInput>
-      <div class="sliders-btn-container" @click="showEventsFilter = !showEventsFilter">
-        <i class="fas fa-sliders-h"></i>
+      <div class="sliders-btn-container" @click="showEventsFilter = !showEventsFilter"> 
+        <i class="far fa-compass"></i><div class="raduis-title">change raduis range</div>
       </div>
     </div>
    
@@ -38,6 +38,7 @@ import locService from '@/services/locationService.js';
 import EventBusService, { LOGIN } from '../services/eventBusService.js';
 import { LOAD_EVENTS } from '../storeModules/eventModule.js';
 import { SET_FILTER } from '../storeModules/eventModule.js';
+import { UPDATE_USER } from '../store.js';
 
 import EventList from '@/components/EventList.vue';
 import LocationInput from '@/components/LocationInput.vue';
@@ -73,6 +74,9 @@ export default {
       this.user = this.$store.getters.loggedinUser;
       locService.getAppLoc().then(currLoc => {
         this.user.loc = currLoc;
+        this.user.isActive = true;
+        var user = this.user;
+        this.$store.dispatch(UPDATE_USER, { user });
         console.log('user', this.user);
         EventBusService.$emit(LOGIN, this.user.img);
         this.loadEvent(this.user);
@@ -159,19 +163,21 @@ export default {
   color: white;
   font-size: 3em;
   padding: 10px;
+  font-family: BreeSerif;
 }
 
 .el-carousel__item::before {
-  content: "";
-	position: absolute;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	background-image: linear-gradient(
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-image: linear-gradient(
     rgba(0, 0, 0, 0),
     rgba(0, 0, 0, 0.2),
-    rgba(0, 0, 0, 0.9));
+    rgba(0, 0, 0, 0.9)
+  );
 }
 
 .el-carousel__item:nth-child(4n) {
@@ -182,21 +188,21 @@ export default {
   background-image: url('../assets/img/homePage.jpg');
 }
 
-.el-carousel__item:nth-child(4n+1) {
+.el-carousel__item:nth-child(4n + 1) {
   background-color: #99a9bf;
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
   background-image: url('../assets/img/groups-hero.jpg');
 }
-.el-carousel__item:nth-child(4n+2) {
+.el-carousel__item:nth-child(4n + 2) {
   background-color: #99a9bf;
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
   background-image: url('../assets/img/group_travel.jpg');
 }
-.el-carousel__item:nth-child(4n+3) {
+.el-carousel__item:nth-child(4n + 3) {
   background-color: #99a9bf;
   background-repeat: no-repeat;
   background-size: cover;
@@ -208,12 +214,15 @@ export default {
   cursor: pointer;
   font-size: 1.1em;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  text-align: center;
 }
-
+.raduis-title {
+  font-size: 0.8em;
+}
 @media screen and (max-width: 700px) {
   .events-header {
-    flex-wrap: wrap-reverse;
+    flex-direction: column-reverse;
   }
 
   .curr-loc {

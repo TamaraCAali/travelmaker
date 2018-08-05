@@ -68,9 +68,16 @@ export default {
   computed: {},
   created() {
     this.user = this.$store.getters.getUser;
+    if (this.user._id) {
+      this.getEvents();
+    } else {
+      this.$message.error('Please login');
+      this.$router.push(`/login`);
+    }
   },
-  watch: {
-    user() {
+  watch: {},
+  methods: {
+    getEvents() {
       if (this.user) {
         var eventsPrms = this.user.activity.events.map(eventId => {
           return eventService.getById(eventId);
@@ -82,8 +89,7 @@ export default {
         });
       }
     }
-  },
-  methods: {}
+  }
 };
 </script>
 

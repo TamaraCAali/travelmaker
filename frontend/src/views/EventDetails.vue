@@ -11,19 +11,19 @@
             At: {{event.loc.title}}</div>
                   <div class="btns-container">
                         <div @click="toggleEventAttendence()">
-                          <template v-if="!userIsAttending">
-                            <i class="far fa-check-circle fa-2x"></i><br/>
+                          <template v-if="!userIsAttending" >
+                            <i class="far fa-check-circle fa-2x" title="join event"></i><br/>
                           </template>
                           <template v-else>
-                            <i class="far fa-times-circle fa-2x"></i><br/>
+                            <i class="far fa-times-circle fa-2x" title="leave event"></i><br/>
                           </template>
                         </div>
                         <div @click="showCopyUrlMsg">
-                            <i class="far fa-copy fa-2x" v-clipboard:copy="eventUrl"></i> <br/>
+                            <i class="far fa-copy fa-2x" v-clipboard:copy="eventUrl" title="copy event link"></i> <br/>
                         </div>
                         <i v-if="userIsAdmin"
                               @click="goEditEvent" 
-                              class="edit-btn far fa-edit fa-2x"></i>
+                              class="edit-btn far fa-edit fa-2x" title="edit event"></i>
       </div>
              
             <div class="event-time">
@@ -47,7 +47,7 @@
       </div>
 
       <div class="container">
-        <div class="flex details-container">
+        <div class="flex details-container align-center">
         <div class="event-dest-container">
       <div>
         
@@ -85,7 +85,7 @@
       <ul class="comments clean-list">
         <li class="comment" v-for="comment in event.comments" :key="comment.at">
           <img :src="comment.creatorImg" @click="$router.push(`/user/${comment.creatorId}`)" />
-          <el-tag type="success">{{comment.txt}} <span>- {{comment.at | commentTime}}</span></el-tag>
+          <el-tag class="el-tag-comment" type="success">{{comment.txt}} <span>- {{comment.at | commentTime}}</span></el-tag>
         </li>
         <li>
           <input
@@ -230,7 +230,7 @@ export default {
       let otherUsersUpdated = this.attendingUsers.map(user => {
         if (user._id !== cmnt.creatorId) {
           if (!user.cmntNtfsMap[this.$route.params.eventId]) {
-            user.cmntNtfsMap[this.$route.params.eventId]=[]
+            user.cmntNtfsMap[this.$route.params.eventId] = [];
           }
           user.cmntNtfsMap[this.$route.params.eventId].push(cmnt);
           // userService.updateOtherUser(user);
@@ -337,8 +337,6 @@ export default {
 }
 
 .event-details {
-  position: relative;
-  top: 50px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -477,7 +475,14 @@ export default {
   outline: 0;
   padding: 0 15px;
   margin: 0 1em;
-  width: 100%;
+  width: 90%;
+}
+.el-tag-comment {
+  display: flex;
+  flex-wrap: wrap;
+  height: auto;
+  white-space: unset;
+  margin: 0 0 10px 0;
 }
 
 @media screen and (max-width: 850px) {

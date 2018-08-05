@@ -43,6 +43,7 @@ h3 {
   font-size: 2rem;
   margin: 1.7em 0 0.5em 0;
   color: #41b883;
+  font-family: BreeSerif;
 }
 
 .list-container {

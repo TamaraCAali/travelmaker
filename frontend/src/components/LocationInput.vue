@@ -13,7 +13,6 @@ import { SEARCHED_LOC } from '../store.js';
 import { UPDATE_USER } from '../store.js';
 import { LOAD_EVENTS_BY_LOC } from '../storeModules/eventModule.js';
 
-
 import locService from '../services/locationService.js';
 
 export default {
@@ -24,7 +23,7 @@ export default {
     };
   },
   created() {
-    this.loadLoc();
+    // this.loadLoc();
   },
   computed: {
     currLocName() {
@@ -32,32 +31,33 @@ export default {
     }
   },
   methods: {
-    loadLoc() {
-      this.$store
-        .dispatch(LOAD_CURR_LOC)
-        .then(res => {
-          var user = this.$store.getters.loggedinUser;
-          console.log('user', user);
-          if (user._id) this.$store.dispatch(UPDATE_USER, { user });
-        })
-        .catch(err => {
-          console.log('err in load loc');
-        });
-    },
+    // loadLoc() {
+    //   this.$store
+    //     .dispatch(LOAD_CURR_LOC)
+    //     .then(res => {
+    //       var user = this.$store.getters.loggedinUser;
+    //       console.log('user', user);
+    //       if (user._id) this.$store.dispatch(UPDATE_USER, { user });
+    //     })
+    //     .catch(err => {
+    //       console.log('err in load loc');
+    //     });
+    // },
     changeLoc() {
       let searchInput = this.searchInput;
       this.$store
         .dispatch(SEARCHED_LOC, { searchInput })
         .then(res => {
-          this.searchInput = res.address
-          let loc = [res.lat, res.lng]
-          this.$store.dispatch(LOAD_EVENTS_BY_LOC, { loc })
-          .then(events => {
-            this.$emit('events-changed')
-          })
-          .catch(err => {
-            console.log('err in load events', err);
-          });
+          this.searchInput = res.address;
+          let loc = [res.lat, res.lng];
+          this.$store
+            .dispatch(LOAD_EVENTS_BY_LOC, { loc })
+            .then(events => {
+              this.$emit('events-changed');
+            })
+            .catch(err => {
+              console.log('err in load events', err);
+            });
         })
         .catch(err => {
           console.log('err in load new loc');
@@ -72,9 +72,13 @@ export default {
   display: inline-block;
   margin: 0 1px 0 0;
   color: #41b883;
+  font-family: BreeSerif;
 }
 .search-input {
   margin: 10px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
 }
 .search-input input {

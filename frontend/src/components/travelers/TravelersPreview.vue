@@ -8,7 +8,7 @@
               <div class="bold">{{user.name.first}} {{user.name.last}},  {{user.age}}</div>
               <div class="away">
                 <span class="dist"> {{dist}}  away</span>
-                <button class="chat-icon" @click.stop="toggleChat"><i class="far fa-comments"></i></button>
+                <button class="chat-icon" title="chat with me" @click.stop="toggleChat" :class="{ 'online': user.isActive, 'offline': !user.isActive }"><i class="far fa-comments"></i></button>
               </div>
               <div class="langs">
                 <langs v-for="langs in user.about.langs" :key="langs" :langs="langs"></langs>
@@ -110,5 +110,11 @@ export default {
 }
 .bold {
   font-weight: bold;
+}
+.online {
+  color: #4caf50;
+}
+.offline {
+  color: #c3433a;
 }
 </style>
