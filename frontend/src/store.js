@@ -106,7 +106,7 @@ export default new Vuex.Store({
       var user = this.state.user;
       user.isActive = false;
       console.log('user logout', user);
-      debugger;
+      // debugger;
       userService.logout();
       context.commit({ type: SET_USER, user: _loadUser() });
       if (user._id) {
@@ -181,7 +181,7 @@ function _loadUser() {
         chatRooms: []
       },
       chatNtfsMap: {},
-      commentNtfsMap: {}
+      cmntNtfsMap: {}
     };
 }
 

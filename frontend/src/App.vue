@@ -14,7 +14,7 @@
           <img class="login-img" :src="userUrl"></router-link>
         </div>
 
-          <!-- <NotificationMenu v-if="!userToChat"/> -->
+          <NotificationMenu v-if="!userToChat"/>
           
     </nav>
     <user-msg></user-msg>
