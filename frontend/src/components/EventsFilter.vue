@@ -16,6 +16,7 @@
 <script>
 import { SET_RADIUS } from '../storeModules/eventModule.js';
 import { SET_FILTER } from '../storeModules/eventModule.js';
+import { LOAD_EVENTS_BY_LOC } from '../storeModules/eventModule.js';
 
 export default {
   name: 'EventsFilter',
