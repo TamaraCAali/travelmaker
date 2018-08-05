@@ -16,11 +16,7 @@
         </div>
       <LocationInput v-if="user.loc" @events-changed="getEvents"></LocationInput>
       <div class="sliders-btn-container" @click="showEventsFilter = !showEventsFilter"> 
-<<<<<<< HEAD
-        <i class="fas fa-sliders-h"></i>
-=======
         <i class="fas fa-sliders-h"></i><div class="raduis-title">search options</div>
->>>>>>> cc08433b776f580c199cb08410b4d33671bd0600
       </div>
     </div>
    
