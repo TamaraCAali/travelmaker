@@ -16,7 +16,7 @@
         </div>
       <LocationInput v-if="user.loc" @events-changed="getEvents"></LocationInput>
       <div class="sliders-btn-container" @click="showEventsFilter = !showEventsFilter"> 
-        <i class="fas fa-sliders-h"></i><div class="raduis-title">search options</div>
+        <i class="fas fa-sliders-h"></i><div class="radius-title">search options</div>
       </div>
     </div>
    
