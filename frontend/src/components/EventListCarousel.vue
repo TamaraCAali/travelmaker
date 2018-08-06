@@ -2,7 +2,7 @@
 <div>
 
    <slot name="header"></slot>
-    <carousel :perPage="3">
+    <carousel :perPageCustom="[[0, 1],[400, 2],[600, 3]]" :autoplay="true" :autoplayHoverPause="true">
         <slide v-for="event in events" :key="event._id">
     <EventPreview :event="event"></EventPreview>
     </slide>
