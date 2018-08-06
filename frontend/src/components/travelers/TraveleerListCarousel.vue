@@ -2,7 +2,7 @@
   <section class = "travelers-list">
       <div>
    <slot name="header"></slot>
-    <carousel :perPageCustom="[[0, 1],[400, 2],[600, 3],[768, 4], [900, 5]]" :autoplay="true" :autoplayHoverPause="true">
+    <carousel :perPageCustom="[[0, 1],[400, 2],[600, 3],[768, 4], [900, 5]]">
         <slide v-for="user in users" 
             :key="user._id" v-if="$store.getters.loggedinUser._id !== user._id" >
               <TravelersPreview  :user="user" ></TravelersPreview>
