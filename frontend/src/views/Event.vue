@@ -8,7 +8,7 @@
     <!-- <div class="screen"></ div> -->
     <div class="container">
       <div class="events-header">
-        <div  class="new-add-container"  @click="$router.push('/event/edit/newEvent')">
+        <div  class="new-add-container"  @click="onAddEvent">
           <div class="new-event">
             <i class="far fa-plus-square fa-2x"></i>
             add event
@@ -67,6 +67,7 @@ import EventBusService, { LOGIN } from '../services/eventBusService.js';
 import { LOAD_EVENTS } from '../storeModules/eventModule.js';
 import { SET_FILTER } from '../storeModules/eventModule.js';
 import { UPDATE_USER } from '../store.js';
+import { SET_PREV_URL } from '../store.js';
 import { LOAD_USERS } from '../storeModules/userModule.js';
 
 import EventList from '@/components/EventList.vue';
@@ -155,6 +156,14 @@ export default {
         this.$message.error('No events in that area');
       }
       console.log('events cmp got events', this.events);
+    },
+    onAddEvent() {
+      if (this.user._id) {
+        $router.push('/event/edit/newEvent')
+      } else {
+        this.$message.error('Please login to create an event');
+        this.$router.push('/login');
+      }
     }
   }
 };
