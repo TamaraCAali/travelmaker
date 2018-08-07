@@ -64,8 +64,7 @@ export default {
     userService.getById(userId).then(user => {
       this.user = user;
     });
-    console.log('notifs:', (!!this.user.chatNtfsMap || !!this.user.cmntNtfsMap));
-    
+    // console.log('notifs:', (!!this.user.chatNtfsMap || !!this.user.cmntNtfsMap));
   },
   methods: {
     openChat(creatorId) {
