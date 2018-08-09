@@ -126,7 +126,7 @@ export default {
         .dispatch(LOAD_EVENTS, { user })
         .then(() => {
           this.events = this.$store.getters.eventForDisplay;
-          console.log('events cmp got events', this.events);
+          // console.log('events cmp got events', this.events);
         })
         .catch(err => {
           console.log('err in load events', err);

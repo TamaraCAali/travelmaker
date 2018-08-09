@@ -24,7 +24,6 @@ function getAddressFromLoc(loc) {
       }
     )
     .then(res => {
-      // console.log('service got res:', res);
       return res.data.results[0].formatted_address;
     })
     .catch(err => 'no location name access');

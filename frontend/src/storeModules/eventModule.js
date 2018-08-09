@@ -62,7 +62,7 @@ export default {
       });
     },
     [LOAD_EVENTS_BY_LOC](context, { loc }) {
-      return eventService.queryByRange(loc).then(events => {
+      return eventService.queryByRange(loc, context.state.radius).then(events => {
         context.commit({
           type: LOAD_EVENTS,
           events
