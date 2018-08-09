@@ -53,6 +53,11 @@ export default {
           this.$store
             .dispatch(LOAD_EVENTS_BY_LOC, { loc })
             .then(events => {
+<<<<<<< HEAD
+              console.log('loc input got:', events);
+
+=======
+>>>>>>> master
               this.$emit('events-changed');
             })
             .catch(err => {
@@ -82,6 +87,7 @@ export default {
   text-align: center;
 }
 .search-input input {
+  width: 100%;
   border: none;
   background-color: transparent;
   font-size: 1em;
