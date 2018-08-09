@@ -130,7 +130,6 @@ export default {
         .dispatch(LOAD_EVENTS, { user })
         .then(() => {
           this.events = this.$store.getters.eventForDisplay;
-<<<<<<< HEAD
           var today = moment()
             .startOf('day')
             .valueOf();
@@ -158,9 +157,6 @@ export default {
             this.oneDayEvents,
             this.longEvents
           );
-=======
-          // console.log('events cmp got events', this.events);
->>>>>>> master
         })
         .catch(err => {
           console.log('err in load events', err);
