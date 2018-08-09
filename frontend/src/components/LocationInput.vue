@@ -53,8 +53,11 @@ export default {
           this.$store
             .dispatch(LOAD_EVENTS_BY_LOC, { loc })
             .then(events => {
+<<<<<<< HEAD
               console.log('loc input got:', events);
 
+=======
+>>>>>>> master
               this.$emit('events-changed');
             })
             .catch(err => {

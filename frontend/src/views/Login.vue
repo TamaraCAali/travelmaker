@@ -73,8 +73,8 @@ export default {
             'joinRoom',
             'ntf-' + this.$store.getters.loggedinUser._id
           );
-          //Go to HomePage
-          this.$router.push('/');
+          //Go back one page
+            this.$router.go(-1);
         })
         .catch(err => {
           console.log('err', err);

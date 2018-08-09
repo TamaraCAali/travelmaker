@@ -64,8 +64,7 @@ export default {
     userService.getById(userId).then(user => {
       this.user = user;
     });
-    console.log('notifs:', (!!this.user.chatNtfsMap || !!this.user.cmntNtfsMap));
-    
+    // console.log('notifs:', (!!this.user.chatNtfsMap || !!this.user.cmntNtfsMap));
   },
   methods: {
     openChat(creatorId) {
@@ -131,16 +130,23 @@ export default {
 
 .notif-item {
   cursor: pointer;
-  background-color: #f5f5f5b0;
+  background-color: #f5f5f5dd;
   padding: 3px;
   margin-top: 1px;
   color: #35495e;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
   transition: 0.3s;
 }
 
 .notif-item:hover {
   background-color: #d4d4d4b0;
+}
+
+@media only screen and (max-width: 440px) {
+  .notifs-dropdown {
+    right: -80%;
+    bottom: calc(100% + 4px);
+  }
 }
 
 </style>

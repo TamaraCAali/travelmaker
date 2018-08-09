@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import eventService from '@/services/eventService.js';
 import locService from '@/services/locationService.js';
 import userService from '@/services/userService';
 Vue.use(Vuex);
@@ -22,7 +21,7 @@ export const ADD_USER = 'user/addUser';
 export default new Vuex.Store({
   state: {
     user: _loadUser(),
-    searchedLoc: {}
+    searchedLoc: {},
   },
   mutations: {
     [LOAD_CURR_LOC](state, { currLoc }) {
@@ -50,7 +49,7 @@ export default new Vuex.Store({
     },
     searchedLoc(state) {
       return state.searchedLoc;
-    }
+    },
   },
   actions: {
     // [LOAD_CURR_LOC](context) {
@@ -145,7 +144,7 @@ export default new Vuex.Store({
             return Promise.reject(err);
           });
       });
-    }
+    },
   },
   modules: {
     userModule,

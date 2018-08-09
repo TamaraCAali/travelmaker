@@ -8,24 +8,25 @@
         <div class="event-header">
           <div class="flex direction-column">
             <h1>{{event.name}}</h1>
-            At: {{event.loc.title}}</div>
-                  <div class="btns-container">
-                        <div @click="toggleEventAttendence()">
-                          <template v-if="!userIsAttending" >
-                            <i class="far fa-check-circle fa-2x" title="join event"></i><br/>
-                          </template>
-                          <template v-else>
-                            <i class="far fa-times-circle fa-2x" title="leave event"></i><br/>
-                          </template>
-                        </div>
-                        <div @click="showCopyUrlMsg">
-                            <i class="far fa-copy fa-2x" v-clipboard:copy="eventUrl" title="copy event link"></i> <br/>
-                        </div>
-                        <i v-if="userIsAdmin"
-                              @click="goEditEvent" 
-                              class="edit-btn far fa-edit fa-2x" title="edit event"></i>
-      </div>
-             
+            At: {{event.loc.title}}
+          </div>
+          <div class="btns-container">
+            <div @click="toggleEventAttendence()">
+              <template v-if="!userIsAttending" >
+                <i class="far fa-check-circle fa-2x" title="join event"></i><br/>
+              </template>
+              <template v-else>
+                <i class="far fa-times-circle fa-2x" title="leave event"></i><br/>
+              </template>
+            </div>
+            <div @click="showCopyUrlMsg">
+                <i class="far fa-copy fa-2x" v-clipboard:copy="eventUrl" title="copy event link"></i> <br/>
+            </div>
+            <i v-if="userIsAdmin"
+                  @click="goEditEvent" 
+                  class="edit-btn far fa-edit fa-2x" title="edit event">
+            </i>
+            </div>
             <div class="event-time">
               <p>
                 {{event.startTime | formatDate}} <br/>
@@ -286,8 +287,8 @@ export default {
       else return false;
     },
     userIsAdmin() {
-      return true;
-      // return this.event.creatorId === this.user._id
+      // return true;
+      return this.event.creatorId === this.user._id
     },
     onSameDay() {
       return (
@@ -432,11 +433,14 @@ export default {
 
 .btns-container {
   display: flex;
-  width: 100px;
   justify-content: space-between;
   cursor: pointer;
   font-size: 0.6em;
   margin: 10px 0;
+}
+
+.btns-container div {
+  margin: 5px;
 }
 
 .details-container {

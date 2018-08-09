@@ -8,7 +8,7 @@
     <!-- <div class="screen"></ div> -->
     <div class="container">
       <div class="events-header">
-        <div  class="new-add-container"  @click="$router.push('/event/edit/newEvent')">
+        <div  class="new-add-container"  @click="onAddEvent">
           <div class="new-event">
             <i class="far fa-plus-square fa-2x"></i>
             add event
@@ -16,7 +16,7 @@
         </div>
       <LocationInput v-if="user.loc" @events-changed="getEvents"></LocationInput>
       <div class="sliders-btn-container" @click="showEventsFilter = !showEventsFilter"> 
-        <i class="fas fa-sliders-h"></i><div class="raduis-title">search options</div>
+        <i class="fas fa-sliders-h"></i><div class="radius-title">search options</div>
       </div>
     </div>
    
@@ -67,6 +67,7 @@ import EventBusService, { LOGIN } from '../services/eventBusService.js';
 import { LOAD_EVENTS } from '../storeModules/eventModule.js';
 import { SET_FILTER } from '../storeModules/eventModule.js';
 import { UPDATE_USER } from '../store.js';
+import { SET_PREV_URL } from '../store.js';
 import { LOAD_USERS } from '../storeModules/userModule.js';
 
 import EventList from '@/components/EventList.vue';
@@ -129,6 +130,7 @@ export default {
         .dispatch(LOAD_EVENTS, { user })
         .then(() => {
           this.events = this.$store.getters.eventForDisplay;
+<<<<<<< HEAD
           var today = moment()
             .startOf('day')
             .valueOf();
@@ -156,6 +158,9 @@ export default {
             this.oneDayEvents,
             this.longEvents
           );
+=======
+          // console.log('events cmp got events', this.events);
+>>>>>>> master
         })
         .catch(err => {
           console.log('err in load events', err);
@@ -185,6 +190,14 @@ export default {
         this.$message.error('No events in that area');
       }
       console.log('events cmp got events', this.events);
+    },
+    onAddEvent() {
+      if (this.user._id) {
+        $router.push('/event/edit/newEvent')
+      } else {
+        this.$message.error('Please login to create an event');
+        this.$router.push('/login');
+      }
     }
   }
 };
