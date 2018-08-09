@@ -25,19 +25,19 @@
       @just-radius-changed="loadEvent(user)">
     </events-filter>
     <hr>
-    <EventListCarousel v-if="events" :events="events" >
+    <EventListCarousel v-if="eventsToday" :events="eventsToday" >
       <template slot="header">
         <h3>Events Today and Tomorrow</h3>
       </template>
     </EventListCarousel>
 
-    <EventListCarousel v-if="events" :events="events" >
+    <EventListCarousel v-if="oneDayEvents" :events="oneDayEvents" >
       <template slot="header">
         <h3>1 day trips</h3>
       </template>
     </EventListCarousel>
 
-    <EventListCarousel v-if="events" :events="events" >
+    <EventListCarousel v-if="longEvents" :events="longEvents" >
       <template slot="header">
         <h3>Events longer then 2 days</h3>
       </template>
@@ -76,6 +76,7 @@ import LocationInput from '@/components/LocationInput.vue';
 import eventsFilter from '@/components/EventsFilter.vue';
 import TravelersList from '@/components/travelers/TravelersList.vue';
 import TraveleerListCarousel from '@/components/travelers/TraveleerListCarousel.vue';
+import moment from 'moment';
 
 export default {
   name: 'Event',
@@ -92,6 +93,9 @@ export default {
       showEventsFilter: false,
       user: null,
       events: null,
+      eventsToday: null,
+      oneDayEvents: null,
+      longEvents: null,
       users: null,
       titles: [
         'Traveling together is easier than ever!',
@@ -125,7 +129,33 @@ export default {
         .dispatch(LOAD_EVENTS, { user })
         .then(() => {
           this.events = this.$store.getters.eventForDisplay;
-          console.log('events cmp got events', this.events);
+          var today = moment()
+            .startOf('day')
+            .valueOf();
+          var tomorrow = moment(new Date())
+            .add(1, 'days')
+            .endOf('day')
+            .valueOf();
+          var eventsToday = this.events.filter(event => {
+            if ((event.startTime >= today) & (event.startTime <= tomorrow))
+              return event;
+          });
+          this.eventsToday = eventsToday;
+          var oneDayEvents = this.events.filter(event => {
+            if (event.endTime - event.startTime <= 172799000) return event;
+          });
+          this.oneDayEvents = oneDayEvents;
+          var longEvents = this.events.filter(event => {
+            if (event.endTime - event.startTime >= 172799000) return event;
+          });
+          this.longEvents = longEvents;
+          console.log(
+            'events cmp got events',
+            this.events,
+            this.eventsToday,
+            this.oneDayEvents,
+            this.longEvents
+          );
         })
         .catch(err => {
           console.log('err in load events', err);
