@@ -61,6 +61,10 @@ function update(user) {
   // console.log('serve', user);
 
   _setLoggedinUser(user);
+  
+  if (!user._id) {
+    return Promise.reject('User not logged in')
+  }
 
   return axios
     .put(`${USER_URL}/${user._id}`, user)
