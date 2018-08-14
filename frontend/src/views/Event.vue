@@ -189,7 +189,7 @@ export default {
     },
     onAddEvent() {
       if (this.user._id) {
-        $router.push('/event/edit/newEvent')
+        this.$router.push('/event/edit/newEvent')
       } else {
         this.$message.error('Please login to create an event');
         this.$router.push('/login');

@@ -139,7 +139,6 @@ function fbLogin(user) {
       return _getAppLoc().then(loc => {
         newUser.loc = loc;
         return add(newUser).then(user => {
-          debugger;
           console.log('print new fb user', user);
 
           return user;
