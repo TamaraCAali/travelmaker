@@ -94,7 +94,7 @@ export default {
     eventBusService.$on(LOGIN, userImg => {
       this.userUrl = userImg;
       console.log('this happened', this.userUrl);
-      
+
       //get from localstorage of user
     });
     eventBusService.$on(TOGGLE_CHAT, user => {
@@ -130,7 +130,7 @@ export default {
 nav {
   padding: 0 5px;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
   color: #41b883;
   position: fixed;

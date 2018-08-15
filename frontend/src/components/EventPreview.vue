@@ -56,7 +56,8 @@ export default {
 <style scoped lang="scss">
 .event-preview {
   width: 100%;
-  border: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  padding: 5px;
 }
 .event {
   width: 100%;

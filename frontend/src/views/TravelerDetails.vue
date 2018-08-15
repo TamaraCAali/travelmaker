@@ -116,7 +116,7 @@ export default {
 
 <style scoped lang="scss">
 .user-img-cover {
-  height: 350px;
+  height: calc(60vh);
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
@@ -126,7 +126,7 @@ export default {
 .user-img {
   width: 200px;
   position: relative;
-  top: 20%;
+  top: 17%;
   left: 73%;
   z-index: 4;
 }

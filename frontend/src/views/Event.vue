@@ -143,11 +143,11 @@ export default {
           });
           this.eventsToday = eventsToday;
           var oneDayEvents = this.events.filter(event => {
-            if (event.endTime - event.startTime <= 172799000) return event;
+            if (event.endTime - event.startTime <= 86400000) return event;
           });
           this.oneDayEvents = oneDayEvents;
           var longEvents = this.events.filter(event => {
-            if (event.endTime - event.startTime >= 172799000) return event;
+            if (event.endTime - event.startTime >= 86400000) return event;
           });
           this.longEvents = longEvents;
           console.log(
