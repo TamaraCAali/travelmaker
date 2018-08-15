@@ -52,23 +52,6 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    // [LOAD_CURR_LOC](context) {
-    //   var currLoc = {};
-    //   currLoc.type = 'Point';
-    //   return locService
-    //     .getPosition()
-    //     .then(res => {
-    //       currLoc.coordinates = [res.coords.latitude, res.coords.longitude];
-    //       return locService.getAddressFromLoc(currLoc.coordinates);
-    //     })
-    //     .then(name => {
-    //       currLoc.name = name;
-    //       context.commit({
-    //         type: LOAD_CURR_LOC,
-    //         currLoc
-    //       });
-    //     });
-    // },
     [SEARCHED_LOC](context, { searchInput }) {
       return locService.getPositionByName(searchInput).then(pos => {
         context.commit({

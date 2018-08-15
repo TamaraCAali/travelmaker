@@ -288,7 +288,7 @@ export default {
     },
     userIsAdmin() {
       // return true;
-      return this.event.creatorId === this.user._id
+      return this.event.creatorId === this.user._id;
     },
     onSameDay() {
       return (
@@ -378,7 +378,6 @@ export default {
   background-size: cover;
   transition: all 1s ease;
   background-position: center, center;
-  transition: all 1s ease;
 }
 
 .event-header {

@@ -74,11 +74,11 @@ export default {
     },
     isEmpty(obj) {
       let hasOwnProperty = Object.prototype.hasOwnProperty;
-      
+
       if (obj == null) return true;
       if (obj.length > 0) return false;
       if (obj.length === 0) return true;
-      if (typeof obj !== "object") return true;
+      if (typeof obj !== 'object') return true;
       for (var key in obj) {
         if (hasOwnProperty.call(obj, key)) return false;
       }
@@ -88,15 +88,16 @@ export default {
   computed: {
     notifsBtnClassObj() {
       return {
-        'notifs-dot':  !this.isEmpty(this.user.chatNtfsMap) || !this.isEmpty(this.user.cmntNtfsMap)
-      }
+        'notifs-dot':
+          !this.isEmpty(this.user.chatNtfsMap) ||
+          !this.isEmpty(this.user.cmntNtfsMap)
+      };
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
-
 .notification-menu {
   color: #35495e;
   position: relative;
@@ -122,15 +123,18 @@ export default {
 }
 
 .notifs-dropdown {
+  display: flex;
+  flex-direction: column;
   position: absolute;
   width: max-content;
   margin-top: 6px;
-  right: calc(100% - 2.2em);
+  right: 0;
+  // right: calc(100% - 2.2em);
 }
 
 .notif-item {
   cursor: pointer;
-  background-color: #f5f5f5dd;
+  background-color: #ffffff;
   padding: 3px;
   margin-top: 1px;
   color: #35495e;
@@ -143,10 +147,14 @@ export default {
 }
 
 @media only screen and (max-width: 440px) {
-  .notifs-dropdown {
-    right: -80%;
-    bottom: calc(100% + 4px);
+  .notif-item {
+    background-color: #41b883;
   }
 }
 
+@media only screen and (max-width: 440px) {
+  .notifs-dropdown {
+    bottom: calc(100% + 4px);
+  }
+}
 </style>

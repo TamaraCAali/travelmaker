@@ -74,7 +74,7 @@ export default {
             'ntf-' + this.$store.getters.loggedinUser._id
           );
           //Go back one page
-            this.$router.go(-1);
+          this.$router.go(-1);
         })
         .catch(err => {
           console.log('err', err);
@@ -84,26 +84,7 @@ export default {
           });
         });
     },
-    // setGuest() {
-    //   console.log('set setGuest');
-    //   this.$store
-    //     .dispatch(SET_GUEST)
-    //     .then(_ => {
-    //       console.log('here');
-    //       EventBusService.$emit(SHOW_MSG, {
-    //         txt: `Login as guest`,
-    //         type: 'success'
-    //       });
-    //       this.$router.push('/');
-    //     })
-    //     .catch(err => {
-    //       console.log('err', err);
-    //       EventBusService.$emit(SHOW_MSG, {
-    //         txt: err,
-    //         type: 'danger'
-    //       });
-    //     });
-    // },
+
     fbLogin(user) {
       console.log('fb login', user);
 
