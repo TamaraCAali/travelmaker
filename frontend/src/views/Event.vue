@@ -119,7 +119,6 @@ export default {
         this.user.isActive = true;
         var user = this.user;
         this.$store.dispatch(UPDATE_USER, { user });
-        console.log('user', this.user);
         EventBusService.$emit(LOGIN, this.user.img);
         this.loadEvent(this.user);
         this.loadUsers(this.user);
@@ -150,13 +149,13 @@ export default {
             if (event.endTime - event.startTime >= 172799000) return event;
           });
           this.longEvents = longEvents;
-          console.log(
-            'events cmp got events',
-            this.events,
-            this.eventsToday,
-            this.oneDayEvents,
-            this.longEvents
-          );
+          // console.log(
+          //   'events cmp got events',
+          //   this.events,
+          //   this.eventsToday,
+          //   this.oneDayEvents,
+          //   this.longEvents
+          // );
         })
         .catch(err => {
           console.log('err in load events', err);
@@ -185,7 +184,7 @@ export default {
       if (!this.events[0]) {
         this.$message.error('No events in that area');
       }
-      console.log('events cmp got events', this.events);
+      // console.log('events cmp got events', this.events);
     },
     onAddEvent() {
       if (this.user._id) {

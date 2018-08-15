@@ -67,7 +67,8 @@ import eventBusService, {
   PUSH_NOTIFICATION,
   SHOW_MSG,
   LOGIN,
-  TOGGLE_CHAT
+  TOGGLE_CHAT,
+  LOGOUT_HAPPENED
 } from './services/eventBusService.js';
 import { LOGOUT } from './store.js';
 
@@ -93,8 +94,6 @@ export default {
     });
     eventBusService.$on(LOGIN, userImg => {
       this.userUrl = userImg;
-      console.log('this happened', this.userUrl);
-      
       //get from localstorage of user
     });
     eventBusService.$on(TOGGLE_CHAT, user => {
@@ -120,6 +119,7 @@ export default {
       this.userUrl =
         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjvdv8INW6OzjzPL8JyQlDbYOxZjabXx8xcNlhroqSHOMZh4C35g';
       this.$store.dispatch(LOGOUT);
+      eventBusService.$emit(LOGOUT_HAPPENED);
     }
   }
 };

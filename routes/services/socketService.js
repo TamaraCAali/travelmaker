@@ -4,12 +4,11 @@ module.exports = io => {
     io.on('connection', (socket) => {
         socket.on('joinRoom', room => {
             socket.join(room)
-            setTimeout(() => console.log('join room ', room, socket.rooms), 1000)
+            // setTimeout(() => console.log('join room ', room, socket.rooms), 1000)
         })
         socket.on('leaveRoom', room => {
-            // console.log('room ' + room + 'was left.')
             socket.leave(room)
-            setTimeout(() => console.log('room left', socket.rooms), 1000)
+            // setTimeout(() => console.log('room left', socket.rooms), 1000)
 
         })
         // once a client has connected, we expect to get a ping from them saying what room they want to join
@@ -23,12 +22,6 @@ module.exports = io => {
             txt: 'Pukiiii?',
             at: 1532595342052
         }) => {
-            // if (socket.room) socket.leave(socket.room);
-            // socket.room = newMsg.room;
-            // socket.join(newMsg.room);
-            // socket.join(newMsg.room);
-
-            // console.log('Mi Ze Ba?', newMsg)
             io.sockets.in(newMsg.room).emit('renderMsg', newMsg)
         });
         socket.on('assignPushNtf', pushNtf => {
@@ -44,17 +37,4 @@ module.exports = io => {
 
 
     });
-
-    // // now, it's easy to send a message to just the clients in a given room
-    // room = "abc123";
-    // io.sockets.in(room).emit('message', 'what is going on, party people?');
-
-    // // this message will NOT go to the client defined above
-    // io.sockets.in('foobar').emit('message', 'anyone in this room yet?');
-
-
-
 }
-
-// io.emit('dodo', 'hey!')
-// setTimeout(() => io.emit('dodo', 'whassssup?!!!'), 5000);
