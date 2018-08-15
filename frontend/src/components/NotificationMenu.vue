@@ -95,7 +95,8 @@ export default {
   },
   sockets: {
     renderPushNtf() {
-      this.user = this.$store.getters.getUser;
+      console.log('Update Ntf Menu')
+      userService.getById(this.user._id).then(user => (this.user = user));
     }
   }
 };
