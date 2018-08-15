@@ -9,7 +9,7 @@
         <div v-if="showUploadIcon" class="upload-img-hover">
           <el-upload
             class="event-img-uploader"
-            action="https://jsonplaceholder.typicode.com/posts/"
+            action=""
             :before-upload="beforeAvatarUpload"
             :on-success="handleAvatarSuccess">
             <i class="el-icon-upload2 avatar-uploader-icon"></i>
@@ -268,8 +268,8 @@ export default {
             this.$router.push(`/event/${this.event._id}`);
           });
         } else {
-          eventService.add(this.event).then(() => {
-            this.$router.push(`/event/${this.event._id}`);
+          eventService.add(this.event).then((res) => {
+            this.$router.push(`/event/${res._id}`);
           });
         }
       });

@@ -58,12 +58,7 @@ export default {
     };
   },
   created() {
-    //get user from server.
-    let userId = this.$store.getters.loggedinUser._id;
-    // this.user.chatNtfsMap = {bobo:23}
-    userService.getById(userId).then(user => {
-      this.user = user;
-    });
+    this.user = this.$store.getters.getUser;
     // console.log('notifs:', (!!this.user.chatNtfsMap || !!this.user.cmntNtfsMap));
   },
   methods: {

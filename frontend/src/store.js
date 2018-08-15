@@ -32,7 +32,7 @@ export default new Vuex.Store({
       state.searchedLoc = pos;
     },
     [SET_USER](state, { user }) {
-      return (state.user = user);
+      return state.user = user;
       // console.log('SET_USER', state.user);
     }
   },

@@ -63,6 +63,8 @@ export default {
       this.$store
         .dispatch(LOGIN, { user })
         .then(result => {
+          EventBusService.$emit(LOGIN, this.$store.getters.loggedinUser.img);
+
           EventBusService.$emit(SHOW_MSG, {
             txt: `Login successfully as ${user.userName}`,
             type: 'success'
