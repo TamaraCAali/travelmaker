@@ -104,6 +104,7 @@
 </template>
 
 <script>
+import store, { UPDATE_USER } from '@/store';
 import moment from 'moment';
 import AttendsList from '../components/AttendsList';
 import locService from '../services/locationService';
@@ -131,11 +132,8 @@ export default {
   },
   created() {
     let idFromParams = this.$route.params.eventId;
-    // console.log('event id sent:', idFromParams);
     eventService.getById(idFromParams).then(res => {
-      console.log('got event:', res);
       this.event = JSON.parse(JSON.stringify(res));
-      console.log('this.event', this.event);
       this.initMap();
       this.getAttendingUsers();
     });
