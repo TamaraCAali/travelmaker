@@ -3,11 +3,7 @@
       <div class="notifs-btn" @click="showNotifDrop = !showNotifDrop">
         <i :class="['fas fa-bell', notifsBtnClassObj]" ></i>
       </div>
-      <!-- <pre v-if="user.chatNtfsMap">
-        {{user.chatNtfsMap}}
-        ---
-        {{user.cmntNtfsMap}}
-      </pre> -->
+
       <div class="notifs-dropdown">
 
        <div class="chat-ntfs" 
@@ -49,6 +45,7 @@
 <script>
 import eventBusService, { TOGGLE_CHAT } from '@/services/eventBusService';
 import userService from '@/services/userService';
+import { LOGOUT_HAPPENED, LOGIN } from '../services/eventBusService';
 
 export default {
   data() {
@@ -59,7 +56,14 @@ export default {
   },
   created() {
     this.user = this.$store.getters.getUser;
-    // console.log('notifs:', (!!this.user.chatNtfsMap || !!this.user.cmntNtfsMap));
+
+    eventBusService.$on(LOGOUT_HAPPENED, _ => {
+      this.user = {};
+    });
+
+    eventBusService.$on(LOGIN, _ => {
+      this.user = this.$store.getters.getUser;
+    });
   },
   methods: {
     openChat(creatorId) {
@@ -87,6 +91,11 @@ export default {
           !this.isEmpty(this.user.chatNtfsMap) ||
           !this.isEmpty(this.user.cmntNtfsMap)
       };
+    }
+  },
+  sockets: {
+    renderPushNtf() {
+      this.user = this.$store.getters.getUser;
     }
   }
 };
