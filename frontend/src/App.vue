@@ -105,6 +105,7 @@ export default {
   sockets: {
     renderPushNtf(pushNtf) {
       console.log('renderPushNtf', pushNtf);
+      // if(pushNtf.ntfRoom === 'ntf' + this.$store.getters.getLoggedInUser._id)
       eventBusService.$emit(PUSH_NOTIFICATION, pushNtf);
     }
   },
