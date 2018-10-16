@@ -588,6 +588,7 @@ input.textarea {
     top: 50px;
   }
   .chat {
+    overflow: scroll;
     z-index: 81;
     position: fixed;
     top: 40px;
